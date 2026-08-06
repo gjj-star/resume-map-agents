@@ -9,18 +9,28 @@
     "start": "electron . --no-sandbox --disable-gpu",
     "dev": "electron . --no-sandbox --disable-gpu --dev",
     "build": "electron-builder",
-    "build:win": "electron-builder --win"
+    "build:win": "electron-builder --win",
+    "release:patch": "node scripts/release.js patch",
+    "release:minor": "node scripts/release.js minor",
+    "release:major": "node scripts/release.js major"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "electron-updater": "^6.8.9",
     "express": "^4.19.2"
   },
   "devDependencies": {
     "electron": "^31.0.0",
     "electron-builder": "^24.13.3"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "gjj-star",
+    "repo": "resume-map-agents",
+    "releaseType": "release"
   },
   "build": {
     "appId": "com.resumeexpert.team",

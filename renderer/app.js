@@ -315,3 +315,36 @@ $('exportBtn').addEventListener('click', () => {
     $('hint').textContent = '服务启动中，如无法分析请稍后重试';
   }
 })();
+
+// ===== 自动更新状态 =====
+function initAutoUpdate() {
+  const bar = $('updateBar');
+  const text = $('updateText');
+  const installBtn = $('updateInstallBtn');
+  if (!window.electronAPI || !window.electronAPI.onUpdateStatus) return;
+
+  window.electronAPI.onUpdateStatus((data) => {
+    if (data.status === 'downloading') {
+      bar.style.display = 'flex';
+      text.textContent = `发现新版本 v${data.version}，正在后台下载...`;
+      installBtn.style.display = 'none';
+    } else if (data.status === 'downloaded') {
+      bar.style.display = 'flex';
+      text.textContent = `新版本 v${data.version} 已下载完成`;
+      installBtn.style.display = 'inline-flex';
+    } else if (data.status === 'error') {
+      // 静默处理检查失败，不打扰用户
+      console.warn('自动更新检查失败:', data.message);
+    }
+  });
+
+  installBtn.addEventListener('click', async () => {
+    const installed = await window.electronAPI.installUpdate();
+    if (installed) {
+      text.textContent = '正在重启安装更新...';
+      installBtn.style.display = 'none';
+    }
+  });
+}
+
+initAutoUpdate();

@@ -25,14 +25,24 @@
           <div class="brand-sub">多智能体并行评估 · 可视化报告</div>
         </div>
       </div>
-      <button id="navBtn" class="nav-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="16" x2="12" y2="12"/>
-          <line x1="12" y1="8" x2="12.01" y2="8"/>
-        </svg>
-        <span>专家介绍</span>
-      </button>
+      <div class="header-actions">
+        <div id="updateBar" class="update-bar" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+            <polyline points="21 3 21 9 15 9"/>
+          </svg>
+          <span id="updateText">发现新版本，正在下载...</span>
+          <button id="updateInstallBtn" class="update-install-btn" style="display:none;">立即重启更新</button>
+        </div>
+        <button id="navBtn" class="nav-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>专家介绍</span>
+        </button>
+      </div>
     </header>
 
     <!-- ===== 评估页 ===== -->

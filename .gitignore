@@ -1,10 +1,13 @@
 node_modules/
 dist/
+build_out/
 node_cache/
 .npm-cache/
 .npm-cache/
 install.log
 _deps.tmp
 _files.tmp
+_pkgtmp/
+_archive/
 *.bak
 .env

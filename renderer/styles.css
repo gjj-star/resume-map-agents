@@ -118,6 +118,53 @@ html, body {
   background: rgba(99, 102, 241, 0.08);
 }
 
+/* ===== Update bar ===== */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.update-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(34, 211, 238, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  color: var(--accent);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: var(--font);
+}
+
+.update-bar svg {
+  animation: spin 2s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.update-install-btn {
+  background: var(--accent);
+  color: #042c53;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-family: var(--font);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.update-install-btn:hover {
+  filter: brightness(1.15);
+}
+
 /* ===== Page ===== */
 .page { display: none; }
 .page.active { display: block; }

@@ -2,8 +2,25 @@
 // DeepSeek API 调用 + 三个 agent 编排
 const https = require('https');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { ABILITY_SCAN_SYSTEM, JD_MATCH_SYSTEM, REPORT_RENDER_SYSTEM } = require('./prompts');
 
+// 极简 .env 加载器（不依赖 dotenv，兼容 asar 打包后路径）
+function loadEnv() {
+  if (process.env.DEEPSEEK_API_KEY) return;
+  try {
+    const envPath = path.join(__dirname, '..', '.env');
+    const content = fs.readFileSync(envPath, 'utf8');
+    for (const line of content.split('\n')) {
+      const m = line.match(/^\s*([A-Z_]+)\s*=\s*(.+)\s*$/);
+      if (m && !process.env[m[1]]) process.env[m[1]] = m[2].trim();
+    }
+  } catch (_) { /* .env 不存在时忽略 */ }
+}
+loadEnv();
+
+// API key 只从环境变量 / .env 读取，仓库内不含明文 key
 const API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const BASE_URL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com';
 const MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';

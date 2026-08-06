@@ -1,10 +1,64 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const net = require('net');
+const { autoUpdater } = require('electron-updater');
 
 let mainWindow = null;
 let serverInstance = null;
 let serverPort = 3456;
+let updatePrompted = false;
+
+// ===== 自动更新 =====
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = true;
+
+function setupAutoUpdater() {
+  // 仅在打包版（非 --dev / 非开发模式）启用自动更新
+  if (process.argv.includes('--dev') || !app.isPackaged) return;
+
+  autoUpdater.on('update-available', (info) => {
+    console.log('[updater] 发现新版本:', info.version);
+    mainWindow?.webContents.send('update-status', { status: 'downloading', version: info.version });
+  });
+
+  autoUpdater.on('update-downloaded', (info) => {
+    console.log('[updater] 新版本下载完成:', info.version);
+    mainWindow?.webContents.send('update-status', { status: 'downloaded', version: info.version });
+  });
+
+  autoUpdater.on('error', (err) => {
+    console.error('[updater] 检查更新失败:', err.message);
+    mainWindow?.webContents.send('update-status', { status: 'error', message: err.message });
+  });
+
+  autoUpdater.on('update-not-available', () => {
+    console.log('[updater] 已是最新版本');
+    mainWindow?.webContents.send('update-status', { status: 'latest' });
+  });
+
+  // 延迟几秒检查，避免影响启动速度
+  setTimeout(() => {
+    autoUpdater.checkForUpdates().catch((e) => console.error('[updater] check failed:', e.message));
+  }, 5000);
+}
+
+// 渲染进程请求安装更新
+ipcMain.handle('install-update', async () => {
+  const choice = await dialog.showMessageBox(mainWindow, {
+    type: 'info',
+    title: '简历评估专家团',
+    message: '新版本已下载完成，是否立即重启安装？',
+    detail: '重启后应用将自动更新到最新版本。',
+    buttons: ['立即重启', '稍后'],
+    defaultId: 0,
+    cancelId: 1,
+  });
+  if (choice.response === 0) {
+    setImmediate(() => autoUpdater.quitAndInstall());
+    return true;
+  }
+  return false;
+});
 
 // 查找可用端口
 function findFreePort(start = 3456) {
@@ -73,6 +127,7 @@ app.whenReady().then(async () => {
     console.error('启动服务失败:', e);
   }
   createWindow();
+  setupAutoUpdater();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
