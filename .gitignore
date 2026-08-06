@@ -1,0 +1,10 @@
+node_modules/
+dist/
+node_cache/
+.npm-cache/
+.npm-cache/
+install.log
+_deps.tmp
+_files.tmp
+*.bak
+.env

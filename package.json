@@ -1,0 +1,57 @@
+{
+  "name": "resume-expert-team",
+  "version": "1.0.0",
+  "description": "多智能体简历评估专家团 - Electron 桌面应用",
+  "main": "main.js",
+  "author": "Resume Expert Team",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron . --no-sandbox --disable-gpu",
+    "dev": "electron . --no-sandbox --disable-gpu --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.resumeexpert.team",
+    "productName": "简历评估专家团",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "server/**/*",
+      "renderer/**/*",
+      "assets/**/*",
+      ".env",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "简历评估专家团"
+    }
+  }
+}
