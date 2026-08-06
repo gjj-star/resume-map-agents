@@ -280,7 +280,7 @@ function renderReport(html) {
   const wrap = $('reportWrap');
   wrap.innerHTML = '';
   const iframe = document.createElement('iframe');
-  iframe.setAttribute('sandbox', 'allow-same-origin');
+  iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts');
   iframe.setAttribute('srcdoc', reportHtml);
   wrap.appendChild(iframe);
 }
