@@ -233,7 +233,12 @@ async function runAnalysis(task, resumeText, jdText, hasJd) {
   task.agents['report-render'].status = 'running';
 
   // 第二步：调用可视化报告专家
+  // 注入真实当前日期（LLM 没有时钟，不注入就会编造日期）
+  const nowDate = new Date();
+  const currentDateStr = `${nowDate.getFullYear()}-${String(nowDate.getMonth() + 1).padStart(2, '0')}-${String(nowDate.getDate()).padStart(2, '0')}`;
   const reportUser = `请根据以下上游评估 JSON 生成单文件可视化 HTML 报告。
+
+当前真实日期：${currentDateStr}（报告头部的"生成日期"必须使用这个日期，禁止编造其他日期）
 
 能力透视 JSON (ability_report)：
 \`\`\`json
