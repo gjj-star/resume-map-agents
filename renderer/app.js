@@ -265,21 +265,31 @@ function renderStatus(data) {
   }
 }
 
+// 确保 HTML 有 UTF-8 charset 声明（双保险：server 已注入，这里兜底）
+function ensureUtf8(html) {
+  if (/charset\s*=/i.test(html)) return html;
+  if (/<head[^>]*>/i.test(html)) {
+    return html.replace(/<head[^>]*>/i, (m) => m + '<meta charset="UTF-8">');
+  }
+  return '<meta charset="UTF-8">' + html;
+}
+
 function renderReport(html) {
-  reportHtml = html;
+  reportHtml = ensureUtf8(html);
   $('exportBtn').disabled = false;
   const wrap = $('reportWrap');
   wrap.innerHTML = '';
   const iframe = document.createElement('iframe');
   iframe.setAttribute('sandbox', 'allow-same-origin');
-  iframe.setAttribute('srcdoc', html);
+  iframe.setAttribute('srcdoc', reportHtml);
   wrap.appendChild(iframe);
 }
 
 // ===== 导出 HTML =====
 $('exportBtn').addEventListener('click', () => {
   if (!reportHtml) return;
-  const blob = new Blob([reportHtml], { type: 'text/html;charset=utf-8' });
+  // 加 UTF-8 BOM：防止记事本等工具按系统 ANSI(GBK) 打开导致中文乱码
+  const blob = new Blob(['\ufeff' + reportHtml], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   const ts = new Date();

@@ -132,7 +132,18 @@ function extractHtml(text) {
   // 截到 </html>
   const endIdx = t.toLowerCase().lastIndexOf('</html>');
   if (endIdx !== -1) t = t.slice(0, endIdx + 7);
-  return t.trim();
+  t = t.trim();
+  // 强制 UTF-8：没有 charset 声明的注入到 <head>，防止导出后按系统编码(GBK)解析乱码
+  if (!/charset\s*=/i.test(t)) {
+    if (/<head[^>]*>/i.test(t)) {
+      t = t.replace(/<head[^>]*>/i, (m) => m + '<meta charset="UTF-8">');
+    } else if (/<html[^>]*>/i.test(t)) {
+      t = t.replace(/<html[^>]*>/i, (m) => m + '<head><meta charset="UTF-8"></head>');
+    } else {
+      t = '<meta charset="UTF-8">' + t;
+    }
+  }
+  return t;
 }
 
 function createTask() {
