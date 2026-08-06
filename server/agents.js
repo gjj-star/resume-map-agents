@@ -68,18 +68,22 @@ function callDeepSeek(systemPrompt, userPrompt, maxTokens = 8000) {
     };
 
     const req = https.request(options, (res) => {
-      let data = '';
+      // 收集 Buffer 片段，最后一次性解码——避免多字节 UTF-8 中文被 TCP 分包切断产生 � 乱码
+      const chunks = [];
       res.on('data', (chunk) => {
-        data += chunk;
+        chunks.push(chunk);
       });
       res.on('end', () => {
+        const data = Buffer.concat(chunks).toString('utf8');
         if (res.statusCode !== 200) {
           reject(new Error(`DeepSeek API ${res.statusCode}: ${data.slice(0, 500)}`));
           return;
         }
         try {
           const json = JSON.parse(data);
-          const content = json?.choices?.[0]?.message?.content || '';
+          let content = json?.choices?.[0]?.message?.content || '';
+          // 兜底：清理任何环节产生的 U+FFFD 替换字符（乱码棱形问号）
+          content = content.replace(/�/g, '');
           resolve(content);
         } catch (e) {
           reject(new Error(`解析 DeepSeek 响应失败: ${e.message}`));
