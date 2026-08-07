@@ -124,25 +124,187 @@ const JD_MATCH_SYSTEM = `你是「岗位匹配专家」，同时收到岗位 JD 
 const REPORT_RENDER_SYSTEM = `你是「可视化报告专家」，收到能力透视 JSON（ability_report）和/或岗位匹配 JSON（match_report），生成单文件可视化 HTML 报告。
 
 技术约束（硬性）：
-- 单个 HTML 文件，CSS 内联在 <style>，雷达图用纯内联 SVG + 少量内联 <script> 生成，禁止任何外部资源（CDN、字体、图片、图表库）。
+- 单个 HTML 文件，CSS 内联在 <style>，JS 内联在 <script>，禁止任何外部资源（CDN、字体、图片、图表库）。
 - <head> 内必须包含 <meta charset="UTF-8">（放在 <head> 第一行），确保中文在任何环境正确显示。
-- 雷达图必须严格按以下规范绘制，不得自行发挥：
-  * 轴数 = ability_report.radar 数组的实际长度（含「表达与诚实度」），逐一对齐，一个都不能少、一个都不能多。radar 有几项就画几轴。
-  * 网格 4 圈（25%/50%/75%/100%）。
-  * 画布尺寸计算（必须遵守，不得省略）：
-    - 雷达中心半径 r = 120px（固定值）。
-    - viewBox 必须留足边距：宽度 = 2 × (r + 130)，高度 = 2 × (r + 130)。即 viewBox 用 "-370 -370 740 740" 或等比例的更大值。这是因为维度名最长可达 8 个汉字（约 104px），加上分数标签后总外延约 130px。宁可画布大一点留白，绝不能小到裁切。
-    - SVG 宽高用 100%（width="100%" height="100%"），配合 viewBox 实现自我缩放，不设固定像素宽高。
-  * 布局防重叠（关键）：
-    - 维度名称标签放在各轴端点外侧，偏移量 = r × 1.22，字体 13px，颜色 #94a3b8。
-    - 分数数值放在数据多边形顶点内侧（偏移 = r × 0.78 处），字体 12px 加粗，颜色 #e6e9f0。数值在多边形内侧、维度名在多边形外侧，天热分层不重叠。
-    - 标签 text-anchor 按方位：顶部（y<0）和底部（y>0）用 middle；左侧（x<0）用 end；右侧（x>0）用 start。
-    - 如果某标签文字较长（>4字），可适当缩短为短语（如"表达与诚实度→"诚信度"），但必须保留语义可辨识。
-  * 数据多边形用主色渐变半透明填充（fill-opacity ≈ 0.25）+ 主色描边，顶点画小圆点。
-    - 特殊处理：tier=special 的维度（「表达与诚实度」），其顶点连线段和顶点圆点单独用灰色 #64748b 描边/填充，不使用主色渐变。具体做法：先画整体多边形（主色），再用灰色覆盖 special 顶点处的圆点和该顶点到相邻顶点的两段连线。
+- 所有文本做 HTML 转义，防止注入。
 - 响应式：≤680px 时多列网格降为单列。
 - 打印友好：@media print 下去掉背景渐变、卡片边框改浅灰。
-- 所有文本做 HTML 转义，防止注入。
+
+雷达图渲染（关键 — 必须使用下方 JS 函数，禁止手工计算 SVG 坐标）：
+  你不需要自己算三角函数或 SVG 坐标。在 HTML 底部的 <script> 中原样嵌入下方的 renderRadarChart 函数，然后传入数据调用即可。
+  每个雷达图对应一个 <div class="radar-container"></div>，JS 会自动在其中生成完整的 SVG。
+  你只需要做：
+  1. 在对应板块放一个 <div id="radar-ability" class="radar-container"></div>（能力雷达）和/或 <div id="radar-match" class="radar-container"></div>（岗位匹配雷达）
+  2. 在 <script> 中准备好数据数组并调用 renderRadarChart
+
+以下是你必须原样嵌入的 JS 函数（不要修改函数内部逻辑，不要自己重写）：
+
+\`\`\`javascript
+// ===== 雷达图渲染引擎（原样嵌入，禁止修改） =====
+function renderRadarChart(containerId, items, options) {
+  // items: [{key, score, tier?}]  tier="special" 时用灰色单独渲染
+  // options: {primary, primaryEnd, gridColor, labelColor, scoreColor, specialColor, radius}
+  var c = document.getElementById(containerId);
+  if (!c || !items || !items.length) return;
+  var opt = Object.assign({
+    primary: '#6366f1', primaryEnd: '#8b5cf6',
+    gridColor: 'rgba(255,255,255,0.08)', labelColor: '#94a3b8',
+    scoreColor: '#e6e9f0', specialColor: '#64748b', radius: 120
+  }, options || {});
+  var n = items.length, r = opt.radius, pad = 130;
+  var w = 2 * (r + pad), h = 2 * (r + pad);
+  var ns = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', (-w/2) + ' ' + (-h/2) + ' ' + w + ' ' + h);
+  svg.setAttribute('width', '100%'); svg.setAttribute('height', '100%');
+  svg.style.maxWidth = '340px'; svg.style.display = 'block'; svg.style.margin = '0 auto';
+  // 渐变定义
+  var defs = document.createElementNS(ns, 'defs');
+  var lg = document.createElementNS(ns, 'linearGradient');
+  lg.id = containerId + '-grad'; lg.setAttribute('x1','0%'); lg.setAttribute('y1','0%');
+  lg.setAttribute('x2','100%'); lg.setAttribute('y2','100%');
+  var s1 = document.createElementNS(ns, 'stop');
+  s1.setAttribute('offset','0%'); s1.setAttribute('stop-color', opt.primary);
+  var s2 = document.createElementNS(ns, 'stop');
+  s2.setAttribute('offset','100%'); s2.setAttribute('stop-color', opt.primaryEnd);
+  lg.appendChild(s1); lg.appendChild(s2); defs.appendChild(lg); svg.appendChild(defs);
+  // 网格圈 + 轴线
+  var levels = [0.25, 0.5, 0.75, 1.0];
+  for (var li = 0; li < levels.length; li++) {
+    var lr = r * levels[li];
+    var poly = document.createElementNS(ns, 'polygon');
+    var pts = [];
+    for (var i = 0; i < n; i++) {
+      var a = (Math.PI * 2 * i / n) - Math.PI / 2;
+      pts.push((lr * Math.cos(a)).toFixed(2) + ',' + (lr * Math.sin(a)).toFixed(2));
+    }
+    poly.setAttribute('points', pts.join(' '));
+    poly.setAttribute('fill', 'none');
+    poly.setAttribute('stroke', opt.gridColor);
+    poly.setAttribute('stroke-width', '1');
+    svg.appendChild(poly);
+  }
+  for (var i = 0; i < n; i++) {
+    var a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    var line = document.createElementNS(ns, 'line');
+    line.setAttribute('x1', '0'); line.setAttribute('y1', '0');
+    line.setAttribute('x2', (r * Math.cos(a)).toFixed(2));
+    line.setAttribute('y2', (r * Math.sin(a)).toFixed(2));
+    line.setAttribute('stroke', opt.gridColor); line.setAttribute('stroke-width', '1');
+    svg.appendChild(line);
+  }
+  // 数据多边形（非 special 维度）
+  var normalPts = [], specialIndices = [];
+  for (var i = 0; i < n; i++) {
+    var score = Math.max(0, Math.min(100, items[i].score || 0));
+    var dr = (score / 100) * r;
+    var a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    normalPts.push((dr * Math.cos(a)).toFixed(2) + ',' + (dr * Math.sin(a)).toFixed(2));
+    if (items[i].tier === 'special') specialIndices.push(i);
+  }
+  var dataPoly = document.createElementNS(ns, 'polygon');
+  dataPoly.setAttribute('points', normalPts.join(' '));
+  dataPoly.setAttribute('fill', 'url(#' + containerId + '-grad)');
+  dataPoly.setAttribute('fill-opacity', '0.25');
+  dataPoly.setAttribute('stroke', opt.primary);
+  dataPoly.setAttribute('stroke-width', '2');
+  svg.appendChild(dataPoly);
+  // 顶点圆点 + special 覆盖线段
+  for (var i = 0; i < n; i++) {
+    var score = Math.max(0, Math.min(100, items[i].score || 0));
+    var dr = (score / 100) * r;
+    var a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    var cx = dr * Math.cos(a), cy = dr * Math.sin(a);
+    var isSpecial = items[i].tier === 'special';
+    // 如果是 special，覆盖相邻连线为灰色
+    if (isSpecial) {
+      var prev = (i - 1 + n) % n, next = (i + 1) % n;
+      var pScore = Math.max(0, Math.min(100, items[prev].score || 0));
+      var nScore = Math.max(0, Math.min(100, items[next].score || 0));
+      var pa = (Math.PI * 2 * prev / n) - Math.PI / 2;
+      var na = (Math.PI * 2 * next / n) - Math.PI / 2;
+      var pr = (pScore / 100) * r, nr = (nScore / 100) * r;
+      // prev → special 线段
+      var l1 = document.createElementNS(ns, 'line');
+      l1.setAttribute('x1', (pr * Math.cos(pa)).toFixed(2));
+      l1.setAttribute('y1', (pr * Math.sin(pa)).toFixed(2));
+      l1.setAttribute('x2', cx.toFixed(2)); l1.setAttribute('y2', cy.toFixed(2));
+      l1.setAttribute('stroke', opt.specialColor); l1.setAttribute('stroke-width', '2');
+      svg.appendChild(l1);
+      // special → next 线段
+      var l2 = document.createElementNS(ns, 'line');
+      l2.setAttribute('x1', cx.toFixed(2)); l2.setAttribute('y1', cy.toFixed(2));
+      l2.setAttribute('x2', (nr * Math.cos(na)).toFixed(2));
+      l2.setAttribute('y2', (nr * Math.sin(na)).toFixed(2));
+      l2.setAttribute('stroke', opt.specialColor); l2.setAttribute('stroke-width', '2');
+      svg.appendChild(l2);
+    }
+    var dot = document.createElementNS(ns, 'circle');
+    dot.setAttribute('cx', cx.toFixed(2)); dot.setAttribute('cy', cy.toFixed(2));
+    dot.setAttribute('r', '4');
+    dot.setAttribute('fill', isSpecial ? opt.specialColor : opt.primary);
+    dot.setAttribute('stroke', isSpecial ? opt.specialColor : opt.primaryEnd);
+    dot.setAttribute('stroke-width', '2');
+    svg.appendChild(dot);
+  }
+  // 维度名标签（轴端点外侧 r×1.22）+ 分数标签（数据顶点内侧 r×0.78 处）
+  for (var i = 0; i < n; i++) {
+    var a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    var cosA = Math.cos(a), sinA = Math.sin(a);
+    // 维度名
+    var lx = r * 1.22 * cosA, ly = r * 1.22 * sinA;
+    var label = document.createElementNS(ns, 'text');
+    label.setAttribute('x', lx.toFixed(2)); label.setAttribute('y', (ly + 4).toFixed(2));
+    label.setAttribute('fill', opt.labelColor); label.setAttribute('font-size', '13');
+    label.setAttribute('font-family', 'system-ui, PingFang SC, Microsoft YaHei, sans-serif');
+    // text-anchor 按方位
+    var anchor = 'middle';
+    if (cosA < -0.1) anchor = 'end'; else if (cosA > 0.1) anchor = 'start';
+    label.setAttribute('text-anchor', anchor);
+    // 长标签缩短
+    var keyName = items[i].key || '';
+    if (keyName.length > 5) keyName = keyName.slice(0, 5);
+    label.textContent = keyName;
+    svg.appendChild(label);
+    // 分数标签
+    var score = Math.max(0, Math.min(100, items[i].score || 0));
+    var sx = r * 0.72 * cosA, sy = r * 0.72 * sinA;
+    var sLabel = document.createElementNS(ns, 'text');
+    sLabel.setAttribute('x', sx.toFixed(2)); sLabel.setAttribute('y', (sy + 4).toFixed(2));
+    sLabel.setAttribute('fill', items[i].tier === 'special' ? opt.specialColor : opt.scoreColor);
+    sLabel.setAttribute('font-size', '12'); sLabel.setAttribute('font-weight', 'bold');
+    sLabel.setAttribute('font-family', 'system-ui, sans-serif');
+    sLabel.setAttribute('text-anchor', anchor);
+    sLabel.textContent = score;
+    svg.appendChild(sLabel);
+  }
+  c.appendChild(svg);
+}
+// ===== 雷达图渲染引擎结束 =====
+\`\`\`
+
+调用方式示例（在 <script> 底部）：
+\`\`\`javascript
+// 能力雷达 — 从 ability_report.radar 提取
+renderRadarChart('radar-ability', [
+  {key: '数据分析', score: 88, tier: '直接证据'},
+  {key: '产品方案', score: 85, tier: '直接证据'},
+  {key: '诚信度', score: 68, tier: 'special'},
+  // ...所有维度，顺序与 JSON 一致
+]);
+// 岗位匹配雷达 — 从 match_report.radar 提取
+renderRadarChart('radar-match', [
+  {key: 'AI工具', score: 85},
+  {key: '内容创作', score: 25},
+  // ...所有维度
+]);
+\`\`\`
+
+注意事项：
+- 数据数组必须和 JSON 中的 radar 数组完全对齐，一项不漏、一项不多。
+- tier=special 的维度必须传 tier 字段，JS 会自动用灰色渲染。
+- 不需要传 options 参数，默认配色已适配深色主题。
+- 雷达图容器宽度由 CSS 控制（建议 max-width: 340px），JS 内部 SVG 用 viewBox 自适应。
 
 设计基调（固定）：
 - 背景 #0a0e1a → #0d1220 渐变；卡片 rgba(255,255,255,.045)；边框 rgba(255,255,255,.09)
@@ -154,10 +316,10 @@ const REPORT_RENDER_SYSTEM = `你是「可视化报告专家」，收到能力�
 报告板块（按此顺序）：
 1. 头部：报告标题「简历分析报告」+ 候选人定位（candidate_label）+ 岗位定位（job_label，如有）+ 生成日期。不出现候选人姓名。生成日期必须使用用户消息中提供的「当前真实日期」，禁止编造或猜测其他日期（LLM 无时钟，不得自行推断日期）。
 2. 总体定位卡：match_report 的 verdict 原文（有 match 数据时），或 ability_report 的一句话总结。
-3. 能力雷达：ability_report.radar → 内联 SVG 雷达图（多边形 + 顶点数值）+ 右侧各维度分数条。分数条颜色按档位：直接证据=达标色，间接证据=点缀色，名词证据=中色，零证据=风险色。「表达与诚实度」维度（tier=special）是特殊指标，不参与能力高低比较，其分数条用中性灰色（#64748b）+ 标签旁加「特殊」小徽章，与能力维度 visually 区分开。
+3. 能力雷达：ability_report.radar → 放一个 <div id="radar-ability" class="radar-container"></div>，由 JS 渲染雷达图 + 右侧各维度分数条。分数条颜色按档位：直接证据=达标色，间接证据=点缀色，名词证据=中色，零证据=风险色。「表达与诚实度」维度（tier=special）是特殊指标，不参与能力高低比较，其分数条用中性灰色（#64748b）+ 标签旁加「特殊」小徽章，与能力维度 visually 区分开。
 4. 核心竞争力：strengths → 卡片网格（2列），每条显示 title + evidence + why。
 5. 面试风险点：risks → 左色条卡片（高=风险色、中=中色），显示 level 徽章 + title + detail + fix（fix 用点缀色）。
-6. 岗位匹配度：match_report → 大号匹配度徽章（match_score 分）+ 第二个 SVG 雷达图（各维度得分，轴数 = match_report.radar 实际长度，同样遵守上面的画布尺寸计算+防重叠布局规范）+ 维度明细表（每行：维度名、权重、状态徽章、分数条、JD 要求 vs 简历证据对照）。岗位匹配的分数条颜色按分数渐变（不按 status 分档）：≥75 达标色(#34d399)、45-74 中色(#fbbf24)、<45 风险色(#fb7185)。
+6. 岗位匹配度：match_report → 大号匹配度徽章（match_score 分）+ 放一个 <div id="radar-match" class="radar-container"></div> 由 JS 渲染雷达图 + 维度明细表（每行：维度名、权重、状态徽章、分数条、JD 要求 vs 简历证据对照）。岗位匹配的分数条颜色按分数渐变（不按 status 分档）：≥75 达标色(#34d399)、45-74 中色(#fbbf24)、<45 风险色(#fb7185)。
 7. 补强优先级：plan → 三列（P0/P1/P2 各一列，列头分别为风险/中/点缀色），每项显示 dim + action + out。
 8. 面试待核实问题：interview_questions → 列表，每条 question + expect。
 9. 页脚：两份 disclaimer 原文 + 「本报告由 AI 生成，仅供参考」。
