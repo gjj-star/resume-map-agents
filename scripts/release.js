@@ -35,8 +35,20 @@ function bumpVersion(current, type) {
   throw new Error(`未知版本类型: ${type}（应为 patch|minor|major）`);
 }
 
+// 跨平台 git credential fill（用 spawnSync 管道 stdin，不依赖 bash 的 printf）
+function gitCredentialFill() {
+  const { spawnSync } = require('child_process');
+  const result = spawnSync('git', ['credential', 'fill'], {
+    input: 'protocol=https\nhost=github.com\n\n',
+    encoding: 'utf8',
+    cwd: ROOT,
+  });
+  if (result.error) throw new Error('git credential fill 失败: ' + result.error.message);
+  return result.stdout;
+}
+
 function getGitHubToken() {
-  const out = run(`printf 'protocol=https\\nhost=github.com\\n\\n' | git credential fill`);
+  const out = gitCredentialFill();
   const m = out.match(/^password=(.+)$/m);
   if (!m) throw new Error('无法从 git credential 获取 GitHub token，请先配置 git 凭证');
   return m[1].trim();
@@ -134,13 +146,11 @@ function retry(fn, times = 5, delayMs = 3000) {
   run(`git commit -m "chore: bump version to ${newVer}"`);
 
   // 4. 打包 NSIS（输出到 build_out 新目录，避开 safe-delete 对 dist 的拦截）
+  //    用 process.env 操作环境变量，兼容 bash / cmd.exe / PowerShell，不依赖 unset 命令
   console.log('开始打包 NSIS...（约 1-3 分钟）');
-  const packCmd = [
-    'unset ELECTRON_RUN_AS_NODE',
-    'CSC_IDENTITY_AUTO_DISCOVERY=false',
-    'node node_modules/electron-builder/out/cli/cli.js --win --publish never --config.directories.output=build_out',
-  ].join(' && ');
-  run(packCmd, { stdio: ['ignore', 'inherit', 'inherit'] });
+  delete process.env.ELECTRON_RUN_AS_NODE;
+  process.env.CSC_IDENTITY_AUTO_DISCOVERY = 'false';
+  run('node node_modules/electron-builder/out/cli/cli.js --win --publish never --config.directories.output=build_out', { stdio: ['ignore', 'inherit', 'inherit'] });
   console.log('打包完成');
 
   // 5. ASCII 文件名安装包 + latest.yml
@@ -189,7 +199,7 @@ function retry(fn, times = 5, delayMs = 3000) {
 
   // 7. git push + tag（inline 凭证避免 GCM 弹窗）
   console.log('推送 git...');
-  const cred = run(`printf 'protocol=https\\nhost=github.com\\n\\n' | git credential fill`);
+  const cred = gitCredentialFill();
   const user = (cred.match(/^username=(.+)$/m) || [])[1] || OWNER;
   run(`git push "https://${user}:${encodeURIComponent(TOKEN)}@github.com/${OWNER}/${REPO}.git" main`);
   run(`git tag ${tag}`);
