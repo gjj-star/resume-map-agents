@@ -181,12 +181,11 @@ function retry(fn, times = 5, delayMs = 3000) {
   const tag = 'v' + newVer;
   console.log(`发布 GitHub Release ${tag}...`);
 
-  // 删除同 tag 旧 release（重发场景）
+  // 同 tag 已存在 → 拒绝覆盖（铁律5：Release 不可变，内容错了应 bump 新版本号重发）
   try {
     const oldRelease = await ghApi('GET', `/repos/${OWNER}/${REPO}/releases/tags/${tag}`);
-    await ghApi('DELETE', `/repos/${OWNER}/${REPO}/releases/${oldRelease.id}`);
-    try { await ghApi('DELETE', `/repos/${OWNER}/${REPO}/git/refs/tags/${tag}`); } catch (_) {}
-    console.log('旧 release 已清理');
+    console.error(`❌ tag ${tag} 已存在（release #${oldRelease.id}）。Release 不可变——请 bump 新版本号后重发。`);
+    process.exit(1);
   } catch (_) { /* 没有旧 release，正常 */ }
 
   const release = await retry(() => ghApi('POST', `/repos/${OWNER}/${REPO}/releases`, {
