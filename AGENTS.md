@@ -38,6 +38,7 @@ assets/icon.png   应用图标
 3. **API key 不进 git**。key 放 `.env`（已 ignore）+ `server/agents.js` 的 fallback。任何 commit 不得包含 `sk-` 开头的字符串（GitHub Push Protection 也会拦）。
 4. **UI 禁 emoji**，一律用内联 SVG 线条图标（stroke-width 1.5）。风格基调见下。
 5. **Release 不可变**。已发布的 tag/release 不覆盖重发；内容错了就 bump 新版本号重发。
+6. **`build.publish` 配置不可删**。package.json 的 `build.publish`（github: gjj-star/resume-map-agents）是自动更新的唯一来源——删了它 electron-builder 不生成 `resources/app-update.yml`，autoUpdater 静默失效。改 package.json 后必须确认该字段仍在，打包后可验证：`resources/app-update.yml` 存在。（2026-08-10 远程重写 package.json 弄丢 publish 致 v1.0.6-1.1.0 全部无法自动更新的教训）
 
 ## 版本规则（语义化版本 semver）
 
