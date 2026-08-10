@@ -32,10 +32,12 @@ assets/icon.png   应用图标
 
 ## 铁律（违反 = 打回重做）
 
+0. **动手前先 `git fetch` 检查远程**。用户会在多个 AI 工具（WorkBuddy / Claude Code / Codex）并行改本项目，远程可能已前进。发现分叉时：先读远程新提交理解意图，在其基础上继续，禁止基于旧提交强行覆盖。若远程已修了你要修的问题，以远程为准，丢弃本地重复方案。（2026-08-10 双端撞号 v1.0.6 的教训）
 1. **版本号唯一事实源 = `package.json` 的 `version` 字段**。改版本一律走 `node scripts/release.js patch|minor|major`，禁止手工改版本号或手工维护 latest.yml。
 2. **GitHub Release asset 文件名必须纯 ASCII**（无中文、无空格）。GitHub 会把中文/空格改写成别的名字，导致 latest.yml 与实际文件不匹配、自动更新 404。
 3. **API key 不进 git**。key 放 `.env`（已 ignore）+ `server/agents.js` 的 fallback。任何 commit 不得包含 `sk-` 开头的字符串（GitHub Push Protection 也会拦）。
 4. **UI 禁 emoji**，一律用内联 SVG 线条图标（stroke-width 1.5）。风格基调见下。
+5. **Release 不可变**。已发布的 tag/release 不覆盖重发；内容错了就 bump 新版本号重发。
 
 ## 版本规则（语义化版本 semver）
 
