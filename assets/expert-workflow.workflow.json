@@ -120,7 +120,9 @@
       "label": "创建任务",
       "variant": "emphasis",
       "fromSide": "right",
-      "toSide": "top"
+      "toSide": "top",
+      "channelX": 220,
+      "route": "outside-right"
     },
     {
       "id": "e-orch-ability",
@@ -138,7 +140,9 @@
       "variant": "default",
       "role": "branch",
       "fromSide": "right",
-      "toSide": "top"
+      "toSide": "top",
+      "channelX": 500,
+      "route": "outside-right"
     },
     {
       "id": "e-ability-report",
@@ -162,8 +166,14 @@
       "variant": "default",
       "role": "branch",
       "fromSide": "right",
-      "toSide": "top",
-      "labelDy": -10
+      "toSide": "bottom",
+      "labelDy": -10,
+      "channelX": 625,
+      "route": "outside-right",
+      "labelAt": [
+        585,
+        435
+      ]
     },
     {
       "id": "e-report-preview",
@@ -171,9 +181,8 @@
       "to": "preview",
       "label": "单文件 HTML",
       "variant": "emphasis",
-      "fromSide": "top",
-      "toSide": "bottom",
-      "channelX": 625
+      "fromSide": "right",
+      "toSide": "right"
     }
   ],
   "cards": [

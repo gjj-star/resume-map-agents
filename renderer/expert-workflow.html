@@ -4597,12 +4597,12 @@
 
 
         <!-- Edge paths -->
-        <path data-edge-from="input" data-edge-to="orchestrator" data-edge-label="创建任务" data-edge-key="0" data-edge-id="e-input-orch" data-composition-points="134,119;134,166;220,166;220,217" d="M 134 119 L 134 166 L 220 166 L 220 217" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="input" data-edge-to="orchestrator" data-edge-label="创建任务" data-edge-key="0" data-edge-id="e-input-orch" data-composition-points="134,119;220,119;220,217;220,217" d="M 134 119 L 220 119 L 220 217 L 220 217" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path data-edge-from="orchestrator" data-edge-to="ability" data-edge-key="1" data-edge-id="e-orch-ability" data-composition-points="220,269;220,290;300,290;300,333" d="M 220 269 L 220 290 L 300 290 L 300 333" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orchestrator" data-edge-to="jdmatch" data-edge-key="2" data-edge-id="e-orch-jdmatch" data-composition-points="266,243;266,290;500,290;500,333" d="M 266 243 L 266 290 L 500 290 L 500 333" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="orchestrator" data-edge-to="jdmatch" data-edge-key="2" data-edge-id="e-orch-jdmatch" data-composition-points="266,243;500,243;500,333;500,333" d="M 266 243 L 500 243 L 500 333 L 500 333" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
         <path data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="3" data-edge-id="e-ability-report" data-composition-points="300,401;300,414;625,414;625,457" d="M 300 401 L 300 414 L 625 414 L 625 457" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="4" data-edge-id="e-jdmatch-report" data-composition-points="546,367;546,414;625,414;625,457" d="M 546 367 L 546 414 L 625 414 L 625 457" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="report" data-edge-to="preview" data-edge-label="单文件 HTML" data-edge-key="5" data-edge-id="e-report-preview" data-composition-points="625,457;625,290;625,290;625,145" d="M 625 457 L 625 290 L 625 290 L 625 145" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="4" data-edge-id="e-jdmatch-report" data-composition-points="546,367;625,367;625,525;625,525" d="M 546 367 L 625 367 L 625 525 L 625 525" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="report" data-edge-to="preview" data-edge-label="单文件 HTML" data-edge-key="5" data-edge-id="e-report-preview" data-composition-points="671,491;671,290;671,290;671,119" d="M 671 491 L 671 290 L 671 290 L 671 119" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
 
         <!-- Nodes -->
         <g id="node-input" data-node-id="input" data-node-label="简历 + JD" tabindex="0" role="button" aria-label="定位 简历 + JD, 粘贴文本, 用户界面 › 输入" aria-pressed="false" data-node-kind="external" data-node-sublabel="粘贴文本" data-node-context="用户界面 › 输入">
@@ -4680,8 +4680,8 @@
 
         <!-- Edge labels -->
         <g data-detail="context" data-edge-from="input" data-edge-to="orchestrator" data-edge-label="创建任务" data-edge-key="0" data-edge-id="e-input-orch">
-          <rect x="152.8" y="146" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="177" y="156" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
+          <rect x="195.8" y="148" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="220" y="158" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
         </g>
 
 
@@ -4690,12 +4690,12 @@
           <text x="456" y="415" class="t-backend" font-size="8" text-anchor="middle">ability_report</text>
         </g>
         <g data-detail="context" data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="4" data-edge-id="e-jdmatch-report">
-          <rect x="551.7" y="384" width="67.6" height="14" rx="3" class="c-mask"/>
-          <text x="585.5" y="394" class="t-muted" font-size="8" text-anchor="middle">match_report</text>
+          <rect x="551.2" y="425" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="585" y="435" class="t-muted" font-size="8" text-anchor="middle">match_report</text>
         </g>
         <g data-detail="context" data-edge-from="report" data-edge-to="preview" data-edge-label="单文件 HTML" data-edge-key="5" data-edge-id="e-report-preview">
-          <rect x="593.6" y="270" width="62.8" height="14" rx="3" class="c-mask"/>
-          <text x="625" y="280" class="t-backend" font-size="8" text-anchor="middle">单文件 HTML</text>
+          <rect x="639.6" y="270" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="671" y="280" class="t-backend" font-size="8" text-anchor="middle">单文件 HTML</text>
         </g>
 
         <!-- Legend -->
