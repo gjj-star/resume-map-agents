@@ -4544,7 +4544,7 @@
 
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read">
-      <svg viewBox="0 0 1620 1000" role="img" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="signal-flow" data-quality-profile="standard">
+      <svg viewBox="0 0 1900 1080" role="img" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="signal-flow" data-quality-profile="standard">
         <title id="archify-diagram-title">简历评估专家团 · 系统架构</title>
         <desc id="archify-diagram-description">三 Agent 并行评估流水线 · Electron 桌面应用</desc>
         <!-- Definitions -->
@@ -4570,25 +4570,25 @@
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Boundaries (behind everything) -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" x="250" y="120" width="1315" height="592" rx="12" class="c-region" stroke-width="1"/>
-        <text x="258" y="138" class="t-cloud" font-size="9" font-weight="600">桌面应用（Electron）</text>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" x="290" y="120" width="1475" height="592" rx="12" class="c-region" stroke-width="1"/>
+        <text x="298" y="138" class="t-cloud" font-size="9" font-weight="600">桌面应用（Electron）</text>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" x="980" y="30" width="600" height="902" rx="12" class="c-region" stroke-width="1"/>
-        <text x="988" y="48" class="t-cloud" font-size="9" font-weight="600">外部服务</text>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" x="1150" y="30" width="630" height="902" rx="12" class="c-region" stroke-width="1"/>
+        <text x="1158" y="48" class="t-cloud" font-size="9" font-weight="600">外部服务</text>
 
         <!-- Connection paths (before components for correct z-order) -->
-        <path data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴文本" data-edge-key="0" data-edge-id="c-user-ui" data-composition-points="170,462;194,462;194,481;256,481;256,465;280,465" d="M 170 462 L 186 462 Q 194 462 194 470 L 194 473 Q 194 481 202 481 L 248 481 Q 256 481 256 473 L 256 473 Q 256 465 264 465 L 280 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api" data-composition-points="410,465;520,465" d="M 410 465 L 520 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch" data-composition-points="670,465;780,465" d="M 670 465 L 780 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orch" data-edge-to="ability" data-edge-label="简历全文" data-edge-key="3" data-edge-id="c-orch-ability" data-composition-points="855,430;855,130;1085,130;1085,240" d="M 855 430 L 855 138 Q 855 130 863 130 L 1077 130 Q 1085 130 1085 138 L 1085 240" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch" data-composition-points="855,500;855,560;955,560;955,620" d="M 855 500 L 855 552 Q 855 560 863 560 L 947 560 Q 955 560 955 568 L 955 620" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="ability" data-edge-to="report" data-edge-key="5" data-edge-id="c-ability-report" data-composition-points="1160,275;1460,275;1460,620;1460,620" d="M 1160 275 L 1452 275 Q 1460 275 1460 283 L 1460 620 L 1460 620" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-key="6" data-edge-id="c-jdmatch-report" data-composition-points="1030,655;1054,655;1054,672;1361,672;1361,656;1385,656" d="M 1030 655 L 1046 655 Q 1054 655 1054 663 L 1054 664 Q 1054 672 1062 672 L 1353 672 Q 1361 672 1361 664 L 1361 664 Q 1361 656 1369 656 L 1385 656" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="report" data-edge-to="ui" data-edge-label="HTML 报告" data-edge-key="7" data-edge-id="c-report-ui" data-composition-points="1460,620;1460,40;345,40;345,430" d="M 1460 620 L 1460 48 Q 1460 40 1452 40 L 353 40 Q 345 40 345 48 L 345 430" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="ability" data-edge-to="ds" data-edge-key="8" data-edge-id="c-ability-ds" data-composition-points="1085,310;1085,826;1475,826;1475,850" d="M 1085 310 L 1085 818 Q 1085 826 1093 826 L 1467 826 Q 1475 826 1475 834 L 1475 850" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="jdmatch" data-edge-to="ds" data-edge-key="9" data-edge-id="c-jdmatch-ds" data-composition-points="955,690;955,770;1461,770;1461,850" d="M 955 690 L 955 762 Q 955 770 963 770 L 1453 770 Q 1461 770 1461 778 L 1461 850" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="report" data-edge-to="ds" data-edge-key="10" data-edge-id="c-report-ds" data-composition-points="1460,692;1460,771;1489,771;1489,850" d="M 1460 692 L 1460 763 Q 1460 771 1468 771 L 1481 771 Q 1489 771 1489 779 L 1489 850" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="main" data-edge-to="gh" data-edge-key="11" data-edge-id="c-main-gh" data-composition-points="595,150;595,55;1210,55;1210,91;1160,91;1160,91" d="M 595 150 L 595 63 Q 595 55 603 55 L 1202 55 Q 1210 55 1210 63 L 1210 83 Q 1210 91 1202 91 L 1160 91 L 1160 91" class="a-default" stroke-width="1.2" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴文本" data-edge-key="0" data-edge-id="c-user-ui" data-composition-points="170,462;194,462;194,481;296,481;296,465;320,465" d="M 170 462 L 186 462 Q 194 462 194 470 L 194 473 Q 194 481 202 481 L 288 481 Q 296 481 296 473 L 296 473 Q 296 465 304 465 L 320 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api" data-composition-points="450,465;600,465" d="M 450 465 L 600 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch" data-composition-points="750,465;920,465" d="M 750 465 L 920 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="orch" data-edge-to="ability" data-edge-label="简历全文" data-edge-key="3" data-edge-id="c-orch-ability" data-composition-points="995,430;995,130;1255,130;1255,240" d="M 995 430 L 995 138 Q 995 130 1003 130 L 1247 130 Q 1255 130 1255 138 L 1255 240" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch" data-composition-points="995,500;995,560;1095,560;1095,620" d="M 995 500 L 995 552 Q 995 560 1003 560 L 1087 560 Q 1095 560 1095 568 L 1095 620" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="5" data-edge-id="c-ability-report" data-composition-points="1330,275;1660,275;1660,620;1660,620" d="M 1330 275 L 1652 275 Q 1660 275 1660 283 L 1660 620 L 1660 620" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="6" data-edge-id="c-jdmatch-report" data-composition-points="1170,655;1194,655;1194,672;1561,672;1561,656;1585,656" d="M 1170 655 L 1186 655 Q 1194 655 1194 663 L 1194 664 Q 1194 672 1202 672 L 1553 672 Q 1561 672 1561 664 L 1561 664 Q 1561 656 1569 656 L 1585 656" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="report" data-edge-to="ui" data-edge-label="HTML 报告" data-edge-key="7" data-edge-id="c-report-ui" data-composition-points="1660,620;1660,40;385,40;385,430" d="M 1660 620 L 1660 48 Q 1660 40 1652 40 L 393 40 Q 385 40 385 48 L 385 430" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="ability" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="8" data-edge-id="c-ability-ds" data-composition-points="1255,310;1255,826;1675,826;1675,850" d="M 1255 310 L 1255 818 Q 1255 826 1263 826 L 1667 826 Q 1675 826 1675 834 L 1675 850" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="9" data-edge-id="c-jdmatch-ds" data-composition-points="1095,690;1095,690;1095,940;1675,940;1675,912" d="M 1095 690 L 1095 690 L 1095 932 Q 1095 940 1103 940 L 1667 940 Q 1675 940 1675 932 L 1675 912" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="report" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="10" data-edge-id="c-report-ds" data-composition-points="1660,692;1660,760;1585,760;1585,881;1600,881" d="M 1660 692 L 1660 752 Q 1660 760 1652 760 L 1593 760 Q 1585 760 1585 768 L 1585 873.5 Q 1585 881 1592.5 881 L 1600 881" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="11" data-edge-id="c-main-gh" data-composition-points="675,150;675,55;1380,55;1380,91;1330,91;1330,91" d="M 675 150 L 675 63 Q 675 55 683 55 L 1372 55 Q 1380 55 1380 63 L 1380 83 Q 1380 91 1372 91 L 1330 91 L 1330 91" class="a-default" stroke-width="1.2" marker-end="url(#arrowhead)"/>
 
         <!-- Components -->
         <g id="node-user" data-node-id="user" data-node-label="候选人" tabindex="0" role="button" aria-label="定位 候选人, 粘贴简历 + JD, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="粘贴简历 + JD" data-node-context="Architecture component">
@@ -4605,108 +4605,108 @@
 
         <g id="node-ui" data-node-id="ui" data-node-label="渲染进程 UI" tabindex="0" role="button" aria-label="定位 渲染进程 UI, 轮询 · 预览 · 导出, 桌面应用（Electron）" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="轮询 · 预览 · 导出" data-node-context="桌面应用（Electron）">
           <title>渲染进程 UI · 轮询 · 预览 · 导出 · 桌面应用（Electron）</title>
-          <rect x="280" y="430" width="130" height="70" rx="6" class="c-mask"/>
-          <rect x="280" y="430" width="130" height="70" rx="6" class="c-frontend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(286 436) scale(0.6875)">
+          <rect x="320" y="430" width="130" height="70" rx="6" class="c-mask"/>
+          <rect x="320" y="430" width="130" height="70" rx="6" class="c-frontend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(326 436) scale(0.6875)">
             <rect x="2" y="3" width="12" height="10" rx="2"/>
             <path d="M2 6.5h12"/>
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-detail-anchor x="345" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">渲染进程 UI</text>
-        <text data-detail="context" x="345" y="479" class="t-muted" font-size="9" text-anchor="middle">轮询 · 预览 · 导出</text>
+          <text data-detail-anchor x="385" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">渲染进程 UI</text>
+        <text data-detail="context" x="385" y="479" class="t-muted" font-size="9" text-anchor="middle">轮询 · 预览 · 导出</text>
         </g>
 
         <g id="node-main" data-node-id="main" data-node-label="Electron 主进程" tabindex="0" role="button" aria-label="定位 Electron 主进程, 窗口 · preload 桥 · 更新器, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="窗口 · preload 桥 · 更新器" data-node-context="桌面应用（Electron）">
           <title>Electron 主进程 · 窗口 · preload 桥 · 更新器 · 桌面应用（Electron）</title>
-          <rect x="520" y="150" width="150" height="72" rx="6" class="c-mask"/>
-          <rect x="520" y="150" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(526 156) scale(0.6875)">
+          <rect x="600" y="150" width="150" height="72" rx="6" class="c-mask"/>
+          <rect x="600" y="150" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(606 156) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="595" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Electron 主进程</text>
-        <text data-detail="context" x="595" y="200" class="t-muted" font-size="9" text-anchor="middle">窗口 · preload 桥 · 更新器</text>
+          <text data-detail-anchor x="675" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Electron 主进程</text>
+        <text data-detail="context" x="675" y="200" class="t-muted" font-size="9" text-anchor="middle">窗口 · preload 桥 · 更新器</text>
         </g>
 
         <g id="node-api" data-node-id="api" data-node-label="Express API" tabindex="0" role="button" aria-label="定位 Express API, /analyze · /status · /health, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="/analyze · /status · /health" data-node-context="桌面应用（Electron）">
           <title>Express API · /analyze · /status · /health · 桌面应用（Electron）</title>
-          <rect x="520" y="430" width="150" height="70" rx="6" class="c-mask"/>
-          <rect x="520" y="430" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(526 436) scale(0.6875)">
+          <rect x="600" y="430" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="600" y="430" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(606 436) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="595" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Express API</text>
-        <text data-detail="context" x="595" y="479" class="t-muted" font-size="8.4" text-anchor="middle">/analyze · /status · /health</text>
+          <text data-detail-anchor x="675" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Express API</text>
+        <text data-detail="context" x="675" y="479" class="t-muted" font-size="8.4" text-anchor="middle">/analyze · /status · /health</text>
         </g>
 
         <g id="node-orch" data-node-id="orch" data-node-label="任务编排器" tabindex="0" role="button" aria-label="定位 任务编排器, tasks Map · taskId 轮询, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="tasks Map · taskId 轮询" data-node-tag="并行→串行" data-node-context="桌面应用（Electron）">
           <title>任务编排器 · tasks Map · taskId 轮询 · 桌面应用（Electron） · 并行→串行</title>
-          <rect x="780" y="430" width="150" height="70" rx="6" class="c-mask"/>
-          <rect x="780" y="430" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(786 436) scale(0.6875)">
+          <rect x="920" y="430" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="920" y="430" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(926 436) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="855" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">任务编排器</text>
-        <text data-detail="context" x="855" y="479" class="t-muted" font-size="9" text-anchor="middle">tasks Map · taskId 轮询</text>
-        <text data-detail="fine" x="855" y="492" class="t-backend" font-size="7" text-anchor="middle">并行→串行</text>
+          <text data-detail-anchor x="995" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">任务编排器</text>
+        <text data-detail="context" x="995" y="479" class="t-muted" font-size="9" text-anchor="middle">tasks Map · taskId 轮询</text>
+        <text data-detail="fine" x="995" y="492" class="t-backend" font-size="7" text-anchor="middle">并行→串行</text>
         </g>
 
         <g id="node-ability" data-node-id="ability" data-node-label="能力透视专家" tabindex="0" role="button" aria-label="定位 能力透视专家, 雷达 · 竞争力 · 风险, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="雷达 · 竞争力 · 风险" data-node-tag="AB 并行" data-node-context="桌面应用（Electron）">
           <title>能力透视专家 · 雷达 · 竞争力 · 风险 · 桌面应用（Electron） · AB 并行</title>
-          <rect x="1010" y="240" width="150" height="70" rx="6" class="c-mask"/>
-          <rect x="1010" y="240" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1016 246) scale(0.6875)">
+          <rect x="1180" y="240" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="1180" y="240" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1186 246) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="1085" y="273" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">能力透视专家</text>
-        <text data-detail="context" x="1085" y="289" class="t-muted" font-size="9" text-anchor="middle">雷达 · 竞争力 · 风险</text>
-        <text data-detail="fine" x="1085" y="302" class="t-backend" font-size="7" text-anchor="middle">AB 并行</text>
+          <text data-detail-anchor x="1255" y="273" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">能力透视专家</text>
+        <text data-detail="context" x="1255" y="289" class="t-muted" font-size="9" text-anchor="middle">雷达 · 竞争力 · 风险</text>
+        <text data-detail="fine" x="1255" y="302" class="t-backend" font-size="7" text-anchor="middle">AB 并行</text>
         </g>
 
         <g id="node-jdmatch" data-node-id="jdmatch" data-node-label="岗位匹配专家" tabindex="0" role="button" aria-label="定位 岗位匹配专家, 匹配度 · 补强路线, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="匹配度 · 补强路线" data-node-tag="需 JD" data-node-context="桌面应用（Electron）">
           <title>岗位匹配专家 · 匹配度 · 补强路线 · 桌面应用（Electron） · 需 JD</title>
-          <rect x="880" y="620" width="150" height="70" rx="6" class="c-mask"/>
-          <rect x="880" y="620" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(886 626) scale(0.6875)">
+          <rect x="1020" y="620" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="1020" y="620" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1026 626) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="955" y="653" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">岗位匹配专家</text>
-        <text data-detail="context" x="955" y="669" class="t-muted" font-size="9" text-anchor="middle">匹配度 · 补强路线</text>
-        <text data-detail="fine" x="955" y="682" class="t-backend" font-size="7" text-anchor="middle">需 JD</text>
+          <text data-detail-anchor x="1095" y="653" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">岗位匹配专家</text>
+        <text data-detail="context" x="1095" y="669" class="t-muted" font-size="9" text-anchor="middle">匹配度 · 补强路线</text>
+        <text data-detail="fine" x="1095" y="682" class="t-backend" font-size="7" text-anchor="middle">需 JD</text>
         </g>
 
         <g id="node-report" data-node-id="report" data-node-label="可视化报告专家" tabindex="0" role="button" aria-label="定位 可视化报告专家, 双 JSON → 单文件 HTML, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="双 JSON → 单文件 HTML" data-node-tag="串行收尾" data-node-context="桌面应用（Electron）">
           <title>可视化报告专家 · 双 JSON → 单文件 HTML · 桌面应用（Electron） · 串行收尾</title>
-          <rect x="1385" y="620" width="150" height="72" rx="6" class="c-mask"/>
-          <rect x="1385" y="620" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1391 626) scale(0.6875)">
+          <rect x="1585" y="620" width="150" height="72" rx="6" class="c-mask"/>
+          <rect x="1585" y="620" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1591 626) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="1460" y="654" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">可视化报告专家</text>
-        <text data-detail="context" x="1460" y="670" class="t-muted" font-size="9" text-anchor="middle">双 JSON → 单文件 HTML</text>
-        <text data-detail="fine" x="1460" y="684" class="t-backend" font-size="7" text-anchor="middle">串行收尾</text>
+          <text data-detail-anchor x="1660" y="654" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">可视化报告专家</text>
+        <text data-detail="context" x="1660" y="670" class="t-muted" font-size="9" text-anchor="middle">双 JSON → 单文件 HTML</text>
+        <text data-detail="fine" x="1660" y="684" class="t-backend" font-size="7" text-anchor="middle">串行收尾</text>
         </g>
 
         <g id="node-ds" data-node-id="ds" data-node-label="DeepSeek API" tabindex="0" role="button" aria-label="定位 DeepSeek API, deepseek-chat, 外部服务" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="deepseek-chat" data-node-context="外部服务">
           <title>DeepSeek API · deepseek-chat · 外部服务</title>
-          <rect x="1400" y="850" width="150" height="62" rx="6" class="c-mask"/>
-          <rect x="1400" y="850" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(1406 856) scale(0.6875)">
+          <rect x="1600" y="850" width="150" height="62" rx="6" class="c-mask"/>
+          <rect x="1600" y="850" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(1606 856) scale(0.6875)">
             <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
           </g>
-          <text data-detail-anchor x="1475" y="879" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">DeepSeek API</text>
-        <text data-detail="context" x="1475" y="895" class="t-muted" font-size="9" text-anchor="middle">deepseek-chat</text>
+          <text data-detail-anchor x="1675" y="879" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">DeepSeek API</text>
+        <text data-detail="context" x="1675" y="895" class="t-muted" font-size="9" text-anchor="middle">deepseek-chat</text>
         </g>
 
         <g id="node-gh" data-node-id="gh" data-node-label="GitHub Releases" tabindex="0" role="button" aria-label="定位 GitHub Releases, 自动更新源, 外部服务" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="自动更新源" data-node-context="外部服务">
           <title>GitHub Releases · 自动更新源 · 外部服务</title>
-          <rect x="1010" y="60" width="150" height="62" rx="6" class="c-mask"/>
-          <rect x="1010" y="60" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(1016 66) scale(0.6875)">
+          <rect x="1180" y="60" width="150" height="62" rx="6" class="c-mask"/>
+          <rect x="1180" y="60" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(1186 66) scale(0.6875)">
             <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
           </g>
-          <text data-detail-anchor x="1085" y="89" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">GitHub Releases</text>
-        <text data-detail="context" x="1085" y="105" class="t-muted" font-size="9" text-anchor="middle">自动更新源</text>
+          <text data-detail-anchor x="1255" y="89" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">GitHub Releases</text>
+        <text data-detail="context" x="1255" y="105" class="t-muted" font-size="9" text-anchor="middle">自动更新源</text>
         </g>
 
         <!-- Connection labels -->
@@ -4715,50 +4715,68 @@
           <text x="194" y="461.5" class="t-backend" font-size="8" text-anchor="middle">粘贴文本</text>
         </g>
         <g data-detail="context" data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api">
-          <rect x="428.8" y="445" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="465" y="455" class="t-backend" font-size="8" text-anchor="middle">POST /analyze</text>
+          <rect x="488.8" y="445" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="525" y="455" class="t-backend" font-size="8" text-anchor="middle">POST /analyze</text>
         </g>
         <g data-detail="context" data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch">
-          <rect x="700.8" y="445" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="725" y="455" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
+          <rect x="810.8" y="445" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="835" y="455" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
         </g>
         <g data-detail="context" data-edge-from="orch" data-edge-to="ability" data-edge-label="简历全文" data-edge-key="3" data-edge-id="c-orch-ability">
-          <rect x="945.8" y="110" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="970" y="120" class="t-backend" font-size="8" text-anchor="middle">简历全文</text>
+          <rect x="1100.8" y="110" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="1125" y="120" class="t-backend" font-size="8" text-anchor="middle">简历全文</text>
         </g>
         <g data-detail="context" data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch">
-          <rect x="878.4" y="540" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
-          <text x="905" y="550" class="t-backend" font-size="8" text-anchor="middle">简历 + JD</text>
+          <rect x="1018.4" y="540" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="1045" y="550" class="t-backend" font-size="8" text-anchor="middle">简历 + JD</text>
         </g>
-
-
+        <g data-detail="context" data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="5" data-edge-id="c-ability-report">
+          <rect x="1621.4" y="427.5" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="1660" y="437.5" class="t-backend" font-size="8" text-anchor="middle">ability_report</text>
+        </g>
+        <g data-detail="context" data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="6" data-edge-id="c-jdmatch-report">
+          <rect x="1160.2" y="693.5" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="1194" y="703.5" class="t-backend" font-size="8" text-anchor="middle">match_report</text>
+        </g>
         <g data-detail="context" data-edge-from="report" data-edge-to="ui" data-edge-label="HTML 报告" data-edge-key="7" data-edge-id="c-report-ui">
-          <rect x="875.9" y="20" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
-          <text x="902.5" y="30" class="t-backend" font-size="8" text-anchor="middle">HTML 报告</text>
+          <rect x="995.9" y="20" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="1022.5" y="30" class="t-backend" font-size="8" text-anchor="middle">HTML 报告</text>
         </g>
-
-
-
-
+        <g data-detail="context" data-edge-from="ability" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="8" data-edge-id="c-ability-ds">
+          <rect x="1428.8" y="806" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="1465" y="816" class="t-security" font-size="8" text-anchor="middle">deepseek-chat</text>
+        </g>
+        <g data-detail="context" data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="9" data-edge-id="c-jdmatch-ds">
+          <rect x="1058.8" y="795" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="1095" y="805" class="t-security" font-size="8" text-anchor="middle">deepseek-chat</text>
+        </g>
+        <g data-detail="context" data-edge-from="report" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="10" data-edge-id="c-report-ds">
+          <rect x="1586.3" y="740" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="1622.5" y="750" class="t-security" font-size="8" text-anchor="middle">deepseek-chat</text>
+        </g>
+        <g data-detail="context" data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="11" data-edge-id="c-main-gh">
+          <rect x="1003.3" y="35" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="1027.5" y="45" class="t-muted" font-size="8" text-anchor="middle">检查更新</text>
+        </g>
 
         <!-- Legend -->
         <g data-legend data-legend-bridge>
-          <text x="40" y="964" class="t-primary" font-size="10" font-weight="600">图例</text>
-          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="Frontend" data-legend-x="40" data-legend-baseline="984" data-legend-width="82">
-            <rect x="40" y="976" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
-            <text x="61" y="984" class="t-muted" font-size="8">Frontend</text>
+          <text x="40" y="1044" class="t-primary" font-size="10" font-weight="600">图例</text>
+          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="Frontend" data-legend-x="40" data-legend-baseline="1064" data-legend-width="82">
+            <rect x="40" y="1056" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
+            <text x="61" y="1064" class="t-muted" font-size="8">Frontend</text>
           </g>
-          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Backend" data-legend-x="144" data-legend-baseline="984" data-legend-width="77">
-            <rect x="144" y="976" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
-            <text x="165" y="984" class="t-muted" font-size="8">Backend</text>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Backend" data-legend-x="144" data-legend-baseline="1064" data-legend-width="77">
+            <rect x="144" y="1056" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
+            <text x="165" y="1064" class="t-muted" font-size="8">Backend</text>
           </g>
-          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="Cloud" data-legend-x="243" data-legend-baseline="984" data-legend-width="67">
-            <rect x="243" y="976" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
-            <text x="264" y="984" class="t-muted" font-size="8">Cloud</text>
+          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="Cloud" data-legend-x="243" data-legend-baseline="1064" data-legend-width="67">
+            <rect x="243" y="1056" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
+            <text x="264" y="1064" class="t-muted" font-size="8">Cloud</text>
           </g>
-          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External" data-legend-x="332" data-legend-baseline="984" data-legend-width="82">
-            <rect x="332" y="976" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
-            <text x="353" y="984" class="t-muted" font-size="8">External</text>
+          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External" data-legend-x="332" data-legend-baseline="1064" data-legend-width="82">
+            <rect x="332" y="1056" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
+            <text x="353" y="1064" class="t-muted" font-size="8">External</text>
           </g>
         </g>
       </svg>

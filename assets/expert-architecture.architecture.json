@@ -8,8 +8,8 @@
     "visual_preset": "signal-flow",
     "quality_profile": "standard",
     "viewBox": [
-      1620,
-      1000
+      1900,
+      1080
     ]
   },
   "components": [
@@ -33,7 +33,7 @@
       "label": "渲染进程 UI",
       "sublabel": "轮询 · 预览 · 导出",
       "pos": [
-        280,
+        320,
         430
       ],
       "size": [
@@ -47,7 +47,7 @@
       "label": "Electron 主进程",
       "sublabel": "窗口 · preload 桥 · 更新器",
       "pos": [
-        520,
+        600,
         150
       ],
       "size": [
@@ -61,7 +61,7 @@
       "label": "Express API",
       "sublabel": "/analyze · /status · /health",
       "pos": [
-        520,
+        600,
         430
       ],
       "size": [
@@ -75,7 +75,7 @@
       "label": "任务编排器",
       "sublabel": "tasks Map · taskId 轮询",
       "pos": [
-        780,
+        920,
         430
       ],
       "size": [
@@ -90,7 +90,7 @@
       "label": "能力透视专家",
       "sublabel": "雷达 · 竞争力 · 风险",
       "pos": [
-        1010,
+        1180,
         240
       ],
       "size": [
@@ -105,7 +105,7 @@
       "label": "岗位匹配专家",
       "sublabel": "匹配度 · 补强路线",
       "pos": [
-        880,
+        1020,
         620
       ],
       "size": [
@@ -120,7 +120,7 @@
       "label": "可视化报告专家",
       "sublabel": "双 JSON → 单文件 HTML",
       "pos": [
-        1385,
+        1585,
         620
       ],
       "size": [
@@ -135,7 +135,7 @@
       "label": "DeepSeek API",
       "sublabel": "deepseek-chat",
       "pos": [
-        1400,
+        1600,
         850
       ],
       "size": [
@@ -149,7 +149,7 @@
       "label": "GitHub Releases",
       "sublabel": "自动更新源",
       "pos": [
-        1010,
+        1180,
         60
       ],
       "size": [
@@ -217,11 +217,11 @@
       "toSide": "top",
       "via": [
         [
-          855,
+          995,
           130
         ],
         [
-          1085,
+          1255,
           130
         ]
       ]
@@ -237,11 +237,11 @@
       "toSide": "top",
       "via": [
         [
-          855,
+          995,
           560
         ],
         [
-          955,
+          1095,
           560
         ]
       ]
@@ -256,14 +256,15 @@
       "toSide": "top",
       "via": [
         [
-          1460,
+          1660,
           275
         ],
         [
-          1460,
+          1660,
           620
         ]
-      ]
+      ],
+      "label": "ability_report"
     },
     {
       "id": "c-jdmatch-report",
@@ -272,7 +273,9 @@
       "variant": "emphasis",
       "width": 1.8,
       "fromSide": "right",
-      "toSide": "left"
+      "toSide": "left",
+      "label": "match_report",
+      "labelDy": 50
     },
     {
       "id": "c-report-ui",
@@ -285,11 +288,11 @@
       "toSide": "top",
       "via": [
         [
-          1460,
+          1660,
           40
         ],
         [
-          345,
+          385,
           40
         ]
       ]
@@ -301,7 +304,8 @@
       "variant": "security",
       "width": 1.2,
       "fromSide": "bottom",
-      "toSide": "top"
+      "toSide": "top",
+      "label": "deepseek-chat"
     },
     {
       "id": "c-jdmatch-ds",
@@ -310,7 +314,22 @@
       "variant": "security",
       "width": 1.2,
       "fromSide": "bottom",
-      "toSide": "top"
+      "toSide": "bottom",
+      "label": "deepseek-chat",
+      "via": [
+        [
+          1095,
+          690
+        ],
+        [
+          1095,
+          940
+        ],
+        [
+          1675,
+          940
+        ]
+      ]
     },
     {
       "id": "c-report-ds",
@@ -319,7 +338,22 @@
       "variant": "security",
       "width": 1.2,
       "fromSide": "bottom",
-      "toSide": "top"
+      "toSide": "left",
+      "label": "deepseek-chat",
+      "via": [
+        [
+          1660,
+          760
+        ],
+        [
+          1585,
+          760
+        ],
+        [
+          1585,
+          881
+        ]
+      ]
     },
     {
       "id": "c-main-gh",
@@ -331,22 +365,23 @@
       "toSide": "right",
       "via": [
         [
-          595,
+          675,
           55
         ],
         [
-          1210,
+          1380,
           55
         ],
         [
-          1210,
+          1380,
           91
         ],
         [
-          1160,
+          1330,
           91
         ]
-      ]
+      ],
+      "label": "检查更新"
     }
   ],
   "cards": [
