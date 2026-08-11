@@ -147,9 +147,10 @@
       "label": "ability_report",
       "variant": "emphasis",
       "fromSide": "bottom",
-      "toSide": "left",
+      "toSide": "top",
+      "labelDy": -10,
       "labelAt": [
-        440,
+        456,
         415
       ]
     },
@@ -160,12 +161,9 @@
       "label": "match_report",
       "variant": "default",
       "role": "branch",
-      "fromSide": "bottom",
-      "toSide": "left",
-      "labelAt": [
-        520,
-        465
-      ]
+      "fromSide": "right",
+      "toSide": "top",
+      "labelDy": -10
     },
     {
       "id": "e-report-preview",
@@ -174,7 +172,8 @@
       "label": "单文件 HTML",
       "variant": "emphasis",
       "fromSide": "top",
-      "toSide": "bottom"
+      "toSide": "bottom",
+      "channelX": 625
     }
   ],
   "cards": [
