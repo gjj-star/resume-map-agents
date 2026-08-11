@@ -4577,17 +4577,17 @@
         <text x="698" y="48" class="t-cloud" font-size="9" font-weight="600">外部服务</text>
 
         <!-- Connection paths (before components for correct z-order) -->
-        <path data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴文本" data-edge-key="0" data-edge-id="c-user-ui" data-composition-points="170,462;194,462;194,481;256,481;256,465;280,465" d="M 170 462 L 186 462 Q 194 462 194 470 L 194 473 Q 194 481 202 481 L 248 481 Q 256 481 256 473 L 256 473 Q 256 465 264 465 L 280 465" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api" data-composition-points="410,465;520,465" d="M 410 465 L 520 465" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch" data-composition-points="670,465;780,465" d="M 670 465 L 780 465" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴文本" data-edge-key="0" data-edge-id="c-user-ui" data-composition-points="170,462;194,462;194,481;256,481;256,465;280,465" d="M 170 462 L 186 462 Q 194 462 194 470 L 194 473 Q 194 481 202 481 L 248 481 Q 256 481 256 473 L 256 473 Q 256 465 264 465 L 280 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api" data-composition-points="410,465;520,465" d="M 410 465 L 520 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch" data-composition-points="670,465;780,465" d="M 670 465 L 780 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
         <path data-edge-from="orch" data-edge-to="ability" data-edge-label="简历全文" data-edge-key="3" data-edge-id="c-orch-ability" data-composition-points="930,458;970,458;970,275;1010,275" d="M 930 458 L 962 458 Q 970 458 970 450 L 970 283 Q 970 275 978 275 L 1010 275" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch" data-composition-points="930,472;970,472;970,655;1010,655" d="M 930 472 L 962 472 Q 970 472 970 480 L 970 647 Q 970 655 978 655 L 1010 655" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="ability" data-edge-to="report" data-edge-key="5" data-edge-id="c-ability-report" data-composition-points="1160,275;1184,275;1184,291;1206,291;1206,269;1230,269" d="M 1160 275 L 1176 275 Q 1184 275 1184 283 L 1184 283 Q 1184 291 1192 291 L 1198 291 Q 1206 291 1206 283 L 1206 277 Q 1206 269 1214 269 L 1230 269" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-key="6" data-edge-id="c-jdmatch-report" data-composition-points="1160,655;1195,655;1195,283;1230,283" d="M 1160 655 L 1187 655 Q 1195 655 1195 647 L 1195 291 Q 1195 283 1203 283 L 1230 283" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="report" data-edge-to="ui" data-edge-label="HTML 报告" data-edge-key="7" data-edge-id="c-report-ui" data-composition-points="1305,312;1305,920;345,920;345,500" d="M 1305 312 L 1305 912 Q 1305 920 1297 920 L 353 920 Q 345 920 345 912 L 345 500" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="8" data-edge-id="c-jdmatch-ds" data-composition-points="1085,690;1085,760;795,760;795,830" d="M 1085 690 L 1085 752 Q 1085 760 1077 760 L 803 760 Q 795 760 795 768 L 795 830" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="report" data-edge-to="ds" data-edge-key="9" data-edge-id="c-report-ds" data-composition-points="1305,312;1305,700;795,700;795,830" d="M 1305 312 L 1305 692 Q 1305 700 1297 700 L 803 700 Q 795 700 795 708 L 795 830" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
-        <path data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="10" data-edge-id="c-main-gh" data-composition-points="670,186;720,186;720,55;1210,55;1210,91;1160,91" d="M 670 186 L 712 186 Q 720 186 720 178 L 720 63 Q 720 55 728 55 L 1202 55 Q 1210 55 1210 63 L 1210 83 Q 1210 91 1202 91 L 1160 91" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch" data-composition-points="930,472;970,472;970,655;1010,655" d="M 930 472 L 962 472 Q 970 472 970 480 L 970 647 Q 970 655 978 655 L 1010 655" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="ability" data-edge-to="report" data-edge-key="5" data-edge-id="c-ability-report" data-composition-points="1160,275;1184,275;1184,291;1206,291;1206,269;1230,269" d="M 1160 275 L 1176 275 Q 1184 275 1184 283 L 1184 283 Q 1184 291 1192 291 L 1198 291 Q 1206 291 1206 283 L 1206 277 Q 1206 269 1214 269 L 1230 269" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-key="6" data-edge-id="c-jdmatch-report" data-composition-points="1160,655;1195,655;1195,283;1230,283" d="M 1160 655 L 1187 655 Q 1195 655 1195 647 L 1195 291 Q 1195 283 1203 283 L 1230 283" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="report" data-edge-to="ui" data-edge-label="HTML 报告" data-edge-key="7" data-edge-id="c-report-ui" data-composition-points="1305,312;1305,920;345,920;345,500" d="M 1305 312 L 1305 912 Q 1305 920 1297 920 L 353 920 Q 345 920 345 912 L 345 500" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="8" data-edge-id="c-jdmatch-ds" data-composition-points="1085,690;1085,760;795,760;795,830" d="M 1085 690 L 1085 752 Q 1085 760 1077 760 L 803 760 Q 795 760 795 768 L 795 830" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="report" data-edge-to="ds" data-edge-key="9" data-edge-id="c-report-ds" data-composition-points="1305,312;1305,700;795,700;795,830" d="M 1305 312 L 1305 692 Q 1305 700 1297 700 L 803 700 Q 795 700 795 708 L 795 830" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="10" data-edge-id="c-main-gh" data-composition-points="670,186;720,186;720,55;1210,55;1210,91;1160,91" d="M 670 186 L 712 186 Q 720 186 720 178 L 720 63 Q 720 55 728 55 L 1202 55 Q 1210 55 1210 63 L 1210 83 Q 1210 91 1202 91 L 1160 91" class="a-default" stroke-width="1.2" marker-end="url(#arrowhead)"/>
 
         <!-- Components -->
         <g id="node-user" data-node-id="user" data-node-label="候选人" tabindex="0" role="button" aria-label="定位 候选人, 粘贴简历 + JD, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="粘贴简历 + JD" data-node-context="Architecture component">
@@ -4727,7 +4727,7 @@
         </g>
         <g data-detail="context" data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch">
           <rect x="943.4" y="543.5" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
-          <text x="970" y="553.5" class="t-messagebus" font-size="8" text-anchor="middle">简历 + JD</text>
+          <text x="970" y="553.5" class="t-backend" font-size="8" text-anchor="middle">简历 + JD</text>
         </g>
 
 
@@ -4737,12 +4737,12 @@
         </g>
         <g data-detail="context" data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="8" data-edge-id="c-jdmatch-ds">
           <rect x="1088.8" y="705" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="1125" y="715" class="t-messagebus" font-size="8" text-anchor="middle">deepseek-chat</text>
+          <text x="1125" y="715" class="t-security" font-size="8" text-anchor="middle">deepseek-chat</text>
         </g>
 
         <g data-detail="context" data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="10" data-edge-id="c-main-gh">
           <rect x="695.8" y="100.5" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="720" y="110.5" class="t-messagebus" font-size="8" text-anchor="middle">检查更新</text>
+          <text x="720" y="110.5" class="t-muted" font-size="8" text-anchor="middle">检查更新</text>
         </g>
 
         <!-- Legend -->

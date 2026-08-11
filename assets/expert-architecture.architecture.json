@@ -187,47 +187,54 @@
       "from": "user",
       "to": "ui",
       "label": "粘贴文本",
-      "variant": "emphasis"
+      "variant": "emphasis",
+      "width": 2.2
     },
     {
       "id": "c-ui-api",
       "from": "ui",
       "to": "api",
       "label": "POST /analyze",
-      "variant": "emphasis"
+      "variant": "emphasis",
+      "width": 2.2
     },
     {
       "id": "c-api-orch",
       "from": "api",
       "to": "orch",
       "label": "创建任务",
-      "variant": "emphasis"
+      "variant": "emphasis",
+      "width": 2.2
     },
     {
       "id": "c-orch-ability",
       "from": "orch",
       "to": "ability",
       "label": "简历全文",
-      "variant": "emphasis"
+      "variant": "emphasis",
+      "width": 1.8
     },
     {
       "id": "c-orch-jdmatch",
       "from": "orch",
       "to": "jdmatch",
       "label": "简历 + JD",
-      "variant": "dashed"
+      "variant": "emphasis",
+      "width": 1.8
     },
     {
       "id": "c-ability-report",
       "from": "ability",
       "to": "report",
-      "variant": "emphasis"
+      "variant": "emphasis",
+      "width": 2.2
     },
     {
       "id": "c-jdmatch-report",
       "from": "jdmatch",
       "to": "report",
-      "variant": "dashed"
+      "variant": "emphasis",
+      "width": 1.8
     },
     {
       "id": "c-report-ui",
@@ -246,27 +253,29 @@
           345,
           920
         ]
-      ]
+      ],
+      "width": 2.2
     },
     {
       "id": "c-jdmatch-ds",
       "from": "jdmatch",
       "to": "ds",
       "label": "deepseek-chat",
-      "variant": "dashed",
+      "variant": "security",
       "fromSide": "bottom",
       "toSide": "top",
       "labelAt": [
         1125,
         715
       ],
-      "labelDy": 24
+      "labelDy": 24,
+      "width": 1.2
     },
     {
       "id": "c-report-ds",
       "from": "report",
       "to": "ds",
-      "variant": "dashed",
+      "variant": "security",
       "fromSide": "bottom",
       "toSide": "top",
       "via": [
@@ -278,14 +287,15 @@
           795,
           700
         ]
-      ]
+      ],
+      "width": 1.2
     },
     {
       "id": "c-main-gh",
       "from": "main",
       "to": "gh",
       "label": "检查更新",
-      "variant": "dashed",
+      "variant": "default",
       "fromSide": "right",
       "toSide": "right",
       "via": [
@@ -305,7 +315,8 @@
           1210,
           91
         ]
-      ]
+      ],
+      "width": 1.2
     }
   ],
   "cards": [
