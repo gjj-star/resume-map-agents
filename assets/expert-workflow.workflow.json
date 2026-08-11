@@ -3,12 +3,12 @@
   "diagram_type": "workflow",
   "meta": {
     "title": "简历评估专家团 · 工作流",
-    "subtitle": "三专家协作流水线：并行分析 → 汇总渲染 → 预览导出",
+    "subtitle": "并行分析 → 汇总渲染 → 预览导出",
     "animation": "none",
     "visual_preset": "signal-flow",
     "quality_profile": "showcase",
     "viewBox": [
-      1440,
+      1080,
       760
     ]
   },
@@ -22,12 +22,12 @@
       "label": "本地服务"
     },
     {
-      "id": "expA",
-      "label": "专家团 · 能力透视"
+      "id": "parallel",
+      "label": "AI 专家团 · 并行分析"
     },
     {
-      "id": "expB",
-      "label": "专家团 · 岗位匹配"
+      "id": "render",
+      "label": "报告渲染"
     }
   ],
   "phases": [
@@ -41,13 +41,13 @@
       "id": "parallel",
       "label": "并行分析",
       "fromCol": 2,
-      "toCol": 3,
+      "toCol": 4,
       "variant": "emphasis"
     },
     {
-      "id": "render",
+      "id": "delivery",
       "label": "渲染交付",
-      "fromCol": 4,
+      "fromCol": 5,
       "toCol": 5,
       "variant": "dashed"
     }
@@ -78,8 +78,8 @@
     },
     {
       "id": "ability",
-      "lane": "expA",
-      "col": 3,
+      "lane": "parallel",
+      "col": 2,
       "type": "backend",
       "label": "能力透视专家",
       "sublabel": "雷达 · 风险点",
@@ -87,8 +87,8 @@
     },
     {
       "id": "jdmatch",
-      "lane": "expB",
-      "col": 2,
+      "lane": "parallel",
+      "col": 4,
       "type": "backend",
       "label": "岗位匹配专家",
       "sublabel": "匹配 · 补强",
@@ -96,7 +96,7 @@
     },
     {
       "id": "report",
-      "lane": "expA",
+      "lane": "render",
       "col": 5,
       "type": "backend",
       "label": "可视化报告专家",
@@ -118,13 +118,18 @@
       "from": "input",
       "to": "orchestrator",
       "label": "创建任务",
-      "variant": "emphasis"
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "top"
     },
     {
       "id": "e-orch-ability",
       "from": "orchestrator",
       "to": "ability",
-      "variant": "emphasis"
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "drop"
     },
     {
       "id": "e-orch-jdmatch",
@@ -132,9 +137,8 @@
       "to": "jdmatch",
       "variant": "default",
       "role": "branch",
-      "fromSide": "bottom",
-      "toSide": "top",
-      "route": "drop"
+      "fromSide": "right",
+      "toSide": "top"
     },
     {
       "id": "e-ability-report",
@@ -142,9 +146,11 @@
       "to": "report",
       "label": "ability_report",
       "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "left",
       "labelAt": [
-        500,
-        322
+        440,
+        415
       ]
     },
     {
@@ -154,9 +160,11 @@
       "label": "match_report",
       "variant": "default",
       "role": "branch",
+      "fromSide": "bottom",
+      "toSide": "left",
       "labelAt": [
-        430,
-        470
+        520,
+        465
       ]
     },
     {
@@ -164,7 +172,9 @@
       "from": "report",
       "to": "preview",
       "label": "单文件 HTML",
-      "variant": "emphasis"
+      "variant": "emphasis",
+      "fromSide": "top",
+      "toSide": "bottom"
     }
   ],
   "cards": [

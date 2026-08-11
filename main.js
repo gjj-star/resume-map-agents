@@ -201,10 +201,10 @@ function startServer(port) {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    minWidth: 900,
-    minHeight: 600,
+    width: 1440,
+    height: 900,
+    minWidth: 1100,
+    minHeight: 680,
     backgroundColor: '#0a0e1a',
     title: '简历评估专家团',
     icon: path.join(__dirname, 'assets', 'icon.png'),

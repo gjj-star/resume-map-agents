@@ -4406,27 +4406,27 @@
   <!-- Toolbar: theme, live visual style, trace motion, presentation stage, and export.
        Motion appears only for trace-enabled artifacts and has no shortcut;
        Keyboard: T toggles theme, S cycles style, F toggles the stage, E opens export. -->
-  <div class="toolbar" role="toolbar" aria-label="Diagram actions">
+  <div class="toolbar" role="toolbar" aria-label="图表操作">
     <button id="btn-theme" type="button"
-            title="Toggle theme (T)"
-            aria-label="Toggle color theme"
+            title="切换主题 (T)"
+            aria-label="切换颜色主题"
             aria-pressed="false">
       <span id="theme-icon" aria-hidden="true">&#9790;</span>
-      <span id="theme-label">Dark</span>
+      <span id="theme-label">深色</span>
     </button>
     <div class="preset-wrap">
       <button id="btn-preset" type="button"
-              title="Choose visual style (S cycles)"
-              aria-label="Choose visual style"
+              title="选择视觉风格（S 键循环）"
+              aria-label="选择视觉风格"
               aria-haspopup="menu"
               aria-expanded="false"
               aria-controls="preset-menu"
               aria-keyshortcuts="S">
         <span class="preset-control-mark" aria-hidden="true"></span>
-        <span id="preset-label">Style</span>
+        <span id="preset-label">风格</span>
         <span aria-hidden="true">&#9662;</span>
       </button>
-      <div class="preset-menu" id="preset-menu" role="menu" aria-label="Visual style">
+      <div class="preset-menu" id="preset-menu" role="menu" aria-label="视觉风格">
         <div class="preset-menu-heading" role="presentation"><span>Visual identity</span><span>S cycles</span></div>
         <button class="preset-option" data-preset-value="classic" type="button" role="menuitemradio" aria-checked="false" tabindex="-1">
           <span class="preset-option-swatch classic" aria-hidden="true"></span>
@@ -4451,39 +4451,39 @@
       </div>
     </div>
     <button id="btn-motion" type="button" hidden
-            title="Pause motion"
-            aria-label="Pause motion"
+            title="暂停动效"
+            aria-label="暂停动效"
             aria-pressed="true">
       <span class="motion-control-dot" aria-hidden="true"></span>
       <span id="motion-label">Live</span>
     </button>
     <button id="btn-present" type="button"
-            title="Presentation stage (F)"
-            aria-label="Enter presentation stage"
+            title="演示模式 (F)"
+            aria-label="进入演示模式"
             aria-pressed="false">
       <span id="present-icon" aria-hidden="true">&#9633;</span>
-      <span id="present-label">Present</span>
+      <span id="present-label">演示</span>
     </button>
     <div class="export-wrap">
       <button id="btn-export" type="button"
-              title="Export diagram (E)"
-              aria-label="Export diagram"
+              title="导出图片 (E)"
+              aria-label="导出图片"
               aria-haspopup="menu"
               aria-expanded="false"
               aria-controls="export-menu">
         Export <span aria-hidden="true">&#9662;</span>
       </button>
-      <div class="export-menu" id="export-menu" role="menu" aria-label="Export">
-        <button data-format="share-card" type="button" role="menuitem" tabindex="-1">Share Card <span class="hint">1200&times;630 PNG</span></button>
-        <button data-action="route-share-card" type="button" role="menuitem" tabindex="-1" hidden disabled>Route Share Card <span class="hint">1200&times;630 PNG</span></button>
-        <button data-action="reach-share-card" type="button" role="menuitem" tabindex="-1" hidden disabled>Reach Share Card <span class="hint">1200&times;630 PNG</span></button>
+      <div class="export-menu" id="export-menu" role="menu" aria-label="导出图片">
+        <button data-format="share-card" type="button" role="menuitem" tabindex="-1">分享卡片 <span class="hint">1200&times;630 PNG</span></button>
+        <button data-action="route-share-card" type="button" role="menuitem" tabindex="-1" hidden disabled>路径分享卡 <span class="hint">1200&times;630 PNG</span></button>
+        <button data-action="reach-share-card" type="button" role="menuitem" tabindex="-1" hidden disabled>可达分享卡 <span class="hint">1200&times;630 PNG</span></button>
         <button data-action="copy-share-card" type="button" role="menuitem" tabindex="-1">Copy Share Card <span class="hint">PNG</span></button>
         <hr role="separator">
         <button data-action="copy"  type="button" role="menuitem" tabindex="-1">Copy to clipboard <span class="hint">PNG</span></button>
         <hr role="separator">
-        <button data-format="png"   type="button" role="menuitem" tabindex="-1">Download PNG</button>
-        <button data-format="jpeg"  type="button" role="menuitem" tabindex="-1">Download JPEG</button>
-        <button data-format="webp"  type="button" role="menuitem" tabindex="-1">Download WebP</button>
+        <button data-format="png"   type="button" role="menuitem" tabindex="-1">下载 PNG</button>
+        <button data-format="jpeg"  type="button" role="menuitem" tabindex="-1">下载 JPEG</button>
+        <button data-format="webp"  type="button" role="menuitem" tabindex="-1">下载 WebP</button>
         <hr role="separator">
         <button data-format="svg"   type="button" role="menuitem" tabindex="-1">Download SVG <span class="hint">vector</span></button>
         <button data-format="webm"  type="button" role="menuitem" tabindex="-1">Download WebM <span class="hint">6s motion</span></button>
@@ -4498,13 +4498,13 @@
         <div class="pulse-dot"></div>
         <h1>简历评估专家团 · 工作流</h1>
       </div>
-      <p class="subtitle">三专家协作流水线：并行分析 → 汇总渲染 → 预览导出</p>
+      <p class="subtitle">并行分析 → 汇总渲染 → 预览导出</p>
     </div>
 
     <script id="archify-guided-views-data" type="application/json">[]</script>
 
-    <div class="guided-views no-print" id="guided-views" hidden aria-label="Guided diagram views">
-      <button id="guided-view-prev" type="button" aria-label="Previous guided view" title="Previous guided view ([)">&#8592;</button>
+    <div class="guided-views no-print" id="guided-views" hidden aria-label="导览视图">
+      <button id="guided-view-prev" type="button" aria-label="上一个视图" title="上一个视图 ([)">&#8592;</button>
       <div class="guided-view-copy">
         <div class="guided-view-meta">
           <span>Guided views</span>
@@ -4514,7 +4514,7 @@
         </div>
         <strong id="guided-view-label">Explore this system</strong>
         <small id="guided-view-note" aria-live="polite" aria-atomic="true">Step through curated paths without changing the source diagram.</small>
-        <div class="guided-view-trail" id="guided-view-trail" hidden role="group" aria-label="Story trail"></div>
+        <div class="guided-view-trail" id="guided-view-trail" hidden role="group" aria-label="导览轨迹"></div>
         <div class="guided-story-caption" id="guided-story-caption" hidden aria-live="polite" aria-atomic="true">
           <span class="guided-story-caption-index" id="guided-story-caption-index">Beat</span>
           <strong id="guided-story-caption-route"></strong>
@@ -4525,28 +4525,28 @@
           </span>
         </div>
       </div>
-      <button id="guided-view-next" type="button" aria-label="Next guided view" title="Next guided view (])">&#8594;</button>
+      <button id="guided-view-next" type="button" aria-label="下一个视图" title="下一个视图 (])">&#8594;</button>
       <div class="guided-view-actions">
-        <button class="guided-view-play" id="guided-view-play" type="button" aria-label="Play guided story" aria-pressed="false" title="Play guided story (P)">
+        <button class="guided-view-play" id="guided-view-play" type="button" aria-label="播放导览" aria-pressed="false" title="播放导览 (P)">
           <span id="guided-view-play-icon" aria-hidden="true">&#9654;</span>
           <span id="guided-view-play-label">Play story</span>
         </button>
-        <button class="guided-view-beat-link" id="guided-view-beat-link" type="button" aria-label="Select a Story Beat to copy its exact link" title="Select a Story Beat to copy its exact link" disabled>
+        <button class="guided-view-beat-link" id="guided-view-beat-link" type="button" aria-label="选择章节复制链接" title="选择章节复制链接" disabled>
           <span aria-hidden="true">&#35;</span>
           <span id="guided-view-beat-link-label">Copy moment</span>
         </button>
-        <button class="guided-view-all" id="guided-view-all" type="button" aria-label="Show entire diagram">Show all</button>
+        <button class="guided-view-all" id="guided-view-all" type="button" aria-label="显示全图">显示全部</button>
       </div>
-      <nav class="guided-view-index" id="guided-view-index" aria-label="Story chapters">
+      <nav class="guided-view-index" id="guided-view-index" aria-label="导览章节">
         <ol class="guided-view-chapters" id="guided-view-chapters"></ol>
       </nav>
     </div>
 
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read">
-      <svg viewBox="0 0 1440 760" role="img" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="signal-flow" data-quality-profile="showcase">
+      <svg viewBox="0 0 1080 760" role="img" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="signal-flow" data-quality-profile="showcase">
         <title id="archify-diagram-title">简历评估专家团 · 工作流</title>
-        <desc id="archify-diagram-description">三专家协作流水线：并行分析 → 汇总渲染 → 预览导出</desc>
+        <desc id="archify-diagram-description">并行分析 → 汇总渲染 → 预览导出</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -4577,35 +4577,35 @@
         <text x="54" y="198" class="t-dim" font-size="10" font-weight="600">02 / 本地服务</text>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-2" x="40" y="300" width="640" height="104" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="322" class="t-dim" font-size="10" font-weight="600">03 / 专家团 · 能力透视</text>
+        <text x="54" y="322" class="t-dim" font-size="10" font-weight="600">03 / AI 专家团 · 并行分析</text>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-3" x="40" y="424" width="640" height="104" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="446" class="t-dim" font-size="10" font-weight="600">04 / 专家团 · 岗位匹配</text>
+        <text x="54" y="446" class="t-dim" font-size="10" font-weight="600">04 / 报告渲染</text>
 
         <!-- Phase headers -->
         <line x1="42" y1="35" x2="266" y2="35" class="a-default" stroke-width="1.1"/>
         <rect x="42" y="27" width="224" height="16" rx="4" class="c-mask"/>
         <text x="154" y="39" class="t-muted" font-size="8" font-weight="600" text-anchor="middle">输入</text>
-        <line x1="254" y1="35" x2="476" y2="35" class="a-emphasis" stroke-width="1.1"/>
-        <rect x="254" y="27" width="222" height="16" rx="4" class="c-mask"/>
-        <text x="365" y="39" class="t-backend" font-size="8" font-weight="600" text-anchor="middle">并行分析</text>
-        <line x1="454" y1="35" x2="671" y2="35" class="a-dashed" stroke-width="1.1"/>
-        <rect x="454" y="27" width="217" height="16" rx="4" class="c-mask"/>
-        <text x="562.5" y="39" class="t-messagebus" font-size="8" font-weight="600" text-anchor="middle">渲染交付</text>
+        <line x1="254" y1="35" x2="546" y2="35" class="a-emphasis" stroke-width="1.1"/>
+        <rect x="254" y="27" width="292" height="16" rx="4" class="c-mask"/>
+        <text x="400" y="39" class="t-backend" font-size="8" font-weight="600" text-anchor="middle">并行分析</text>
+        <line x1="579" y1="35" x2="671" y2="35" class="a-dashed" stroke-width="1.1"/>
+        <rect x="579" y="27" width="92" height="16" rx="4" class="c-mask"/>
+        <text x="625" y="39" class="t-messagebus" font-size="8" font-weight="600" text-anchor="middle">渲染交付</text>
 
         <!-- Workflow groups -->
 
 
         <!-- Edge paths -->
-        <path data-edge-from="input" data-edge-to="orchestrator" data-edge-label="创建任务" data-edge-key="0" data-edge-id="e-input-orch" data-composition-points="134,119;134,166;174,166;174,243" d="M 134 119 L 134 166 L 174 166 L 174 243" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orchestrator" data-edge-to="ability" data-edge-key="1" data-edge-id="e-orch-ability" data-composition-points="266,243;266,290;384,290;384,367" d="M 266 243 L 266 290 L 384 290 L 384 367" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orchestrator" data-edge-to="jdmatch" data-edge-key="2" data-edge-id="e-orch-jdmatch" data-composition-points="220,269;220,352;300,352;300,457" d="M 220 269 L 220 352 L 300 352 L 300 457" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="3" data-edge-id="e-ability-report" data-composition-points="476,367;579,367" d="M 476 367 L 579 367" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="4" data-edge-id="e-jdmatch-report" data-composition-points="346,491;346,414;579,414;579,367" d="M 346 491 L 346 414 L 579 414 L 579 367" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="report" data-edge-to="preview" data-edge-label="单文件 HTML" data-edge-key="5" data-edge-id="e-report-preview" data-composition-points="625,333;625,228;625,228;625,145" d="M 625 333 L 625 228 L 625 228 L 625 145" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="input" data-edge-to="orchestrator" data-edge-label="创建任务" data-edge-key="0" data-edge-id="e-input-orch" data-composition-points="134,119;134,166;220,166;220,217" d="M 134 119 L 134 166 L 220 166 L 220 217" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="orchestrator" data-edge-to="ability" data-edge-key="1" data-edge-id="e-orch-ability" data-composition-points="220,269;220,290;300,290;300,333" d="M 220 269 L 220 290 L 300 290 L 300 333" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="orchestrator" data-edge-to="jdmatch" data-edge-key="2" data-edge-id="e-orch-jdmatch" data-composition-points="266,243;266,290;500,290;500,333" d="M 266 243 L 266 290 L 500 290 L 500 333" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="3" data-edge-id="e-ability-report" data-composition-points="300,401;300,414;579,414;579,491" d="M 300 401 L 300 414 L 579 414 L 579 491" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="4" data-edge-id="e-jdmatch-report" data-composition-points="500,401;500,414;579,414;579,491" d="M 500 401 L 500 414 L 579 414 L 579 491" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="report" data-edge-to="preview" data-edge-label="单文件 HTML" data-edge-key="5" data-edge-id="e-report-preview" data-composition-points="625,457;625,290;625,290;625,145" d="M 625 457 L 625 290 L 625 290 L 625 145" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
 
         <!-- Nodes -->
-        <g id="node-input" data-node-id="input" data-node-label="简历 + JD" tabindex="0" role="button" aria-label="Focus 简历 + JD, 粘贴文本, 用户界面 › 输入" aria-pressed="false" data-node-kind="external" data-node-sublabel="粘贴文本" data-node-context="用户界面 › 输入">
+        <g id="node-input" data-node-id="input" data-node-label="简历 + JD" tabindex="0" role="button" aria-label="定位 简历 + JD, 粘贴文本, 用户界面 › 输入" aria-pressed="false" data-node-kind="external" data-node-sublabel="粘贴文本" data-node-context="用户界面 › 输入">
           <title>简历 + JD · 粘贴文本 · 用户界面 › 输入</title>
           <rect x="42" y="93" width="92" height="52" rx="6" class="c-mask"/>
           <rect x="42" y="93" width="92" height="52" rx="6" class="c-external" stroke-width="1.5"/>
@@ -4617,7 +4617,7 @@
           <text data-detail="context" x="88" y="131" class="t-muted" font-size="8" text-anchor="middle">粘贴文本</text>
         </g>
 
-        <g id="node-orchestrator" data-node-id="orchestrator" data-node-label="任务编排" tabindex="0" role="button" aria-label="Focus 任务编排, Express 轮询, 本地服务 › 输入" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Express 轮询" data-node-context="本地服务 › 输入">
+        <g id="node-orchestrator" data-node-id="orchestrator" data-node-label="任务编排" tabindex="0" role="button" aria-label="定位 任务编排, Express 轮询, 本地服务 › 输入" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Express 轮询" data-node-context="本地服务 › 输入">
           <title>任务编排 · Express 轮询 · 本地服务 › 输入</title>
           <rect x="174" y="217" width="92" height="52" rx="6" class="c-mask"/>
           <rect x="174" y="217" width="92" height="52" rx="6" class="c-backend" stroke-width="1.5"/>
@@ -4628,43 +4628,43 @@
           <text data-detail="context" x="220" y="255" class="t-muted" font-size="8" text-anchor="middle">Express 轮询</text>
         </g>
 
-        <g id="node-ability" data-node-id="ability" data-node-label="能力透视专家" tabindex="0" role="button" aria-label="Focus 能力透视专家, 雷达 · 风险点, 专家团 · 能力透视 › 并行分析" aria-pressed="false" data-node-kind="backend" data-node-sublabel="雷达 · 风险点" data-node-tag="并行" data-node-context="专家团 · 能力透视 › 并行分析">
-          <title>能力透视专家 · 雷达 · 风险点 · 专家团 · 能力透视 › 并行分析 · 并行</title>
-          <rect x="384" y="333" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="384" y="333" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(390 339) scale(0.6875)">
+        <g id="node-ability" data-node-id="ability" data-node-label="能力透视专家" tabindex="0" role="button" aria-label="定位 能力透视专家, 雷达 · 风险点, AI 专家团 · 并行分析 › 并行分析" aria-pressed="false" data-node-kind="backend" data-node-sublabel="雷达 · 风险点" data-node-tag="并行" data-node-context="AI 专家团 · 并行分析 › 并行分析">
+          <title>能力透视专家 · 雷达 · 风险点 · AI 专家团 · 并行分析 › 并行分析 · 并行</title>
+          <rect x="254" y="333" width="92" height="68" rx="6" class="c-mask"/>
+          <rect x="254" y="333" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(260 339) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="430" y="354" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">能力透视专家</text>
-          <text data-detail="context" x="430" y="371" class="t-muted" font-size="8" text-anchor="middle">雷达 · 风险点</text>
-        <text data-detail="fine" x="430" y="389" class="t-backend" font-size="7" text-anchor="middle">并行</text>
+          <text data-detail-anchor x="300" y="354" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">能力透视专家</text>
+          <text data-detail="context" x="300" y="371" class="t-muted" font-size="8" text-anchor="middle">雷达 · 风险点</text>
+        <text data-detail="fine" x="300" y="389" class="t-backend" font-size="7" text-anchor="middle">并行</text>
         </g>
 
-        <g id="node-jdmatch" data-node-id="jdmatch" data-node-label="岗位匹配专家" tabindex="0" role="button" aria-label="Focus 岗位匹配专家, 匹配 · 补强, 专家团 · 岗位匹配 › 并行分析" aria-pressed="false" data-node-kind="backend" data-node-sublabel="匹配 · 补强" data-node-tag="需 JD · 并行" data-node-context="专家团 · 岗位匹配 › 并行分析">
-          <title>岗位匹配专家 · 匹配 · 补强 · 专家团 · 岗位匹配 › 并行分析 · 需 JD · 并行</title>
-          <rect x="254" y="457" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="254" y="457" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(260 463) scale(0.6875)">
+        <g id="node-jdmatch" data-node-id="jdmatch" data-node-label="岗位匹配专家" tabindex="0" role="button" aria-label="定位 岗位匹配专家, 匹配 · 补强, AI 专家团 · 并行分析 › 并行分析" aria-pressed="false" data-node-kind="backend" data-node-sublabel="匹配 · 补强" data-node-tag="需 JD · 并行" data-node-context="AI 专家团 · 并行分析 › 并行分析">
+          <title>岗位匹配专家 · 匹配 · 补强 · AI 专家团 · 并行分析 › 并行分析 · 需 JD · 并行</title>
+          <rect x="454" y="333" width="92" height="68" rx="6" class="c-mask"/>
+          <rect x="454" y="333" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(460 339) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="300" y="478" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">岗位匹配专家</text>
-          <text data-detail="context" x="300" y="495" class="t-muted" font-size="8" text-anchor="middle">匹配 · 补强</text>
-        <text data-detail="fine" x="300" y="513" class="t-backend" font-size="7" text-anchor="middle">需 JD · 并行</text>
+          <text data-detail-anchor x="500" y="354" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">岗位匹配专家</text>
+          <text data-detail="context" x="500" y="371" class="t-muted" font-size="8" text-anchor="middle">匹配 · 补强</text>
+        <text data-detail="fine" x="500" y="389" class="t-backend" font-size="7" text-anchor="middle">需 JD · 并行</text>
         </g>
 
-        <g id="node-report" data-node-id="report" data-node-label="可视化报告专家" tabindex="0" role="button" aria-label="Focus 可视化报告专家, 双 JSON → HTML, 专家团 · 能力透视 › 渲染交付" aria-pressed="false" data-node-kind="backend" data-node-sublabel="双 JSON → HTML" data-node-tag="串行收尾" data-node-context="专家团 · 能力透视 › 渲染交付">
-          <title>可视化报告专家 · 双 JSON → HTML · 专家团 · 能力透视 › 渲染交付 · 串行收尾</title>
-          <rect x="579" y="333" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="579" y="333" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(585 339) scale(0.6875)">
+        <g id="node-report" data-node-id="report" data-node-label="可视化报告专家" tabindex="0" role="button" aria-label="定位 可视化报告专家, 双 JSON → HTML, 报告渲染 › 渲染交付" aria-pressed="false" data-node-kind="backend" data-node-sublabel="双 JSON → HTML" data-node-tag="串行收尾" data-node-context="报告渲染 › 渲染交付">
+          <title>可视化报告专家 · 双 JSON → HTML · 报告渲染 › 渲染交付 · 串行收尾</title>
+          <rect x="579" y="457" width="92" height="68" rx="6" class="c-mask"/>
+          <rect x="579" y="457" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(585 463) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="625" y="354" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">可视化报告专家</text>
-          <text data-detail="context" x="625" y="371" class="t-muted" font-size="8" text-anchor="middle">双 JSON → HTML</text>
-        <text data-detail="fine" x="625" y="389" class="t-backend" font-size="7" text-anchor="middle">串行收尾</text>
+          <text data-detail-anchor x="625" y="478" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">可视化报告专家</text>
+          <text data-detail="context" x="625" y="495" class="t-muted" font-size="8" text-anchor="middle">双 JSON → HTML</text>
+        <text data-detail="fine" x="625" y="513" class="t-backend" font-size="7" text-anchor="middle">串行收尾</text>
         </g>
 
-        <g id="node-preview" data-node-id="preview" data-node-label="预览 + 导出" tabindex="0" role="button" aria-label="Focus 预览 + 导出, iframe · 导出, 用户界面 › 渲染交付" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="iframe · 导出" data-node-context="用户界面 › 渲染交付">
+        <g id="node-preview" data-node-id="preview" data-node-label="预览 + 导出" tabindex="0" role="button" aria-label="定位 预览 + 导出, iframe · 导出, 用户界面 › 渲染交付" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="iframe · 导出" data-node-context="用户界面 › 渲染交付">
           <title>预览 + 导出 · iframe · 导出 · 用户界面 › 渲染交付</title>
           <rect x="579" y="93" width="92" height="52" rx="6" class="c-mask"/>
           <rect x="579" y="93" width="92" height="52" rx="6" class="c-frontend" stroke-width="1.5"/>
@@ -4680,36 +4680,36 @@
 
         <!-- Edge labels -->
         <g data-detail="context" data-edge-from="input" data-edge-to="orchestrator" data-edge-label="创建任务" data-edge-key="0" data-edge-id="e-input-orch">
-          <rect x="129.8" y="146" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="154" y="156" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
+          <rect x="152.8" y="146" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="177" y="156" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
         </g>
 
 
         <g data-detail="context" data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="3" data-edge-id="e-ability-report">
-          <rect x="461.4" y="312" width="77.2" height="14" rx="3" class="c-mask"/>
-          <text x="500" y="322" class="t-backend" font-size="8" text-anchor="middle">ability_report</text>
+          <rect x="401.4" y="405" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="440" y="415" class="t-backend" font-size="8" text-anchor="middle">ability_report</text>
         </g>
         <g data-detail="context" data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="4" data-edge-id="e-jdmatch-report">
-          <rect x="396.2" y="460" width="67.6" height="14" rx="3" class="c-mask"/>
-          <text x="430" y="470" class="t-muted" font-size="8" text-anchor="middle">match_report</text>
+          <rect x="486.2" y="455" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="520" y="465" class="t-muted" font-size="8" text-anchor="middle">match_report</text>
         </g>
         <g data-detail="context" data-edge-from="report" data-edge-to="preview" data-edge-label="单文件 HTML" data-edge-key="5" data-edge-id="e-report-preview">
-          <rect x="593.6" y="208" width="62.8" height="14" rx="3" class="c-mask"/>
-          <text x="625" y="218" class="t-backend" font-size="8" text-anchor="middle">单文件 HTML</text>
+          <rect x="593.6" y="270" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="625" y="280" class="t-backend" font-size="8" text-anchor="middle">单文件 HTML</text>
         </g>
 
         <!-- Legend -->
         <g data-legend data-legend-bridge>
-          <text x="20" y="552" class="t-primary" font-size="10" font-weight="600">Legend</text>
-          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="User UI" data-legend-x="20" data-legend-baseline="572" data-legend-width="73">
+          <text x="20" y="552" class="t-primary" font-size="10" font-weight="600">图例</text>
+          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="界面" data-legend-x="20" data-legend-baseline="572" data-legend-width="73">
             <rect x="20" y="564" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
             <text x="41" y="572" class="t-muted" font-size="7">User UI</text>
           </g>
-          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Agent logic" data-legend-x="100" data-legend-baseline="572" data-legend-width="90">
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="服务逻辑" data-legend-x="100" data-legend-baseline="572" data-legend-width="90">
             <rect x="100" y="564" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
             <text x="121" y="572" class="t-muted" font-size="7">Agent logic</text>
           </g>
-          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External system" data-legend-x="197" data-legend-baseline="572" data-legend-width="108">
+          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="外部输入" data-legend-x="197" data-legend-baseline="572" data-legend-width="108">
             <rect x="197" y="564" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
             <text x="218" y="572" class="t-muted" font-size="7">External system</text>
           </g>
@@ -4734,42 +4734,42 @@
             <span class="diagram-guide-eyebrow">Diagram guide</span>
             <strong class="diagram-guide-title" id="diagram-guide-title">Explore this system</strong>
           </span>
-          <button class="diagram-guide-close" id="diagram-guide-close" type="button" aria-label="Close diagram guide">&#215;</button>
+          <button class="diagram-guide-close" id="diagram-guide-close" type="button" aria-label="关闭指南">&#215;</button>
         </div>
         <p class="diagram-guide-stats" id="diagram-guide-stats">Inspecting compiled semantics</p>
-        <div class="diagram-guide-actions" id="diagram-guide-actions" role="group" aria-label="Diagram exploration actions">
-          <button class="diagram-guide-action" type="button" data-guide-action="find" aria-label="Find any node">
+        <div class="diagram-guide-actions" id="diagram-guide-actions" role="group" aria-label="图表探索操作">
+          <button class="diagram-guide-action" type="button" data-guide-action="find" aria-label="查找节点">
             <span class="diagram-guide-index" aria-hidden="true">01</span>
-            <span class="diagram-guide-action-copy"><strong>Find any node</strong><small>Search labels, responsibilities, kinds, and stable IDs.</small></span>
+            <span class="diagram-guide-action-copy"><strong>查找节点</strong><small>Search labels, responsibilities, kinds, and stable IDs.</small></span>
             <kbd aria-hidden="true">/</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="route" aria-label="Trace a directed route">
+          <button class="diagram-guide-action" type="button" data-guide-action="route" aria-label="追踪路径">
             <span class="diagram-guide-index" aria-hidden="true">02</span>
             <span class="diagram-guide-action-copy"><strong>Trace a route</strong><small>Ask how two semantic nodes connect in authored direction.</small></span>
             <kbd aria-hidden="true">R</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="map" aria-label="See the whole system">
+          <button class="diagram-guide-action" type="button" data-guide-action="map" aria-label="查看全局">
             <span class="diagram-guide-index" aria-hidden="true">03</span>
-            <span class="diagram-guide-action-copy"><strong>See the whole system</strong><small>Open Semantic Radar with a live viewport and stable nodes.</small></span>
+            <span class="diagram-guide-action-copy"><strong>查看全局</strong><small>Open Semantic Radar with a live viewport and stable nodes.</small></span>
             <kbd aria-hidden="true">M</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="lens" aria-label="Compare semantic kinds">
+          <button class="diagram-guide-action" type="button" data-guide-action="lens" aria-label="对比类型">
             <span class="diagram-guide-index" aria-hidden="true">04</span>
-            <span class="diagram-guide-action-copy"><strong>Compare semantic kinds</strong><small>Count roles, reveal their traffic, and compare direct authored links.</small></span>
+            <span class="diagram-guide-action-copy"><strong>对比类型</strong><small>Count roles, reveal their traffic, and compare direct authored links.</small></span>
             <kbd aria-hidden="true">L</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="story" aria-label="Play the guided story">
+          <button class="diagram-guide-action" type="button" data-guide-action="story" aria-label="播放导览">
             <span class="diagram-guide-index" aria-hidden="true">05</span>
-            <span class="diagram-guide-action-copy"><strong>Play the guided story</strong><small id="diagram-guide-story-copy">Walk the authored chapters and real relationships.</small></span>
+            <span class="diagram-guide-action-copy"><strong>播放导览</strong><small id="diagram-guide-story-copy">Walk the authored chapters and real relationships.</small></span>
             <kbd aria-hidden="true">P</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="present" aria-label="Enter presentation stage">
+          <button class="diagram-guide-action" type="button" data-guide-action="present" aria-label="进入演示模式">
             <span class="diagram-guide-index" aria-hidden="true">06</span>
             <span class="diagram-guide-action-copy"><strong>Enter Presentation Stage</strong><small>Give the live diagram the viewport without changing export.</small></span>
             <kbd aria-hidden="true">F</kbd>
           </button>
         </div>
-        <div class="diagram-guide-shortcuts" aria-label="Additional keyboard shortcuts">
+        <div class="diagram-guide-shortcuts" aria-label="更多快捷键">
           <span><kbd>E</kbd> Export</span><span><kbd>T</kbd> Theme</span><span><kbd>S</kbd> Style</span><span><kbd>0</kbd> Reset</span><span><kbd>+</kbd> Zoom in</span><span><kbd>-</kbd> Zoom out</span><span><kbd>Esc</kbd> Close</span>
         </div>
         <p class="diagram-guide-feedback" id="diagram-guide-feedback" aria-live="polite"></p>
@@ -4777,7 +4777,7 @@
       <div class="node-finder no-print" id="node-finder" hidden role="dialog" aria-modal="false" aria-labelledby="node-finder-title">
         <div class="node-finder-head">
           <strong id="node-finder-title">Find a node</strong>
-          <button class="node-finder-close" id="node-finder-close" type="button" aria-label="Close node finder">&#215;</button>
+          <button class="node-finder-close" id="node-finder-close" type="button" aria-label="关闭查找">&#215;</button>
         </div>
         <div class="node-finder-search">
           <span aria-hidden="true">&#8981;</span>
@@ -4823,8 +4823,8 @@
           </div>
           <div class="relationship-lens-actions">
             <button id="btn-focus-clear" type="button" aria-label="Close semantic passport" title="Close">&#215;</button>
-            <button id="btn-focus-copy" type="button" aria-label="Copy link to focused node">Copy link</button>
-            <button id="btn-focus-relations" type="button" aria-label="Show connected relationships" aria-expanded="false" aria-controls="relationship-lens-list">Relations</button>
+            <button id="btn-focus-copy" type="button" aria-label="Copy link to focused node">复制链接</button>
+            <button id="btn-focus-relations" type="button" aria-label="Show connected relationships" aria-expanded="false" aria-controls="relationship-lens-list">关系</button>
           </div>
         </div>
         <div class="relationship-lens-list" id="relationship-lens-list" aria-label="Connected relationships"></div>
@@ -4836,9 +4836,9 @@
             <strong class="route-probe-title" id="route-probe-title">Choose a start node</strong>
           </span>
           <span class="route-probe-actions">
-            <button class="route-probe-find" id="route-probe-find" type="button" aria-label="Find a route start" data-node-finder-trigger>Find start</button>
-            <button class="route-probe-copy-link" id="route-probe-copy" type="button" aria-label="Copy link to traced route" hidden>Copy link</button>
-            <button id="route-probe-clear" type="button" aria-label="Clear route probe">Clear</button>
+            <button class="route-probe-find" id="route-probe-find" type="button" aria-label="Find a route start" data-node-finder-trigger>找起点</button>
+            <button class="route-probe-copy-link" id="route-probe-copy" type="button" aria-label="Copy link to traced route" hidden>复制链接</button>
+            <button id="route-probe-clear" type="button" aria-label="Clear route probe">清除</button>
           </span>
         </div>
         <div class="route-probe-path" id="route-probe-path" aria-label="Traced route">
@@ -4851,7 +4851,7 @@
             <span id="route-journey-play-label">Journey</span>
           </button>
           <button id="route-journey-next" type="button" aria-label="Next route position" title="Next route position">&#8594;</button>
-          <button class="route-journey-overview" id="route-journey-overview" type="button" aria-label="Show complete route overview" title="Show complete route overview">Overview</button>
+          <button class="route-journey-overview" id="route-journey-overview" type="button" aria-label="Show complete route overview" title="Show complete route overview">总览</button>
         </div>
         <small class="route-probe-status" id="route-probe-status" aria-live="polite">Choose the source, then the destination. Direction matters.</small>
       </div>
@@ -4867,8 +4867,8 @@
         <div class="semantic-lens-kinds" id="semantic-lens-kinds" role="group" aria-label="Semantic kinds"></div>
         <p class="semantic-lens-status" id="semantic-lens-status" aria-live="polite">Choose a kind to inspect its nodes and touching relationships.</p>
         <div class="semantic-lens-actions">
-          <button id="semantic-lens-copy" type="button" aria-label="Copy link to semantic lens" hidden>Copy link</button>
-          <button id="semantic-lens-clear" type="button" aria-label="Clear semantic lens">Clear</button>
+          <button id="semantic-lens-copy" type="button" aria-label="Copy link to semantic lens" hidden>复制链接</button>
+          <button id="semantic-lens-clear" type="button" aria-label="Clear semantic lens">清除</button>
         </div>
       </div>
       <div class="overview-map no-print" id="overview-map" hidden role="region" aria-labelledby="overview-map-title">
@@ -4884,9 +4884,9 @@
         <div class="overview-map-hint" aria-hidden="true"><span>Click node</span><span>Drag to pan</span></div>
       </div>
       <div class="diagram-nav no-print" role="toolbar" aria-label="Diagram view controls">
-        <button id="btn-route-probe" type="button" aria-label="Trace a directed route" aria-pressed="false" aria-controls="route-probe" title="Trace route (R)">PATH</button>
-        <button id="btn-overview-map" type="button" aria-label="Open semantic radar" aria-expanded="false" aria-controls="overview-map" title="Semantic radar (M)">MAP</button>
-        <button id="btn-semantic-lens" type="button" aria-label="Open semantic lens" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false" aria-controls="semantic-lens" title="Semantic lens (L)">LENS</button>
+        <button id="btn-route-probe" type="button" aria-label="追踪路径" aria-pressed="false" aria-controls="route-probe" title="Trace route (R)">路径</button>
+        <button id="btn-overview-map" type="button" aria-label="Open semantic radar" aria-expanded="false" aria-controls="overview-map" title="Semantic radar (M)">全景</button>
+        <button id="btn-semantic-lens" type="button" aria-label="Open semantic lens" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false" aria-controls="semantic-lens" title="Semantic lens (L)">聚焦</button>
         <button id="btn-node-finder" type="button" aria-label="Find a node" aria-haspopup="dialog" aria-expanded="false" aria-controls="node-finder" title="Find a node (/)" data-node-finder-trigger>&#8981;</button>
         <button id="btn-diagram-guide" type="button" aria-label="Open diagram guide" aria-haspopup="dialog" aria-expanded="false" aria-controls="diagram-guide" title="Diagram guide (?)">?</button>
         <button data-view="out" type="button" aria-label="Zoom out" title="Zoom out (-)">&#8722;</button>
@@ -4942,7 +4942,7 @@
     }
 
     /* ============================================================
-       Visual style try-on — one topology, four bundled presets.
+       视觉风格 try-on — one topology, four bundled presets.
        The reader's choice is intentionally session-only: it updates the
        live page and canonical SVG together, but never rewrites the source,
        URL, or a later diagram's authored default.
@@ -4976,8 +4976,8 @@
         svg.setAttribute('data-preset', preset);
         btn.setAttribute('data-preset-option', preset);
         label.textContent = LABELS[preset];
-        btn.setAttribute('aria-label', 'Visual style: ' + LABELS[preset] + '. Choose visual style');
-        btn.title = 'Choose visual style (S cycles)';
+        btn.setAttribute('aria-label', '视觉风格: ' + LABELS[preset] + '. 选择视觉风格');
+        btn.title = '选择视觉风格（S 键循环）';
         options().forEach(function (option) {
           var selected = option.getAttribute('data-preset-value') === preset;
           option.setAttribute('aria-checked', String(selected));
@@ -5091,7 +5091,7 @@
       function apply(theme) {
         html.setAttribute('data-theme', theme);
         icon.textContent = theme === 'dark' ? '\u263E' : '\u263C';
-        label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+        label.textContent = theme === 'dark' ? '深色' : '浅色';
         btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
       }
 
@@ -6659,11 +6659,11 @@
           btn.setAttribute('aria-label', 'Resume motion');
           btn.title = 'Resume motion';
         } else if (owner) {
-          btn.setAttribute('aria-label', 'Pause motion; currently yielding to ' + ownerLabel(owner));
+          btn.setAttribute('aria-label', '暂停动效; currently yielding to ' + ownerLabel(owner));
           btn.title = 'Live preview enabled · yielding to ' + ownerLabel(owner);
         } else {
-          btn.setAttribute('aria-label', 'Pause motion');
-          btn.title = 'Pause motion';
+          btn.setAttribute('aria-label', '暂停动效');
+          btn.title = '暂停动效';
         }
       }
       function setPaused(next, options) {
@@ -7903,7 +7903,7 @@
       }
       function clear(options) {
         options = options || {};
-        var restoreNode = options.restoreFocus === true && activeIds.length === 1
+        var restoreNode = options.restore定位 === true && activeIds.length === 1
           ? svg.querySelector('[data-node-id="' + activeIds[0] + '"]')
           : null;
         clearReachability({ updateUrl: false });
@@ -8545,8 +8545,8 @@
       }
 
       function chapterDelta(previous, destination) {
-        var previousFocus = previous ? previous.focus : [];
-        var destinationFocus = destination ? destination.focus : [];
+        var previous定位 = previous ? previous.focus : [];
+        var destination定位 = destination ? destination.focus : [];
         var previousIds = {};
         var destinationIds = {};
         previousFocus.forEach(function (id) { previousIds[id] = true; });
@@ -9183,7 +9183,7 @@
         if (!beatLink.hasAttribute('data-copy-state')) beatLinkLabel.textContent = 'Copy moment';
         var description = available
           ? 'Copy link to current story moment: Beat ' + (step.index + 1) + ' of ' + storySteps.length + ': ' + step.nodeLabel
-          : 'Select a Story Beat to copy its exact link';
+          : '选择章节复制链接';
         beatLink.setAttribute('aria-label', description);
         beatLink.title = description;
       }
@@ -9525,7 +9525,7 @@
           trail.appendChild(stop);
         });
         trail.hidden = labels.length === 0;
-        trail.setAttribute('aria-label', 'Story trail for ' + view.label + ': ' + labels.length + ' beats');
+        trail.setAttribute('aria-label', '导览轨迹 for ' + view.label + ': ' + labels.length + ' beats');
         trail.scrollLeft = 0;
         svg.setAttribute('data-story-active', view.id);
 
@@ -9604,8 +9604,8 @@
         syncStoryPlayback();
         play.disabled = !playing && !automaticPlaybackAllowed;
         play.setAttribute('aria-pressed', playing ? 'true' : 'false');
-        play.setAttribute('aria-label', playing ? 'Pause guided story' : (!automaticPlaybackAllowed ? 'Story playback unavailable while motion is Still' : (storyPlaybackComplete ? 'Replay guided story' : 'Play guided story')));
-        play.title = playing ? 'Pause guided story (P)' : (!automaticPlaybackAllowed ? 'Switch motion to Live to play the guided story' : (storyPlaybackComplete ? 'Replay guided story (P)' : 'Play guided story (P)'));
+        play.setAttribute('aria-label', playing ? 'Pause guided story' : (!automaticPlaybackAllowed ? 'Story playback unavailable while motion is Still' : (storyPlaybackComplete ? 'Replay guided story' : '播放导览')));
+        play.title = playing ? 'Pause guided story (P)' : (!automaticPlaybackAllowed ? 'Switch motion to Live to play the guided story' : (storyPlaybackComplete ? 'Replay guided story (P)' : '播放导览 (P)'));
         playIcon.textContent = playing ? '\u2016' : '\u25b6';
         playLabel.textContent = playing ? 'Pause' : (storyPlaybackComplete ? 'Replay story' : 'Play story');
         if (storyCaption && !storyCaption.hidden) storyCaption.setAttribute('aria-live', playing ? 'off' : 'polite');
@@ -9836,7 +9836,7 @@
         cancelHandoff('overview');
         activeIndex = -1;
         renderStoryTrail(null);
-        if (options.clearFocus !== false) Archify.focus.clear({ updateUrl: false });
+        if (options.clear定位 !== false) Archify.focus.clear({ updateUrl: false });
         if (options.resetView !== false && Archify.view && typeof Archify.view.reset === 'function') {
           Archify.view.reset({ automatic: true });
         }
@@ -10632,7 +10632,7 @@
           rect.setAttribute('data-kind', node.getAttribute('data-node-kind') || 'neutral');
           rect.setAttribute('tabindex', '0');
           rect.setAttribute('role', 'button');
-          rect.setAttribute('aria-label', 'Focus ' + nodeLabel(node, id) + ' from Semantic Radar');
+          rect.setAttribute('aria-label', '定位 ' + nodeLabel(node, id) + ' from Semantic Radar');
           nodeLayer.appendChild(rect);
           nodes.push({ id: id, node: node, rect: rect });
         });
@@ -10733,7 +10733,7 @@
           panel.style.removeProperty('--archify-radar-right');
           panel.style.removeProperty('--archify-radar-left');
           panel.style.removeProperty('--archify-radar-top');
-          if (options.restoreFocus === true) trigger.focus();
+          if (options.restore定位 === true) trigger.focus();
         }
         return next;
       }
@@ -10880,8 +10880,8 @@
 
       function render(next) {
         btn.setAttribute('aria-pressed', next ? 'true' : 'false');
-        btn.setAttribute('aria-label', next ? 'Exit presentation stage' : 'Enter presentation stage');
-        btn.title = next ? 'Exit presentation stage (F or Escape)' : 'Presentation stage (F)';
+        btn.setAttribute('aria-label', next ? 'Exit presentation stage' : '进入演示模式');
+        btn.title = next ? 'Exit presentation stage (F or Escape)' : '演示模式 (F)';
         icon.textContent = next ? '\u00d7' : '\u25a1';
         label.textContent = next ? 'Exit' : 'Present';
       }
@@ -11085,7 +11085,7 @@
             ? 'Choose ' + item.label + ' as route start'
             : context.kind === 'route-target'
               ? 'Choose ' + item.label + ' as route destination, ' + badge
-              : 'Focus ' + item.label + ', ' + item.links + ' related connection' + (item.links === 1 ? '' : 's');
+              : '定位 ' + item.label + ', ' + item.links + ' related connection' + (item.links === 1 ? '' : 's');
           button.setAttribute('aria-label', action);
 
           var name = document.createElement('strong');
@@ -11133,8 +11133,8 @@
         trigger.setAttribute('aria-expanded', 'false');
         input.value = '';
         if (routeContext && Archify.routeProbe && typeof Archify.routeProbe.finderClosed === 'function') {
-          Archify.routeProbe.finderClosed({ restoreFocus: options.restoreFocus !== false });
-        } else if (options.restoreFocus !== false) {
+          Archify.routeProbe.finderClosed({ restoreFocus: options.restore定位 !== false });
+        } else if (options.restore定位 !== false) {
           trigger.focus();
         }
       }
@@ -11417,7 +11417,7 @@
       }
       function setTrigger(active) {
         trigger.setAttribute('aria-pressed', active ? 'true' : 'false');
-        trigger.setAttribute('aria-label', active ? 'Clear traced route' : 'Trace a directed route');
+        trigger.setAttribute('aria-label', active ? 'Clear traced route' : '追踪路径');
       }
       function clear(options) {
         options = options || {};
@@ -11448,7 +11448,7 @@
           Archify.view.reset({ automatic: true });
         }
         if (options.updateUrl !== false) replaceRouteHash('');
-        if (options.restoreFocus === true) trigger.focus();
+        if (options.restore定位 === true) trigger.focus();
       }
       function outgoingByNode() {
         var byId = nodesById();
@@ -12047,7 +12047,7 @@
         options = options || {};
         panel.removeAttribute('data-finder-open');
         requestDocking();
-        if (options.restoreFocus === true && !findBtn.hidden) findBtn.focus();
+        if (options.restore定位 === true && !findBtn.hidden) findBtn.focus();
       }
       function openFinder() {
         var context = finderContext();
@@ -12113,15 +12113,15 @@
         options = options || {};
         if (journeyPlaying) {
           pauseJourney({ preserveElapsed: true });
-          if (options.restoreFocus === true) journeyPlayBtn.focus();
+          if (options.restore定位 === true) journeyPlayBtn.focus();
           return 'paused';
         }
         if (journeyIndex >= 0) {
           showJourneyOverview({ reveal: true });
-          if (options.restoreFocus === true) journeyOverviewBtn.focus();
+          if (options.restore定位 === true) journeyOverviewBtn.focus();
           return 'overview';
         }
-        clear({ restoreFocus: options.restoreFocus === true });
+        clear({ restoreFocus: options.restore定位 === true });
         return 'cleared';
       }
       function syncJourneyMotion() {
@@ -12676,7 +12676,7 @@
         panel.hidden = true;
         trigger.setAttribute('aria-expanded', 'false');
         updateTrigger();
-        if (options.restoreFocus !== false && lensOpener && typeof lensOpener.focus === 'function') lensOpener.focus();
+        if (options.restore定位 !== false && lensOpener && typeof lensOpener.focus === 'function') lensOpener.focus();
         return false;
       }
       function open(options) {
@@ -12928,7 +12928,7 @@
         trigger.setAttribute('aria-expanded', 'false');
         trigger.setAttribute('aria-label', 'Open diagram guide');
         feedback.textContent = '';
-        if (options.restoreFocus !== false) trigger.focus();
+        if (options.restore定位 !== false) trigger.focus();
         return false;
       }
       function open() {
@@ -12949,7 +12949,7 @@
         html.setAttribute('data-guide-open', 'true');
         routePanel.setAttribute('data-guide-open', 'true');
         trigger.setAttribute('aria-expanded', 'true');
-        trigger.setAttribute('aria-label', 'Close diagram guide');
+        trigger.setAttribute('aria-label', '关闭指南');
         feedback.textContent = '';
         requestAnimationFrame(function () {
           var first = actionButtons()[0];
