@@ -25,7 +25,7 @@ if (!type) {
 const SPEC = type === 'architecture' ? AR_SPEC : WF_SPEC;
 console.log(`渲染${type}图...`);
 execSync(
-  `node "${path.join(ARCHIFY, 'bin', 'archify.mjs')}" deliver ${type} "${SPEC}" "${OUT}" --quality showcase --json`,
+  `node "${path.join(ARCHIFY, 'bin', 'archify.mjs')}" deliver ${type} "${SPEC}" "${OUT}" --quality standard --json`,
   { stdio: ['ignore', 'inherit', 'inherit'] }
 );
 

@@ -1,6 +1,6 @@
 {
   "name": "resume-expert-team",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "多智能体简历评估专家团 - Electron 桌面应用",
   "main": "main.js",
   "author": "Resume Expert Team",

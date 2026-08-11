@@ -6,9 +6,9 @@
     "subtitle": "三 Agent 并行评估流水线 · Electron 桌面应用",
     "animation": "none",
     "visual_preset": "signal-flow",
-    "quality_profile": "showcase",
+    "quality_profile": "standard",
     "viewBox": [
-      1440,
+      1620,
       1000
     ]
   },
@@ -105,7 +105,7 @@
       "label": "岗位匹配专家",
       "sublabel": "匹配度 · 补强路线",
       "pos": [
-        1010,
+        880,
         620
       ],
       "size": [
@@ -120,8 +120,8 @@
       "label": "可视化报告专家",
       "sublabel": "双 JSON → 单文件 HTML",
       "pos": [
-        1230,
-        240
+        1385,
+        620
       ],
       "size": [
         150,
@@ -135,8 +135,8 @@
       "label": "DeepSeek API",
       "sublabel": "deepseek-chat",
       "pos": [
-        720,
-        830
+        1400,
+        850
       ],
       "size": [
         150,
@@ -212,7 +212,19 @@
       "to": "ability",
       "label": "简历全文",
       "variant": "emphasis",
-      "width": 1.8
+      "width": 1.8,
+      "fromSide": "top",
+      "toSide": "top",
+      "via": [
+        [
+          855,
+          130
+        ],
+        [
+          1085,
+          130
+        ]
+      ]
     },
     {
       "id": "c-orch-jdmatch",
@@ -220,21 +232,47 @@
       "to": "jdmatch",
       "label": "简历 + JD",
       "variant": "emphasis",
-      "width": 1.8
+      "width": 1.8,
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          855,
+          560
+        ],
+        [
+          955,
+          560
+        ]
+      ]
     },
     {
       "id": "c-ability-report",
       "from": "ability",
       "to": "report",
       "variant": "emphasis",
-      "width": 2.2
+      "width": 2.2,
+      "fromSide": "right",
+      "toSide": "top",
+      "via": [
+        [
+          1460,
+          275
+        ],
+        [
+          1460,
+          620
+        ]
+      ]
     },
     {
       "id": "c-jdmatch-report",
       "from": "jdmatch",
       "to": "report",
       "variant": "emphasis",
-      "width": 1.8
+      "width": 1.8,
+      "fromSide": "right",
+      "toSide": "left"
     },
     {
       "id": "c-report-ui",
@@ -242,69 +280,58 @@
       "to": "ui",
       "label": "HTML 报告",
       "variant": "emphasis",
-      "fromSide": "bottom",
-      "toSide": "bottom",
+      "width": 2.2,
+      "fromSide": "top",
+      "toSide": "top",
       "via": [
         [
-          1305,
-          920
+          1460,
+          40
         ],
         [
           345,
-          920
+          40
         ]
-      ],
-      "width": 2.2
+      ]
+    },
+    {
+      "id": "c-ability-ds",
+      "from": "ability",
+      "to": "ds",
+      "variant": "security",
+      "width": 1.2,
+      "fromSide": "bottom",
+      "toSide": "top"
     },
     {
       "id": "c-jdmatch-ds",
       "from": "jdmatch",
       "to": "ds",
-      "label": "deepseek-chat",
       "variant": "security",
+      "width": 1.2,
       "fromSide": "bottom",
-      "toSide": "top",
-      "labelAt": [
-        1125,
-        715
-      ],
-      "labelDy": 24,
-      "width": 1.2
+      "toSide": "top"
     },
     {
       "id": "c-report-ds",
       "from": "report",
       "to": "ds",
       "variant": "security",
+      "width": 1.2,
       "fromSide": "bottom",
-      "toSide": "top",
-      "via": [
-        [
-          1305,
-          700
-        ],
-        [
-          795,
-          700
-        ]
-      ],
-      "width": 1.2
+      "toSide": "top"
     },
     {
       "id": "c-main-gh",
       "from": "main",
       "to": "gh",
-      "label": "检查更新",
       "variant": "default",
-      "fromSide": "right",
+      "width": 1.2,
+      "fromSide": "top",
       "toSide": "right",
       "via": [
         [
-          720,
-          186
-        ],
-        [
-          720,
+          595,
           55
         ],
         [
@@ -314,9 +341,12 @@
         [
           1210,
           91
+        ],
+        [
+          1160,
+          91
         ]
-      ],
-      "width": 1.2
+      ]
     }
   ],
   "cards": [
