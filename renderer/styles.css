@@ -571,7 +571,7 @@ textarea::placeholder { color: var(--text-dim); }
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
   overflow: hidden;
-  height: 560px;
+  height: 640px;
 }
 
 .workflow-frame-wrap iframe {

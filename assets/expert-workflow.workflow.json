@@ -7,35 +7,165 @@
     "animation": "none",
     "visual_preset": "signal-flow",
     "quality_profile": "showcase",
-    "viewBox": [1080, 720]
+    "viewBox": [
+      1440,
+      760
+    ]
   },
   "lanes": [
-    { "id": "ui", "label": "用户界面" },
-    { "id": "server", "label": "本地服务" },
-    { "id": "expA", "label": "专家团 · 能力透视" },
-    { "id": "expB", "label": "专家团 · 岗位匹配" }
+    {
+      "id": "ui",
+      "label": "用户界面"
+    },
+    {
+      "id": "server",
+      "label": "本地服务"
+    },
+    {
+      "id": "expA",
+      "label": "专家团 · 能力透视"
+    },
+    {
+      "id": "expB",
+      "label": "专家团 · 岗位匹配"
+    }
   ],
   "phases": [
-    { "id": "intake", "label": "输入", "fromCol": 0, "toCol": 1 },
-    { "id": "parallel", "label": "并行分析", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
-    { "id": "render", "label": "渲染交付", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+    {
+      "id": "intake",
+      "label": "输入",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "parallel",
+      "label": "并行分析",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "render",
+      "label": "渲染交付",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "dashed"
+    }
   ],
-  "mainPath": ["input", "orchestrator", "ability", "report", "preview"],
+  "mainPath": [
+    "input",
+    "orchestrator",
+    "ability",
+    "report",
+    "preview"
+  ],
   "nodes": [
-    { "id": "input", "lane": "ui", "col": 0, "type": "external", "label": "简历 + JD", "sublabel": "粘贴文本 · JD 可选" },
-    { "id": "orchestrator", "lane": "server", "col": 1, "type": "backend", "label": "任务编排", "sublabel": "Express · taskId 轮询" },
-    { "id": "jdmatch", "lane": "expB", "col": 2, "type": "backend", "label": "岗位匹配专家", "sublabel": "匹配度 · 补强路线", "tag": "需 JD · 并行", "width": 120 },
-    { "id": "ability", "lane": "expA", "col": 3, "type": "backend", "label": "能力透视专家", "sublabel": "雷达 · 竞争力 · 风险", "tag": "并行", "width": 120 },
-    { "id": "report", "lane": "expA", "col": 5, "type": "backend", "label": "可视化报告专家", "sublabel": "双 JSON → HTML", "tag": "串行收尾", "width": 110 },
-    { "id": "preview", "lane": "ui", "col": 5, "type": "frontend", "label": "预览 + 导出", "sublabel": "iframe · 导出 HTML" }
+    {
+      "id": "input",
+      "lane": "ui",
+      "col": 0,
+      "type": "external",
+      "label": "简历 + JD",
+      "sublabel": "粘贴文本"
+    },
+    {
+      "id": "orchestrator",
+      "lane": "server",
+      "col": 1,
+      "type": "backend",
+      "label": "任务编排",
+      "sublabel": "Express 轮询"
+    },
+    {
+      "id": "ability",
+      "lane": "expA",
+      "col": 3,
+      "type": "backend",
+      "label": "能力透视专家",
+      "sublabel": "雷达 · 风险点",
+      "tag": "并行"
+    },
+    {
+      "id": "jdmatch",
+      "lane": "expB",
+      "col": 2,
+      "type": "backend",
+      "label": "岗位匹配专家",
+      "sublabel": "匹配 · 补强",
+      "tag": "需 JD · 并行"
+    },
+    {
+      "id": "report",
+      "lane": "expA",
+      "col": 5,
+      "type": "backend",
+      "label": "可视化报告专家",
+      "sublabel": "双 JSON → HTML",
+      "tag": "串行收尾"
+    },
+    {
+      "id": "preview",
+      "lane": "ui",
+      "col": 5,
+      "type": "frontend",
+      "label": "预览 + 导出",
+      "sublabel": "iframe · 导出"
+    }
   ],
   "edges": [
-    { "id": "e-input-orch", "from": "input", "to": "orchestrator", "label": "创建任务", "variant": "emphasis" },
-    { "id": "e-orch-ability", "from": "orchestrator", "to": "ability", "variant": "emphasis" },
-    { "id": "e-orch-jdmatch", "from": "orchestrator", "to": "jdmatch", "variant": "default", "role": "branch" },
-    { "id": "e-ability-report", "from": "ability", "to": "report", "label": "ability_report", "variant": "emphasis", "labelAt": [530, 322] },
-    { "id": "e-jdmatch-report", "from": "jdmatch", "to": "report", "label": "match_report", "variant": "default", "role": "branch", "labelAt": [430, 480] },
-    { "id": "e-report-preview", "from": "report", "to": "preview", "label": "单文件 HTML", "variant": "emphasis" }
+    {
+      "id": "e-input-orch",
+      "from": "input",
+      "to": "orchestrator",
+      "label": "创建任务",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e-orch-ability",
+      "from": "orchestrator",
+      "to": "ability",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e-orch-jdmatch",
+      "from": "orchestrator",
+      "to": "jdmatch",
+      "variant": "default",
+      "role": "branch",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "drop"
+    },
+    {
+      "id": "e-ability-report",
+      "from": "ability",
+      "to": "report",
+      "label": "ability_report",
+      "variant": "emphasis",
+      "labelAt": [
+        500,
+        322
+      ]
+    },
+    {
+      "id": "e-jdmatch-report",
+      "from": "jdmatch",
+      "to": "report",
+      "label": "match_report",
+      "variant": "default",
+      "role": "branch",
+      "labelAt": [
+        430,
+        470
+      ]
+    },
+    {
+      "id": "e-report-preview",
+      "from": "report",
+      "to": "preview",
+      "label": "单文件 HTML",
+      "variant": "emphasis"
+    }
   ],
   "cards": [
     {

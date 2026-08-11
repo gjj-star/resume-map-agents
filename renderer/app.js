@@ -274,6 +274,21 @@ function ensureUtf8(html) {
   return '<meta charset="UTF-8">' + html;
 }
 
+// 向同域 iframe 注入样式：隐藏原生滚动条（保留滚轮滚动能力），深色主题下原生滚动条太突兀
+function hideIframeScrollbars(iframe) {
+  iframe.addEventListener('load', () => {
+    try {
+      const doc = iframe.contentDocument;
+      if (!doc) return;
+      const style = doc.createElement('style');
+      style.textContent =
+        '::-webkit-scrollbar{width:0!important;height:0!important}' +
+        'html,body{scrollbar-width:none!important}';
+      doc.head.appendChild(style);
+    } catch (_) { /* 跨域时放弃，不影响功能 */ }
+  });
+}
+
 function renderReport(html) {
   reportHtml = ensureUtf8(html);
   $('exportBtn').disabled = false;
@@ -282,8 +297,15 @@ function renderReport(html) {
   const iframe = document.createElement('iframe');
   iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts');
   iframe.setAttribute('srcdoc', reportHtml);
+  hideIframeScrollbars(iframe);
   wrap.appendChild(iframe);
 }
+
+// 专家介绍页工作流图 iframe：同样隐藏滚动条
+(function () {
+  const wf = document.getElementById('workflowFrame');
+  if (wf) hideIframeScrollbars(wf);
+})();
 
 // ===== 导出 HTML =====
 $('exportBtn').addEventListener('click', () => {
