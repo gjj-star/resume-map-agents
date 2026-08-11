@@ -1,60 +1,173 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const net = require('net');
-const { autoUpdater } = require('electron-updater');
+const https = require('https');
+const fs = require('fs');
+const crypto = require('crypto');
+const { spawn } = require('child_process');
 
 let mainWindow = null;
 let serverInstance = null;
 let serverPort = 3456;
-let updatePrompted = false;
 
-// ===== 自动更新 =====
-autoUpdater.autoDownload = true;
-autoUpdater.autoInstallOnAppQuit = true;
+// ===== 自动更新（自建通道）=====
+// 为什么不用 electron-updater：它的 GitHub provider 下载走 github.com 主域，
+// 本机网络主域稳定超时（api.github.com 与 objects.githubusercontent.com 正常）。
+// 自实现：查询 latest release + 下载 asset 全部走 api.github.com（asset API 会 302 到可用 CDN）。
+const UPDATE_OWNER = 'gjj-star';
+const UPDATE_REPO = 'resume-map-agents';
+let downloadedInstaller = null;
+
+function httpsGet(u, accept = 'application/vnd.github+json', redirects = 0) {
+  return new Promise((resolve, reject) => {
+    const url = new URL(u);
+    const req = https.request({
+      hostname: url.hostname,
+      path: url.pathname + url.search,
+      headers: { 'User-Agent': 'resume-expert-team-updater', Accept: accept },
+      timeout: 30000,
+    }, (res) => {
+      if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location && redirects < 5) {
+        res.resume();
+        resolve(httpsGet(res.headers.location, accept, redirects + 1));
+      } else {
+        resolve(res);
+      }
+    });
+    req.on('error', reject);
+    req.on('timeout', () => req.destroy(new Error('请求超时')));
+    req.end();
+  });
+}
+
+function readBody(res) {
+  return new Promise((resolve, reject) => {
+    let d = '';
+    res.on('data', (c) => (d += c));
+    res.on('end', () => resolve(d));
+    res.on('error', reject);
+  });
+}
+
+function isNewer(latest, current) {
+  const a = String(latest).replace(/^v/, '').split('.').map(Number);
+  const b = String(current).replace(/^v/, '').split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    if ((a[i] || 0) > (b[i] || 0)) return true;
+    if ((a[i] || 0) < (b[i] || 0)) return false;
+  }
+  return false;
+}
+
+function downloadAsset(assetId, destPath, onProgress) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await httpsGet(
+        `https://api.github.com/repos/${UPDATE_OWNER}/${UPDATE_REPO}/releases/assets/${assetId}`,
+        'application/octet-stream'
+      );
+      if (res.statusCode !== 200) {
+        res.resume();
+        reject(new Error('下载失败: HTTP ' + res.statusCode));
+        return;
+      }
+      const total = Number(res.headers['content-length'] || 0);
+      let done = 0;
+      const file = fs.createWriteStream(destPath);
+      res.on('data', (c) => {
+        done += c.length;
+        if (total > 0 && onProgress) onProgress(done, total);
+      });
+      res.pipe(file);
+      file.on('finish', () => file.close(resolve));
+      file.on('error', reject);
+      res.on('error', reject);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+async function checkAndDownloadUpdate() {
+  const send = (data) => mainWindow?.webContents.send('update-status', data);
+
+  const res = await httpsGet(`https://api.github.com/repos/${UPDATE_OWNER}/${UPDATE_REPO}/releases/latest`);
+  if (res.statusCode !== 200) {
+    res.resume();
+    throw new Error('查询更新失败: HTTP ' + res.statusCode);
+  }
+  const release = JSON.parse(await readBody(res));
+  const latestVer = String(release.tag_name || '').replace(/^v/, '');
+  if (!latestVer || !isNewer(latestVer, app.getVersion())) {
+    send({ status: 'latest' });
+    return;
+  }
+
+  send({ status: 'downloading', version: latestVer, percent: 0 });
+
+  const assets = release.assets || [];
+  const exeAsset = assets.find((a) => /setup\.exe$/i.test(a.name));
+  const ymlAsset = assets.find((a) => a.name === 'latest.yml');
+  if (!exeAsset) throw new Error('release 中未找到安装包');
+
+  // 从 latest.yml 取 sha512 用于完整性校验
+  let expectedSha512 = null;
+  if (ymlAsset) {
+    const yr = await httpsGet(
+      `https://api.github.com/repos/${UPDATE_OWNER}/${UPDATE_REPO}/releases/assets/${ymlAsset.id}`,
+      'application/octet-stream'
+    );
+    const yml = await readBody(yr);
+    const m = yml.match(/^sha512:\s*(.+)$/m);
+    if (m) expectedSha512 = m[1].trim();
+  }
+
+  const dest = path.join(app.getPath('temp'), `resume-expert-team-${latestVer}-setup.exe`);
+  await downloadAsset(exeAsset.id, dest, (done, total) => {
+    send({ status: 'downloading', version: latestVer, percent: Math.round((done / total) * 100) });
+  });
+
+  if (expectedSha512) {
+    const actual = crypto.createHash('sha512').update(fs.readFileSync(dest)).digest('base64');
+    if (actual !== expectedSha512) {
+      try { fs.unlinkSync(dest); } catch (_) {}
+      throw new Error('安装包完整性校验失败（sha512 不匹配）');
+    }
+  }
+
+  downloadedInstaller = dest;
+  send({ status: 'downloaded', version: latestVer });
+}
 
 function setupAutoUpdater() {
   // 仅在打包版（非 --dev / 非开发模式）启用自动更新
   if (process.argv.includes('--dev') || !app.isPackaged) return;
 
-  autoUpdater.on('update-available', (info) => {
-    console.log('[updater] 发现新版本:', info.version);
-    mainWindow?.webContents.send('update-status', { status: 'downloading', version: info.version });
-  });
-
-  autoUpdater.on('update-downloaded', (info) => {
-    console.log('[updater] 新版本下载完成:', info.version);
-    mainWindow?.webContents.send('update-status', { status: 'downloaded', version: info.version });
-  });
-
-  autoUpdater.on('error', (err) => {
-    console.error('[updater] 检查更新失败:', err.message);
-    mainWindow?.webContents.send('update-status', { status: 'error', message: err.message });
-  });
-
-  autoUpdater.on('update-not-available', () => {
-    console.log('[updater] 已是最新版本');
-    mainWindow?.webContents.send('update-status', { status: 'latest' });
-  });
-
   // 延迟几秒检查，避免影响启动速度
   setTimeout(() => {
-    autoUpdater.checkForUpdates().catch((e) => console.error('[updater] check failed:', e.message));
+    checkAndDownloadUpdate().catch((e) => {
+      console.error('[updater] 检查更新失败:', e.message);
+      mainWindow?.webContents.send('update-status', { status: 'error', message: e.message });
+    });
   }, 5000);
 }
 
 // 渲染进程请求安装更新
 ipcMain.handle('install-update', async () => {
+  if (!downloadedInstaller || !fs.existsSync(downloadedInstaller)) return false;
   const choice = await dialog.showMessageBox(mainWindow, {
     type: 'info',
     title: '简历评估专家团',
     message: '新版本已下载完成，是否立即重启安装？',
-    detail: '重启后应用将自动更新到最新版本。',
-    buttons: ['立即重启', '稍后'],
+    detail: '应用将退出并启动安装向导，按提示完成安装即可。',
+    buttons: ['立即安装', '稍后'],
     defaultId: 0,
     cancelId: 1,
   });
   if (choice.response === 0) {
-    setImmediate(() => autoUpdater.quitAndInstall());
+    const child = spawn(downloadedInstaller, [], { detached: true, stdio: 'ignore' });
+    child.unref();
+    setTimeout(() => app.quit(), 1500);
     return true;
   }
   return false;

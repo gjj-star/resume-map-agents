@@ -358,7 +358,8 @@ function initAutoUpdate() {
   window.electronAPI.onUpdateStatus((data) => {
     if (data.status === 'downloading') {
       bar.style.display = 'flex';
-      text.textContent = `发现新版本 v${data.version}，正在后台下载...`;
+      const pct = typeof data.percent === 'number' ? ` ${data.percent}%` : '';
+      text.textContent = `发现新版本 v${data.version}，正在后台下载${pct}...`;
       installBtn.style.display = 'none';
     } else if (data.status === 'downloaded') {
       bar.style.display = 'flex';
