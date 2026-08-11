@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "简历评估专家团 · 系统架构",
+    "subtitle": "三 Agent 并行评估流水线 · Electron 桌面应用",
+    "animation": "none",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1440,
+      1000
+    ]
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "候选人",
+      "sublabel": "粘贴简历 + JD",
+      "pos": [
+        60,
+        430
+      ],
+      "size": [
+        110,
+        64
+      ]
+    },
+    {
+      "id": "ui",
+      "type": "frontend",
+      "label": "渲染进程 UI",
+      "sublabel": "轮询 · 预览 · 导出",
+      "pos": [
+        280,
+        430
+      ],
+      "size": [
+        130,
+        70
+      ]
+    },
+    {
+      "id": "main",
+      "type": "backend",
+      "label": "Electron 主进程",
+      "sublabel": "窗口 · preload 桥 · 更新器",
+      "pos": [
+        520,
+        150
+      ],
+      "size": [
+        150,
+        72
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Express API",
+      "sublabel": "/analyze · /status · /health",
+      "pos": [
+        520,
+        430
+      ],
+      "size": [
+        150,
+        70
+      ]
+    },
+    {
+      "id": "orch",
+      "type": "backend",
+      "label": "任务编排器",
+      "sublabel": "tasks Map · taskId 轮询",
+      "pos": [
+        780,
+        430
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "tag": "并行→串行"
+    },
+    {
+      "id": "ability",
+      "type": "backend",
+      "label": "能力透视专家",
+      "sublabel": "雷达 · 竞争力 · 风险",
+      "pos": [
+        1010,
+        240
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "tag": "AB 并行"
+    },
+    {
+      "id": "jdmatch",
+      "type": "backend",
+      "label": "岗位匹配专家",
+      "sublabel": "匹配度 · 补强路线",
+      "pos": [
+        1010,
+        620
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "tag": "需 JD"
+    },
+    {
+      "id": "report",
+      "type": "backend",
+      "label": "可视化报告专家",
+      "sublabel": "双 JSON → 单文件 HTML",
+      "pos": [
+        1230,
+        240
+      ],
+      "size": [
+        150,
+        72
+      ],
+      "tag": "串行收尾"
+    },
+    {
+      "id": "ds",
+      "type": "cloud",
+      "label": "DeepSeek API",
+      "sublabel": "deepseek-chat",
+      "pos": [
+        720,
+        830
+      ],
+      "size": [
+        150,
+        62
+      ]
+    },
+    {
+      "id": "gh",
+      "type": "cloud",
+      "label": "GitHub Releases",
+      "sublabel": "自动更新源",
+      "pos": [
+        1010,
+        60
+      ],
+      "size": [
+        150,
+        62
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "桌面应用（Electron）",
+      "wraps": [
+        "ui",
+        "main",
+        "api",
+        "orch",
+        "ability",
+        "jdmatch",
+        "report"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "外部服务",
+      "wraps": [
+        "ds",
+        "gh"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "c-user-ui",
+      "from": "user",
+      "to": "ui",
+      "label": "粘贴文本",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c-ui-api",
+      "from": "ui",
+      "to": "api",
+      "label": "POST /analyze",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c-api-orch",
+      "from": "api",
+      "to": "orch",
+      "label": "创建任务",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c-orch-ability",
+      "from": "orch",
+      "to": "ability",
+      "label": "简历全文",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c-orch-jdmatch",
+      "from": "orch",
+      "to": "jdmatch",
+      "label": "简历 + JD",
+      "variant": "dashed"
+    },
+    {
+      "id": "c-ability-report",
+      "from": "ability",
+      "to": "report",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c-jdmatch-report",
+      "from": "jdmatch",
+      "to": "report",
+      "variant": "dashed"
+    },
+    {
+      "id": "c-report-ui",
+      "from": "report",
+      "to": "ui",
+      "label": "HTML 报告",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [
+        [
+          1305,
+          920
+        ],
+        [
+          345,
+          920
+        ]
+      ]
+    },
+    {
+      "id": "c-jdmatch-ds",
+      "from": "jdmatch",
+      "to": "ds",
+      "label": "deepseek-chat",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        1125,
+        715
+      ],
+      "labelDy": 24
+    },
+    {
+      "id": "c-report-ds",
+      "from": "report",
+      "to": "ds",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1305,
+          700
+        ],
+        [
+          795,
+          700
+        ]
+      ]
+    },
+    {
+      "id": "c-main-gh",
+      "from": "main",
+      "to": "gh",
+      "label": "检查更新",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "right",
+      "via": [
+        [
+          720,
+          186
+        ],
+        [
+          720,
+          55
+        ],
+        [
+          1210,
+          55
+        ],
+        [
+          1210,
+          91
+        ]
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "主数据流",
+      "items": [
+        "粘贴简历 + JD → 本地 API → 任务编排",
+        "能力透视 / 岗位匹配并行评估",
+        "报告专家汇总双 JSON → 单文件 HTML",
+        "前端按 taskId 轮询进度并预览导出"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Agent 协作",
+      "items": [
+        "三专家均调用 DeepSeek API（deepseek-chat）",
+        "无 JD 时跳过岗位匹配，仅产出能力透视",
+        "报告专家等双 JSON 到齐后串行收尾"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "基础设施",
+      "items": [
+        "Express 本地服务 127.0.0.1:3456",
+        "API key 仅存 .env，不进仓库",
+        "自动更新走 GitHub Releases（自建通道）"
+      ]
+    }
+  ]
+}

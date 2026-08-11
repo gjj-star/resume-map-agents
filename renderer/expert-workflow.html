@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="archify 2.13.0">
-  <title>简历评估专家团 · 工作流 Diagram</title>
+  <title>简历评估专家团 · 系统架构 Diagram</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
     // see a dark flash. The toolbar script below re-applies with UI state.
@@ -4496,9 +4496,9 @@
     <div class="header">
       <div class="header-row">
         <div class="pulse-dot"></div>
-        <h1>简历评估专家团 · 工作流</h1>
+        <h1>简历评估专家团 · 系统架构</h1>
       </div>
-      <p class="subtitle">并行分析 → 汇总渲染 → 预览导出</p>
+      <p class="subtitle">三 Agent 并行评估流水线 · Electron 桌面应用</p>
     </div>
 
     <script id="archify-guided-views-data" type="application/json">[]</script>
@@ -4544,9 +4544,9 @@
 
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read">
-      <svg viewBox="0 0 1080 760" role="img" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="signal-flow" data-quality-profile="showcase">
-        <title id="archify-diagram-title">简历评估专家团 · 工作流</title>
-        <desc id="archify-diagram-description">并行分析 → 汇总渲染 → 预览导出</desc>
+      <svg viewBox="0 0 1440 1000" role="img" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="signal-flow" data-quality-profile="showcase">
+        <title id="archify-diagram-title">简历评估专家团 · 系统架构</title>
+        <desc id="archify-diagram-description">三 Agent 并行评估流水线 · Electron 桌面应用</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -4569,149 +4569,200 @@
         <!-- Background Grid -->
         <rect width="100%" height="100%" fill="url(#grid)" />
 
-        <!-- Swimlanes -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="640" height="104" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="74" class="t-dim" font-size="10" font-weight="600">01 / 用户界面</text>
+        <!-- Boundaries (behind everything) -->
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" x="250" y="120" width="1160" height="590" rx="12" class="c-region" stroke-width="1"/>
+        <text x="258" y="138" class="t-cloud" font-size="9" font-weight="600">桌面应用（Electron）</text>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-1" x="40" y="176" width="640" height="104" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="198" class="t-dim" font-size="10" font-weight="600">02 / 本地服务</text>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" x="690" y="30" width="500" height="882" rx="12" class="c-region" stroke-width="1"/>
+        <text x="698" y="48" class="t-cloud" font-size="9" font-weight="600">外部服务</text>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-2" x="40" y="300" width="640" height="104" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="322" class="t-dim" font-size="10" font-weight="600">03 / AI 专家团 · 并行分析</text>
+        <!-- Connection paths (before components for correct z-order) -->
+        <path data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴文本" data-edge-key="0" data-edge-id="c-user-ui" data-composition-points="170,462;194,462;194,481;256,481;256,465;280,465" d="M 170 462 L 186 462 Q 194 462 194 470 L 194 473 Q 194 481 202 481 L 248 481 Q 256 481 256 473 L 256 473 Q 256 465 264 465 L 280 465" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api" data-composition-points="410,465;520,465" d="M 410 465 L 520 465" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch" data-composition-points="670,465;780,465" d="M 670 465 L 780 465" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="orch" data-edge-to="ability" data-edge-label="简历全文" data-edge-key="3" data-edge-id="c-orch-ability" data-composition-points="930,458;970,458;970,275;1010,275" d="M 930 458 L 962 458 Q 970 458 970 450 L 970 283 Q 970 275 978 275 L 1010 275" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch" data-composition-points="930,472;970,472;970,655;1010,655" d="M 930 472 L 962 472 Q 970 472 970 480 L 970 647 Q 970 655 978 655 L 1010 655" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="ability" data-edge-to="report" data-edge-key="5" data-edge-id="c-ability-report" data-composition-points="1160,275;1184,275;1184,291;1206,291;1206,269;1230,269" d="M 1160 275 L 1176 275 Q 1184 275 1184 283 L 1184 283 Q 1184 291 1192 291 L 1198 291 Q 1206 291 1206 283 L 1206 277 Q 1206 269 1214 269 L 1230 269" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-key="6" data-edge-id="c-jdmatch-report" data-composition-points="1160,655;1195,655;1195,283;1230,283" d="M 1160 655 L 1187 655 Q 1195 655 1195 647 L 1195 291 Q 1195 283 1203 283 L 1230 283" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="report" data-edge-to="ui" data-edge-label="HTML 报告" data-edge-key="7" data-edge-id="c-report-ui" data-composition-points="1305,312;1305,920;345,920;345,500" d="M 1305 312 L 1305 912 Q 1305 920 1297 920 L 353 920 Q 345 920 345 912 L 345 500" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="8" data-edge-id="c-jdmatch-ds" data-composition-points="1085,690;1085,760;795,760;795,830" d="M 1085 690 L 1085 752 Q 1085 760 1077 760 L 803 760 Q 795 760 795 768 L 795 830" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="report" data-edge-to="ds" data-edge-key="9" data-edge-id="c-report-ds" data-composition-points="1305,312;1305,700;795,700;795,830" d="M 1305 312 L 1305 692 Q 1305 700 1297 700 L 803 700 Q 795 700 795 708 L 795 830" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="10" data-edge-id="c-main-gh" data-composition-points="670,186;720,186;720,55;1210,55;1210,91;1160,91" d="M 670 186 L 712 186 Q 720 186 720 178 L 720 63 Q 720 55 728 55 L 1202 55 Q 1210 55 1210 63 L 1210 83 Q 1210 91 1202 91 L 1160 91" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-3" x="40" y="424" width="640" height="104" rx="10" class="c-lane" stroke-width="1"/>
-        <text x="54" y="446" class="t-dim" font-size="10" font-weight="600">04 / 报告渲染</text>
-
-        <!-- Phase headers -->
-        <line x1="42" y1="35" x2="266" y2="35" class="a-default" stroke-width="1.1"/>
-        <rect x="42" y="27" width="224" height="16" rx="4" class="c-mask"/>
-        <text x="154" y="39" class="t-muted" font-size="8" font-weight="600" text-anchor="middle">输入</text>
-        <line x1="254" y1="35" x2="546" y2="35" class="a-emphasis" stroke-width="1.1"/>
-        <rect x="254" y="27" width="292" height="16" rx="4" class="c-mask"/>
-        <text x="400" y="39" class="t-backend" font-size="8" font-weight="600" text-anchor="middle">并行分析</text>
-        <line x1="579" y1="35" x2="671" y2="35" class="a-dashed" stroke-width="1.1"/>
-        <rect x="579" y="27" width="92" height="16" rx="4" class="c-mask"/>
-        <text x="625" y="39" class="t-messagebus" font-size="8" font-weight="600" text-anchor="middle">渲染交付</text>
-
-        <!-- Workflow groups -->
-
-
-        <!-- Edge paths -->
-        <path data-edge-from="input" data-edge-to="orchestrator" data-edge-label="创建任务" data-edge-key="0" data-edge-id="e-input-orch" data-composition-points="134,119;220,119;220,217;220,217" d="M 134 119 L 220 119 L 220 217 L 220 217" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orchestrator" data-edge-to="ability" data-edge-key="1" data-edge-id="e-orch-ability" data-composition-points="220,269;220,290;300,290;300,333" d="M 220 269 L 220 290 L 300 290 L 300 333" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orchestrator" data-edge-to="jdmatch" data-edge-key="2" data-edge-id="e-orch-jdmatch" data-composition-points="266,243;500,243;500,333;500,333" d="M 266 243 L 500 243 L 500 333 L 500 333" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="3" data-edge-id="e-ability-report" data-composition-points="300,401;300,414;625,414;625,457" d="M 300 401 L 300 414 L 625 414 L 625 457" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="4" data-edge-id="e-jdmatch-report" data-composition-points="546,367;625,367;625,525;625,525" d="M 546 367 L 625 367 L 625 525 L 625 525" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
-        <path data-edge-from="report" data-edge-to="preview" data-edge-label="单文件 HTML" data-edge-key="5" data-edge-id="e-report-preview" data-composition-points="671,491;671,290;671,290;671,119" d="M 671 491 L 671 290 L 671 290 L 671 119" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-
-        <!-- Nodes -->
-        <g id="node-input" data-node-id="input" data-node-label="简历 + JD" tabindex="0" role="button" aria-label="定位 简历 + JD, 粘贴文本, 用户界面 › 输入" aria-pressed="false" data-node-kind="external" data-node-sublabel="粘贴文本" data-node-context="用户界面 › 输入">
-          <title>简历 + JD · 粘贴文本 · 用户界面 › 输入</title>
-          <rect x="42" y="93" width="92" height="52" rx="6" class="c-mask"/>
-          <rect x="42" y="93" width="92" height="52" rx="6" class="c-external" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(48 99) scale(0.6875)">
+        <!-- Components -->
+        <g id="node-user" data-node-id="user" data-node-label="候选人" tabindex="0" role="button" aria-label="定位 候选人, 粘贴简历 + JD, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="粘贴简历 + JD" data-node-context="Architecture component">
+          <title>候选人 · 粘贴简历 + JD · Architecture component</title>
+          <rect x="60" y="430" width="110" height="64" rx="6" class="c-mask"/>
+          <rect x="60" y="430" width="110" height="64" rx="6" class="c-external" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(66 436) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
-          <text data-detail-anchor x="88" y="114" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">简历 + JD</text>
-          <text data-detail="context" x="88" y="131" class="t-muted" font-size="8" text-anchor="middle">粘贴文本</text>
+          <text data-detail-anchor x="115" y="460" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">候选人</text>
+        <text data-detail="context" x="115" y="476" class="t-muted" font-size="9" text-anchor="middle">粘贴简历 + JD</text>
         </g>
 
-        <g id="node-orchestrator" data-node-id="orchestrator" data-node-label="任务编排" tabindex="0" role="button" aria-label="定位 任务编排, Express 轮询, 本地服务 › 输入" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Express 轮询" data-node-context="本地服务 › 输入">
-          <title>任务编排 · Express 轮询 · 本地服务 › 输入</title>
-          <rect x="174" y="217" width="92" height="52" rx="6" class="c-mask"/>
-          <rect x="174" y="217" width="92" height="52" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(180 223) scale(0.6875)">
-            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
-          </g>
-          <text data-detail-anchor x="220" y="238" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">任务编排</text>
-          <text data-detail="context" x="220" y="255" class="t-muted" font-size="8" text-anchor="middle">Express 轮询</text>
-        </g>
-
-        <g id="node-ability" data-node-id="ability" data-node-label="能力透视专家" tabindex="0" role="button" aria-label="定位 能力透视专家, 雷达 · 风险点, AI 专家团 · 并行分析 › 并行分析" aria-pressed="false" data-node-kind="backend" data-node-sublabel="雷达 · 风险点" data-node-tag="并行" data-node-context="AI 专家团 · 并行分析 › 并行分析">
-          <title>能力透视专家 · 雷达 · 风险点 · AI 专家团 · 并行分析 › 并行分析 · 并行</title>
-          <rect x="254" y="333" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="254" y="333" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(260 339) scale(0.6875)">
-            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
-          </g>
-          <text data-detail-anchor x="300" y="354" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">能力透视专家</text>
-          <text data-detail="context" x="300" y="371" class="t-muted" font-size="8" text-anchor="middle">雷达 · 风险点</text>
-        <text data-detail="fine" x="300" y="389" class="t-backend" font-size="7" text-anchor="middle">并行</text>
-        </g>
-
-        <g id="node-jdmatch" data-node-id="jdmatch" data-node-label="岗位匹配专家" tabindex="0" role="button" aria-label="定位 岗位匹配专家, 匹配 · 补强, AI 专家团 · 并行分析 › 并行分析" aria-pressed="false" data-node-kind="backend" data-node-sublabel="匹配 · 补强" data-node-tag="需 JD · 并行" data-node-context="AI 专家团 · 并行分析 › 并行分析">
-          <title>岗位匹配专家 · 匹配 · 补强 · AI 专家团 · 并行分析 › 并行分析 · 需 JD · 并行</title>
-          <rect x="454" y="333" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="454" y="333" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(460 339) scale(0.6875)">
-            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
-          </g>
-          <text data-detail-anchor x="500" y="354" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">岗位匹配专家</text>
-          <text data-detail="context" x="500" y="371" class="t-muted" font-size="8" text-anchor="middle">匹配 · 补强</text>
-        <text data-detail="fine" x="500" y="389" class="t-backend" font-size="7" text-anchor="middle">需 JD · 并行</text>
-        </g>
-
-        <g id="node-report" data-node-id="report" data-node-label="可视化报告专家" tabindex="0" role="button" aria-label="定位 可视化报告专家, 双 JSON → HTML, 报告渲染 › 渲染交付" aria-pressed="false" data-node-kind="backend" data-node-sublabel="双 JSON → HTML" data-node-tag="串行收尾" data-node-context="报告渲染 › 渲染交付">
-          <title>可视化报告专家 · 双 JSON → HTML · 报告渲染 › 渲染交付 · 串行收尾</title>
-          <rect x="579" y="457" width="92" height="68" rx="6" class="c-mask"/>
-          <rect x="579" y="457" width="92" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(585 463) scale(0.6875)">
-            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
-          </g>
-          <text data-detail-anchor x="625" y="478" class="t-primary" font-size="10" font-weight="600" text-anchor="middle">可视化报告专家</text>
-          <text data-detail="context" x="625" y="495" class="t-muted" font-size="8" text-anchor="middle">双 JSON → HTML</text>
-        <text data-detail="fine" x="625" y="513" class="t-backend" font-size="7" text-anchor="middle">串行收尾</text>
-        </g>
-
-        <g id="node-preview" data-node-id="preview" data-node-label="预览 + 导出" tabindex="0" role="button" aria-label="定位 预览 + 导出, iframe · 导出, 用户界面 › 渲染交付" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="iframe · 导出" data-node-context="用户界面 › 渲染交付">
-          <title>预览 + 导出 · iframe · 导出 · 用户界面 › 渲染交付</title>
-          <rect x="579" y="93" width="92" height="52" rx="6" class="c-mask"/>
-          <rect x="579" y="93" width="92" height="52" rx="6" class="c-frontend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(585 99) scale(0.6875)">
+        <g id="node-ui" data-node-id="ui" data-node-label="渲染进程 UI" tabindex="0" role="button" aria-label="定位 渲染进程 UI, 轮询 · 预览 · 导出, 桌面应用（Electron）" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="轮询 · 预览 · 导出" data-node-context="桌面应用（Electron）">
+          <title>渲染进程 UI · 轮询 · 预览 · 导出 · 桌面应用（Electron）</title>
+          <rect x="280" y="430" width="130" height="70" rx="6" class="c-mask"/>
+          <rect x="280" y="430" width="130" height="70" rx="6" class="c-frontend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(286 436) scale(0.6875)">
             <rect x="2" y="3" width="12" height="10" rx="2"/>
             <path d="M2 6.5h12"/>
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-detail-anchor x="625" y="114" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">预览 + 导出</text>
-          <text data-detail="context" x="625" y="131" class="t-muted" font-size="8" text-anchor="middle">iframe · 导出</text>
+          <text data-detail-anchor x="345" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">渲染进程 UI</text>
+        <text data-detail="context" x="345" y="479" class="t-muted" font-size="9" text-anchor="middle">轮询 · 预览 · 导出</text>
         </g>
 
-        <!-- Edge labels -->
-        <g data-detail="context" data-edge-from="input" data-edge-to="orchestrator" data-edge-label="创建任务" data-edge-key="0" data-edge-id="e-input-orch">
-          <rect x="195.8" y="148" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="220" y="158" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
+        <g id="node-main" data-node-id="main" data-node-label="Electron 主进程" tabindex="0" role="button" aria-label="定位 Electron 主进程, 窗口 · preload 桥 · 更新器, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="窗口 · preload 桥 · 更新器" data-node-context="桌面应用（Electron）">
+          <title>Electron 主进程 · 窗口 · preload 桥 · 更新器 · 桌面应用（Electron）</title>
+          <rect x="520" y="150" width="150" height="72" rx="6" class="c-mask"/>
+          <rect x="520" y="150" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(526 156) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-detail-anchor x="595" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Electron 主进程</text>
+        <text data-detail="context" x="595" y="200" class="t-muted" font-size="9" text-anchor="middle">窗口 · preload 桥 · 更新器</text>
+        </g>
+
+        <g id="node-api" data-node-id="api" data-node-label="Express API" tabindex="0" role="button" aria-label="定位 Express API, /analyze · /status · /health, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="/analyze · /status · /health" data-node-context="桌面应用（Electron）">
+          <title>Express API · /analyze · /status · /health · 桌面应用（Electron）</title>
+          <rect x="520" y="430" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="520" y="430" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(526 436) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-detail-anchor x="595" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Express API</text>
+        <text data-detail="context" x="595" y="479" class="t-muted" font-size="8.4" text-anchor="middle">/analyze · /status · /health</text>
+        </g>
+
+        <g id="node-orch" data-node-id="orch" data-node-label="任务编排器" tabindex="0" role="button" aria-label="定位 任务编排器, tasks Map · taskId 轮询, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="tasks Map · taskId 轮询" data-node-tag="并行→串行" data-node-context="桌面应用（Electron）">
+          <title>任务编排器 · tasks Map · taskId 轮询 · 桌面应用（Electron） · 并行→串行</title>
+          <rect x="780" y="430" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="780" y="430" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(786 436) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-detail-anchor x="855" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">任务编排器</text>
+        <text data-detail="context" x="855" y="479" class="t-muted" font-size="9" text-anchor="middle">tasks Map · taskId 轮询</text>
+        <text data-detail="fine" x="855" y="492" class="t-backend" font-size="7" text-anchor="middle">并行→串行</text>
+        </g>
+
+        <g id="node-ability" data-node-id="ability" data-node-label="能力透视专家" tabindex="0" role="button" aria-label="定位 能力透视专家, 雷达 · 竞争力 · 风险, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="雷达 · 竞争力 · 风险" data-node-tag="AB 并行" data-node-context="桌面应用（Electron）">
+          <title>能力透视专家 · 雷达 · 竞争力 · 风险 · 桌面应用（Electron） · AB 并行</title>
+          <rect x="1010" y="240" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="1010" y="240" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1016 246) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-detail-anchor x="1085" y="273" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">能力透视专家</text>
+        <text data-detail="context" x="1085" y="289" class="t-muted" font-size="9" text-anchor="middle">雷达 · 竞争力 · 风险</text>
+        <text data-detail="fine" x="1085" y="302" class="t-backend" font-size="7" text-anchor="middle">AB 并行</text>
+        </g>
+
+        <g id="node-jdmatch" data-node-id="jdmatch" data-node-label="岗位匹配专家" tabindex="0" role="button" aria-label="定位 岗位匹配专家, 匹配度 · 补强路线, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="匹配度 · 补强路线" data-node-tag="需 JD" data-node-context="桌面应用（Electron）">
+          <title>岗位匹配专家 · 匹配度 · 补强路线 · 桌面应用（Electron） · 需 JD</title>
+          <rect x="1010" y="620" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="1010" y="620" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1016 626) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-detail-anchor x="1085" y="653" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">岗位匹配专家</text>
+        <text data-detail="context" x="1085" y="669" class="t-muted" font-size="9" text-anchor="middle">匹配度 · 补强路线</text>
+        <text data-detail="fine" x="1085" y="682" class="t-backend" font-size="7" text-anchor="middle">需 JD</text>
+        </g>
+
+        <g id="node-report" data-node-id="report" data-node-label="可视化报告专家" tabindex="0" role="button" aria-label="定位 可视化报告专家, 双 JSON → 单文件 HTML, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="双 JSON → 单文件 HTML" data-node-tag="串行收尾" data-node-context="桌面应用（Electron）">
+          <title>可视化报告专家 · 双 JSON → 单文件 HTML · 桌面应用（Electron） · 串行收尾</title>
+          <rect x="1230" y="240" width="150" height="72" rx="6" class="c-mask"/>
+          <rect x="1230" y="240" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1236 246) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-detail-anchor x="1305" y="274" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">可视化报告专家</text>
+        <text data-detail="context" x="1305" y="290" class="t-muted" font-size="9" text-anchor="middle">双 JSON → 单文件 HTML</text>
+        <text data-detail="fine" x="1305" y="304" class="t-backend" font-size="7" text-anchor="middle">串行收尾</text>
+        </g>
+
+        <g id="node-ds" data-node-id="ds" data-node-label="DeepSeek API" tabindex="0" role="button" aria-label="定位 DeepSeek API, deepseek-chat, 外部服务" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="deepseek-chat" data-node-context="外部服务">
+          <title>DeepSeek API · deepseek-chat · 外部服务</title>
+          <rect x="720" y="830" width="150" height="62" rx="6" class="c-mask"/>
+          <rect x="720" y="830" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(726 836) scale(0.6875)">
+            <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
+          </g>
+          <text data-detail-anchor x="795" y="859" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">DeepSeek API</text>
+        <text data-detail="context" x="795" y="875" class="t-muted" font-size="9" text-anchor="middle">deepseek-chat</text>
+        </g>
+
+        <g id="node-gh" data-node-id="gh" data-node-label="GitHub Releases" tabindex="0" role="button" aria-label="定位 GitHub Releases, 自动更新源, 外部服务" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="自动更新源" data-node-context="外部服务">
+          <title>GitHub Releases · 自动更新源 · 外部服务</title>
+          <rect x="1010" y="60" width="150" height="62" rx="6" class="c-mask"/>
+          <rect x="1010" y="60" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(1016 66) scale(0.6875)">
+            <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
+          </g>
+          <text data-detail-anchor x="1085" y="89" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">GitHub Releases</text>
+        <text data-detail="context" x="1085" y="105" class="t-muted" font-size="9" text-anchor="middle">自动更新源</text>
+        </g>
+
+        <!-- Connection labels -->
+        <g data-detail="context" data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴文本" data-edge-key="0" data-edge-id="c-user-ui">
+          <rect x="169.8" y="451.5" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="194" y="461.5" class="t-backend" font-size="8" text-anchor="middle">粘贴文本</text>
+        </g>
+        <g data-detail="context" data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api">
+          <rect x="428.8" y="445" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="465" y="455" class="t-backend" font-size="8" text-anchor="middle">POST /analyze</text>
+        </g>
+        <g data-detail="context" data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch">
+          <rect x="700.8" y="445" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="725" y="455" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
+        </g>
+        <g data-detail="context" data-edge-from="orch" data-edge-to="ability" data-edge-label="简历全文" data-edge-key="3" data-edge-id="c-orch-ability">
+          <rect x="945.8" y="346.5" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="970" y="356.5" class="t-backend" font-size="8" text-anchor="middle">简历全文</text>
+        </g>
+        <g data-detail="context" data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch">
+          <rect x="943.4" y="543.5" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="970" y="553.5" class="t-messagebus" font-size="8" text-anchor="middle">简历 + JD</text>
         </g>
 
 
-        <g data-detail="context" data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="3" data-edge-id="e-ability-report">
-          <rect x="417.4" y="405" width="77.2" height="14" rx="3" class="c-mask"/>
-          <text x="456" y="415" class="t-backend" font-size="8" text-anchor="middle">ability_report</text>
+        <g data-detail="context" data-edge-from="report" data-edge-to="ui" data-edge-label="HTML 报告" data-edge-key="7" data-edge-id="c-report-ui">
+          <rect x="798.4" y="900" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="825" y="910" class="t-backend" font-size="8" text-anchor="middle">HTML 报告</text>
         </g>
-        <g data-detail="context" data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="4" data-edge-id="e-jdmatch-report">
-          <rect x="551.2" y="425" width="67.6" height="14" rx="3" class="c-mask"/>
-          <text x="585" y="435" class="t-muted" font-size="8" text-anchor="middle">match_report</text>
+        <g data-detail="context" data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="8" data-edge-id="c-jdmatch-ds">
+          <rect x="1088.8" y="705" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="1125" y="715" class="t-messagebus" font-size="8" text-anchor="middle">deepseek-chat</text>
         </g>
-        <g data-detail="context" data-edge-from="report" data-edge-to="preview" data-edge-label="单文件 HTML" data-edge-key="5" data-edge-id="e-report-preview">
-          <rect x="639.6" y="270" width="62.8" height="14" rx="3" class="c-mask"/>
-          <text x="671" y="280" class="t-backend" font-size="8" text-anchor="middle">单文件 HTML</text>
+
+        <g data-detail="context" data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="10" data-edge-id="c-main-gh">
+          <rect x="695.8" y="100.5" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="720" y="110.5" class="t-messagebus" font-size="8" text-anchor="middle">检查更新</text>
         </g>
 
         <!-- Legend -->
         <g data-legend data-legend-bridge>
-          <text x="20" y="552" class="t-primary" font-size="10" font-weight="600">图例</text>
-          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="界面" data-legend-x="20" data-legend-baseline="572" data-legend-width="73">
-            <rect x="20" y="564" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
-            <text x="41" y="572" class="t-muted" font-size="7">User UI</text>
+          <text x="40" y="964" class="t-primary" font-size="10" font-weight="600">图例</text>
+          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="Frontend" data-legend-x="40" data-legend-baseline="984" data-legend-width="82">
+            <rect x="40" y="976" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
+            <text x="61" y="984" class="t-muted" font-size="8">Frontend</text>
           </g>
-          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="服务逻辑" data-legend-x="100" data-legend-baseline="572" data-legend-width="90">
-            <rect x="100" y="564" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
-            <text x="121" y="572" class="t-muted" font-size="7">Agent logic</text>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Backend" data-legend-x="144" data-legend-baseline="984" data-legend-width="77">
+            <rect x="144" y="976" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
+            <text x="165" y="984" class="t-muted" font-size="8">Backend</text>
           </g>
-          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="外部输入" data-legend-x="197" data-legend-baseline="572" data-legend-width="108">
-            <rect x="197" y="564" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
-            <text x="218" y="572" class="t-muted" font-size="7">External system</text>
+          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="Cloud" data-legend-x="243" data-legend-baseline="984" data-legend-width="67">
+            <rect x="243" y="976" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
+            <text x="264" y="984" class="t-muted" font-size="8">Cloud</text>
+          </g>
+          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External" data-legend-x="332" data-legend-baseline="984" data-legend-width="82">
+            <rect x="332" y="976" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
+            <text x="353" y="984" class="t-muted" font-size="8">External</text>
           </g>
         </g>
       </svg>
@@ -4900,20 +4951,44 @@
       <div class="card">
         <div class="card-header">
           <div class="card-dot cyan"></div>
-          <h3>协作机制</h3>
+          <h3>主数据流</h3>
         </div>
         <ul>
-          <li>&bull; 能力透视与岗位匹配并行调用 DeepSeek API</li>
+          <li>&bull; 粘贴简历 + JD → 本地 API → 任务编排</li>
+          <li>&bull; 能力透视 / 岗位匹配并行评估</li>
+          <li>&bull; 报告专家汇总双 JSON → 单文件 HTML</li>
+          <li>&bull; 前端按 taskId 轮询进度并预览导出</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>Agent 协作</h3>
+        </div>
+        <ul>
+          <li>&bull; 三专家均调用 DeepSeek API（deepseek-chat）</li>
           <li>&bull; 无 JD 时跳过岗位匹配，仅产出能力透视</li>
           <li>&bull; 报告专家等双 JSON 到齐后串行收尾</li>
-          <li>&bull; 前端按 taskId 轮询进度，全程可视化</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot rose"></div>
+          <h3>基础设施</h3>
+        </div>
+        <ul>
+          <li>&bull; Express 本地服务 127.0.0.1:3456</li>
+          <li>&bull; API key 仅存 .env，不进仓库</li>
+          <li>&bull; 自动更新走 GitHub Releases（自建通道）</li>
         </ul>
       </div>
     </div>
 
     <!-- Footer -->
     <p class="footer">
-      Workflow diagram &bull; Built with Archify<span class="no-print"> &bull; <a class="artifact-start-link" href="https://tt-a1i.github.io/archify/start.html?type=workflow&amp;source=artifact" target="_blank" rel="noopener noreferrer">Create yours &nearr;</a> &bull; Hover to trace &bull; <kbd>R</kbd> route &bull; Click to focus &bull; <kbd>+</kbd>/<kbd>&minus;</kbd> zoom &bull; <kbd>M</kbd> radar &bull; <kbd>T</kbd> theme &bull; <kbd>E</kbd> export</span>
+      Architecture diagram &bull; Built with Archify<span class="no-print"> &bull; <a class="artifact-start-link" href="https://tt-a1i.github.io/archify/start.html?type=architecture&amp;source=artifact" target="_blank" rel="noopener noreferrer">Create yours &nearr;</a> &bull; Hover to trace &bull; <kbd>R</kbd> route &bull; Click to focus &bull; <kbd>+</kbd>/<kbd>&minus;</kbd> zoom &bull; <kbd>M</kbd> radar &bull; <kbd>T</kbd> theme &bull; <kbd>E</kbd> export</span>
     </p>
   </div>
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
- * build-workflow.js — 重新生成专家介绍页工作流图（archify deliver + 菜单中文化）
+ * build-workflow.js — 重新生成专家介绍页架构/工作流图（archify deliver + 菜单中文化）
  *
- * 用法: node scripts/build-workflow.js
- * 输入: assets/expert-workflow.workflow.json
+ * 用法: node scripts/build-workflow.js [architecture|workflow]
+ *   默认按 assets/ 下存在的 spec 推断；传参则显式指定类型。
+ * 输入: assets/expert-workflow.workflow.json 或 assets/expert-architecture.architecture.json
  * 输出: renderer/expert-workflow.html（渲染 + 中文化后）
  */
 const { execSync } = require('child_process');
@@ -11,14 +12,20 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SPEC = path.join(ROOT, 'assets', 'expert-workflow.workflow.json');
 const OUT = path.join(ROOT, 'renderer', 'expert-workflow.html');
 const ARCHIFY = process.env.ARCHIFY_HOME || path.join(process.env.USERPROFILE || '', '.workbuddy', 'skills', 'archify');
 
-// ===== 1. archify deliver =====
-console.log('渲染工作流图...');
+// 推断类型：显式参数 > assets/ 里存在的 spec
+const WF_SPEC = path.join(ROOT, 'assets', 'expert-workflow.workflow.json');
+const AR_SPEC = path.join(ROOT, 'assets', 'expert-architecture.architecture.json');
+let type = process.argv[2];
+if (!type) {
+  type = fs.existsSync(AR_SPEC) ? 'architecture' : 'workflow';
+}
+const SPEC = type === 'architecture' ? AR_SPEC : WF_SPEC;
+console.log(`渲染${type}图...`);
 execSync(
-  `node "${path.join(ARCHIFY, 'bin', 'archify.mjs')}" deliver workflow "${SPEC}" "${OUT}" --quality showcase --json`,
+  `node "${path.join(ARCHIFY, 'bin', 'archify.mjs')}" deliver ${type} "${SPEC}" "${OUT}" --quality showcase --json`,
   { stdio: ['ignore', 'inherit', 'inherit'] }
 );
 
