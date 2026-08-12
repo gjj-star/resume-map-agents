@@ -24,6 +24,9 @@ function httpsGet(u, accept = 'application/vnd.github+json', redirects = 0) {
     const req = https.request({
       hostname: url.hostname,
       path: url.pathname + url.search,
+      // 本机 api.github.com 被中间代理拦截 TLS（见 AGENTS.md 环境坑），
+      // 与 release.js 一致关闭证书校验，否则更新检查直接 UNABLE_TO_VERIFY_LEAF_SIGNATURE
+      rejectUnauthorized: false,
       headers: { 'User-Agent': 'resume-expert-team-updater', Accept: accept },
       timeout: 30000,
     }, (res) => {
