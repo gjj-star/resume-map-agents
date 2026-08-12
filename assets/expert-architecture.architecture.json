@@ -3,14 +3,23 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "简历评估专家团 · 系统架构",
-    "subtitle": "三 Agent 并行评估流水线 · Electron 桌面应用",
     "animation": "none",
     "visual_preset": "signal-flow",
-    "quality_profile": "standard",
-    "viewBox": [
-      1900,
-      1080
-    ]
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/gjj-star/resume-map-agents",
+      "revision": "0905bb82628aec0214e979706721df2411fcf04a"
+    },
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": { "label": "前端界面" },
+        "backend": { "label": "后端服务" },
+        "cloud": { "label": "外部云服务" },
+        "external": { "label": "外部用户" }
+      }
+    },
+    "viewBox": [1660, 800]
   },
   "components": [
     {
@@ -18,167 +27,127 @@
       "type": "external",
       "label": "候选人",
       "sublabel": "粘贴简历 + JD",
-      "pos": [
-        60,
-        430
-      ],
-      "size": [
-        110,
-        64
-      ]
+      "pos": [145, 230],
+      "size": [120, 64]
     },
     {
       "id": "ui",
       "type": "frontend",
       "label": "渲染进程 UI",
       "sublabel": "轮询 · 预览 · 导出",
-      "pos": [
-        320,
-        430
+      "sources": [
+        { "path": "renderer/index.html" },
+        { "path": "renderer/app.js" }
       ],
-      "size": [
-        130,
-        70
-      ]
-    },
-    {
-      "id": "main",
-      "type": "backend",
-      "label": "Electron 主进程",
-      "sublabel": "窗口 · preload 桥 · 更新器",
-      "pos": [
-        600,
-        150
-      ],
-      "size": [
-        150,
-        72
-      ]
+      "pos": [140, 630],
+      "size": [130, 70]
     },
     {
       "id": "api",
       "type": "backend",
       "label": "Express API",
       "sublabel": "/analyze · /status · /health",
-      "pos": [
-        600,
-        430
+      "sources": [
+        { "path": "server/index.js" }
       ],
-      "size": [
-        150,
-        70
-      ]
+      "pos": [380, 630],
+      "size": [150, 70]
     },
     {
       "id": "orch",
       "type": "backend",
       "label": "任务编排器",
-      "sublabel": "tasks Map · taskId 轮询",
-      "pos": [
-        920,
-        430
+      "sublabel": "tasks Map · 并行调度",
+      "tag": "并行→串行",
+      "sources": [
+        { "path": "server/agents.js" }
       ],
-      "size": [
-        150,
-        70
-      ],
-      "tag": "并行→串行"
+      "pos": [640, 430],
+      "size": [170, 90]
     },
     {
       "id": "ability",
       "type": "backend",
       "label": "能力透视专家",
       "sublabel": "雷达 · 竞争力 · 风险",
-      "pos": [
-        1180,
-        240
+      "tag": "并行",
+      "sources": [
+        { "path": "server/agents.js" },
+        { "path": "server/prompts.js" }
       ],
-      "size": [
-        150,
-        70
-      ],
-      "tag": "AB 并行"
+      "pos": [900, 230],
+      "size": [150, 70]
     },
     {
       "id": "jdmatch",
       "type": "backend",
       "label": "岗位匹配专家",
       "sublabel": "匹配度 · 补强路线",
-      "pos": [
-        1020,
-        620
+      "tag": "需 JD",
+      "sources": [
+        { "path": "server/agents.js" },
+        { "path": "server/prompts.js" }
       ],
-      "size": [
-        150,
-        70
-      ],
-      "tag": "需 JD"
+      "pos": [900, 630],
+      "size": [150, 70]
     },
     {
       "id": "report",
       "type": "backend",
       "label": "可视化报告专家",
       "sublabel": "双 JSON → 单文件 HTML",
-      "pos": [
-        1585,
-        620
+      "tag": "串行收尾",
+      "sources": [
+        { "path": "server/agents.js" },
+        { "path": "server/prompts.js" }
       ],
-      "size": [
-        150,
-        72
-      ],
-      "tag": "串行收尾"
+      "pos": [1160, 430],
+      "size": [150, 72]
     },
     {
       "id": "ds",
       "type": "cloud",
       "label": "DeepSeek API",
       "sublabel": "deepseek-chat",
-      "pos": [
-        1600,
-        850
+      "sources": [
+        { "path": "server/agents.js" }
       ],
-      "size": [
-        150,
-        62
-      ]
+      "pos": [1420, 430],
+      "size": [150, 62]
+    },
+    {
+      "id": "main",
+      "type": "backend",
+      "label": "Electron 主进程",
+      "sublabel": "窗口 · preload · 更新器",
+      "sources": [
+        { "path": "main.js" }
+      ],
+      "pos": [380, 230],
+      "size": [150, 72]
     },
     {
       "id": "gh",
       "type": "cloud",
       "label": "GitHub Releases",
       "sublabel": "自动更新源",
-      "pos": [
-        1180,
-        60
+      "sources": [
+        { "path": "main.js" }
       ],
-      "size": [
-        150,
-        62
-      ]
+      "pos": [1420, 230],
+      "size": [150, 62]
     }
   ],
   "boundaries": [
     {
       "kind": "region",
-      "label": "桌面应用（Electron）",
-      "wraps": [
-        "ui",
-        "main",
-        "api",
-        "orch",
-        "ability",
-        "jdmatch",
-        "report"
-      ]
+      "label": "桌面",
+      "wraps": ["user", "ui", "main", "api", "orch", "ability", "jdmatch", "report"]
     },
     {
       "kind": "region",
       "label": "外部服务",
-      "wraps": [
-        "ds",
-        "gh"
-      ]
+      "wraps": ["ds", "gh"]
     }
   ],
   "connections": [
@@ -186,9 +155,12 @@
       "id": "c-user-ui",
       "from": "user",
       "to": "ui",
-      "label": "粘贴文本",
+      "label": "粘贴简历 + JD",
       "variant": "emphasis",
-      "width": 2.2
+      "width": 2.2,
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
     },
     {
       "id": "c-ui-api",
@@ -196,7 +168,10 @@
       "to": "api",
       "label": "POST /analyze",
       "variant": "emphasis",
-      "width": 2.2
+      "width": 2.2,
+      "fromSide": "right",
+      "toSide": "left",
+      "labelDy": -12
     },
     {
       "id": "c-api-orch",
@@ -204,7 +179,11 @@
       "to": "orch",
       "label": "创建任务",
       "variant": "emphasis",
-      "width": 2.2
+      "width": 2.2,
+      "fromSide": "right",
+      "toSide": "bottom",
+      "labelSegment": 0,
+      "labelDy": -12
     },
     {
       "id": "c-orch-ability",
@@ -214,17 +193,7 @@
       "variant": "emphasis",
       "width": 1.8,
       "fromSide": "top",
-      "toSide": "top",
-      "via": [
-        [
-          995,
-          130
-        ],
-        [
-          1255,
-          130
-        ]
-      ]
+      "toSide": "bottom"
     },
     {
       "id": "c-orch-jdmatch",
@@ -234,154 +203,108 @@
       "variant": "emphasis",
       "width": 1.8,
       "fromSide": "bottom",
-      "toSide": "top",
-      "via": [
-        [
-          995,
-          560
-        ],
-        [
-          1095,
-          560
-        ]
-      ]
+      "toSide": "top"
     },
     {
       "id": "c-ability-report",
       "from": "ability",
       "to": "report",
+      "label": "ability_report",
       "variant": "emphasis",
-      "width": 2.2,
-      "fromSide": "right",
-      "toSide": "top",
-      "via": [
-        [
-          1660,
-          275
-        ],
-        [
-          1660,
-          620
-        ]
-      ],
-      "label": "ability_report"
+      "width": 1.8,
+      "fromSide": "bottom",
+      "toSide": "top"
     },
     {
       "id": "c-jdmatch-report",
       "from": "jdmatch",
       "to": "report",
+      "label": "match_report",
       "variant": "emphasis",
       "width": 1.8,
-      "fromSide": "right",
-      "toSide": "left",
-      "label": "match_report",
-      "labelDy": 50
-    },
-    {
-      "id": "c-report-ui",
-      "from": "report",
-      "to": "ui",
-      "label": "HTML 报告",
-      "variant": "emphasis",
-      "width": 2.2,
       "fromSide": "top",
-      "toSide": "top",
-      "via": [
-        [
-          1660,
-          40
-        ],
-        [
-          385,
-          40
-        ]
-      ]
+      "toSide": "bottom"
     },
     {
       "id": "c-ability-ds",
       "from": "ability",
       "to": "ds",
+      "label": "能力透视",
       "variant": "security",
       "width": 1.2,
-      "fromSide": "bottom",
-      "toSide": "top",
-      "label": "deepseek-chat"
+      "fromSide": "right",
+      "toSide": "left"
     },
     {
       "id": "c-jdmatch-ds",
       "from": "jdmatch",
       "to": "ds",
+      "label": "岗位匹配",
       "variant": "security",
       "width": 1.2,
-      "fromSide": "bottom",
-      "toSide": "bottom",
-      "label": "deepseek-chat",
-      "via": [
-        [
-          1095,
-          690
-        ],
-        [
-          1095,
-          940
-        ],
-        [
-          1675,
-          940
-        ]
-      ]
+      "fromSide": "right",
+      "toSide": "left"
     },
     {
       "id": "c-report-ds",
       "from": "report",
       "to": "ds",
+      "label": "生成 HTML",
       "variant": "security",
       "width": 1.2,
+      "labelDx": -10
+    },
+    {
+      "id": "c-report-orch",
+      "from": "report",
+      "to": "orch",
+      "label": "写回报告",
+      "variant": "dashed",
+      "width": 1.2
+    },
+    {
+      "id": "c-orch-api",
+      "from": "orch",
+      "to": "api",
+      "label": "读取状态",
+      "variant": "dashed",
+      "width": 1.2,
+      "fromSide": "left",
+      "toSide": "top",
+      "labelSegment": 0,
+      "labelDy": -12
+    },
+    {
+      "id": "c-api-ui",
+      "from": "api",
+      "to": "ui",
+      "label": "轮询 /status",
+      "variant": "dashed",
+      "width": 1.2,
+      "fromSide": "left",
+      "toSide": "right",
+      "labelDy": 12
+    },
+    {
+      "id": "c-main-api",
+      "from": "main",
+      "to": "api",
+      "label": "启动 Express",
+      "variant": "default",
+      "width": 1.2,
       "fromSide": "bottom",
-      "toSide": "left",
-      "label": "deepseek-chat",
-      "via": [
-        [
-          1660,
-          760
-        ],
-        [
-          1585,
-          760
-        ],
-        [
-          1585,
-          881
-        ]
-      ]
+      "toSide": "top",
+      "labelDy": 24
     },
     {
       "id": "c-main-gh",
       "from": "main",
       "to": "gh",
+      "label": "检查更新",
       "variant": "default",
       "width": 1.2,
       "fromSide": "top",
-      "toSide": "right",
-      "via": [
-        [
-          675,
-          55
-        ],
-        [
-          1380,
-          55
-        ],
-        [
-          1380,
-          91
-        ],
-        [
-          1330,
-          91
-        ]
-      ],
-      "label": "检查更新"
+      "toSide": "top"
     }
   ],
   "cards": [
@@ -392,7 +315,7 @@
         "粘贴简历 + JD → 本地 API → 任务编排",
         "能力透视 / 岗位匹配并行评估",
         "报告专家汇总双 JSON → 单文件 HTML",
-        "前端按 taskId 轮询进度并预览导出"
+        "前端轮询 /status 取回报告并预览导出"
       ]
     },
     {

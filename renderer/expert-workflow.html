@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="generator" content="archify 2.13.0">
+  <meta name="generator" content="archify 2.14.0">
   <title>简历评估专家团 · 系统架构 Diagram</title>
   <script>
     // Resolve the theme before first paint so light-preference users don't
@@ -50,7 +50,7 @@
       --text: #ffffff;
       --text-muted: #94a3b8;
       --text-dim: #475569;
-      /* UI chrome (menu hints, footer) needs more contrast than SVG .t-dim accents */
+      /* UI chrome and menu hints need more contrast than SVG .t-dim accents */
       --text-faint: #7d8da1;
 
       --panel: rgba(15, 23, 42, 0.5);
@@ -397,7 +397,6 @@
     html[data-embed="true"] .toolbar,
     html[data-embed="true"] .header,
     html[data-embed="true"] .cards,
-    html[data-embed="true"] .footer,
     html[data-embed="true"] .diagram-nav,
     html[data-embed="true"] .overview-map,
     html[data-embed="true"] .focus-chip,
@@ -593,16 +592,29 @@
       height: 100%;
       min-width: 0;
     }
-    html[data-present="true"]:not([data-embed="true"]) .cards,
-    html[data-present="true"]:not([data-embed="true"]) .footer { display: none; }
+    html[data-present="true"]:not([data-embed="true"]) .cards { display: none; }
     html[data-present="true"]:not([data-embed="true"]) #btn-present {
       border-color: var(--frontend-stroke);
       color: var(--frontend-stroke);
     }
 
-    .container { max-width: 1200px; margin: 0 auto; }
+    /* The reader owns only the outer scale. Wide diagrams keep one authored
+       SVG/viewBox while the runtime chooses a desktop width from the actual
+       vertical budget. This avoids device-specific files and breakpoint
+       jumps between a laptop and a tall monitor. */
+    .container {
+      width: 100%;
+      max-width: var(--archify-reader-width, 1440px);
+      margin: 0 auto;
+    }
+    @media (min-width: 768px) and (max-height: 920px) {
+      .header { margin-bottom: 1rem; }
+      .diagram-container { padding: 1rem; }
+      .cards { margin-top: 1rem; }
+      .card { padding: 1rem; }
+    }
 
-    .header { margin-bottom: 2rem; padding-right: 29.5rem; }
+    .header { margin-bottom: 1.5rem; padding-right: 29.5rem; }
 
     html[data-preset="signal-flow"] .header,
     html[data-preset="blueprint"] .header,
@@ -903,14 +915,18 @@
       z-index: 12;
       display: inline-flex;
       align-items: center;
-      padding: 0.25rem;
-      gap: 0.2rem;
-      border: 1px solid var(--toolbar-border);
-      border-radius: 0.65rem;
-      background: var(--toolbar-bg);
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+      max-width: calc(100% - 2rem);
+      padding: 0.15rem;
+      gap: 0;
+      overflow-x: auto;
+      border: 1px solid color-mix(in srgb, var(--toolbar-border) 48%, transparent);
+      border-radius: 0.58rem;
+      background: color-mix(in srgb, var(--toolbar-bg) 82%, transparent);
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.07);
       backdrop-filter: blur(10px);
+      scrollbar-width: none;
     }
+    .diagram-nav::-webkit-scrollbar { display: none; }
     .diagram-nav button,
     .focus-chip button,
     .guided-views button {
@@ -923,10 +939,13 @@
     .diagram-nav button {
       min-width: 2rem;
       height: 2rem;
-      padding: 0 0.45rem;
-      border-radius: 0.4rem;
-      font-size: 0.75rem;
+      padding: 0 0.35rem;
+      border-radius: 0.35rem;
+      color: color-mix(in srgb, var(--toolbar-text) 68%, transparent);
+      font-size: 0.56rem;
       font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, color 0.15s;
     }
     .diagram-nav button:hover,
     .diagram-nav button:focus-visible,
@@ -941,11 +960,86 @@
       outline-offset: 1px;
     }
     .diagram-nav button:disabled { opacity: 0.38; cursor: default; }
-    .diagram-nav [data-view="reset"] { min-width: 3.35rem; font-size: 0.625rem; }
-    .diagram-container[data-camera-indicator="true"] .diagram-nav [data-view="reset"] {
-      min-width: 5.2rem;
-      color: var(--frontend-stroke);
+    .diagram-nav button:disabled:hover { background: transparent; }
+    .diagram-nav #btn-route-probe,
+    .diagram-nav #btn-overview-map,
+    .diagram-nav #btn-semantic-lens {
+      min-width: auto;
+      padding-inline: 0.5rem;
+      color: color-mix(in srgb, var(--toolbar-text) 86%, transparent);
+      font-weight: 650;
     }
+    .diagram-nav #btn-node-finder,
+    .diagram-nav [data-view="out"] {
+      position: relative;
+      margin-left: 0.25rem;
+    }
+    .diagram-nav #btn-node-finder::before,
+    .diagram-nav [data-view="out"]::before {
+      position: absolute;
+      top: 0.4rem;
+      bottom: 0.4rem;
+      left: -0.13rem;
+      width: 1px;
+      background: color-mix(in srgb, var(--toolbar-border) 62%, transparent);
+      content: "";
+      pointer-events: none;
+    }
+    .diagram-nav-icon {
+      display: block;
+      width: 0.72rem;
+      height: 0.72rem;
+      margin: auto;
+      background: currentColor;
+      -webkit-mask-position: center;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: contain;
+      mask-position: center;
+      mask-repeat: no-repeat;
+      mask-size: contain;
+    }
+    .diagram-nav-icon.find {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='8.5' cy='8.5' r='4.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3Cpath d='m12 12 4 4' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='8.5' cy='8.5' r='4.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3Cpath d='m12 12 4 4' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+    .diagram-nav-icon.guide {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='7' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M7.8 7.3a2.4 2.4 0 014.6.9c0 1.8-2.4 2-2.4 3.7M10 14.9h.01' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='7' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M7.8 7.3a2.4 2.4 0 014.6.9c0 1.8-2.4 2-2.4 3.7M10 14.9h.01' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+    .diagram-nav-icon.minus {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10h10' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10h10' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+    .diagram-nav-icon.plus {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 5v10M5 10h10' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 5v10M5 10h10' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+    .diagram-nav [data-view="reset"] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.2rem;
+      min-width: 3.1rem;
+      padding-inline: 0.35rem;
+    }
+    .diagram-nav [data-view="reset"][data-detail-visible] {
+      min-width: 3.8rem;
+    }
+    .diagram-nav-detail {
+      color: color-mix(in srgb, var(--toolbar-text) 52%, transparent);
+      font-size: 0.44rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.07em;
+    }
+    .diagram-nav-percent {
+      color: color-mix(in srgb, var(--toolbar-text) 84%, transparent);
+      font-size: 0.55rem;
+      font-weight: 650;
+      line-height: 1;
+    }
+    .diagram-container[data-camera-indicator="true"] .diagram-nav-detail,
+    .diagram-container[data-camera-indicator="true"] .diagram-nav-percent { color: var(--frontend-stroke); }
     .diagram-nav #btn-diagram-guide[aria-expanded="true"] {
       color: var(--cloud-stroke);
       background: var(--toolbar-hover);
@@ -2696,6 +2790,20 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82), 0 12px 32px rgba(45, 78, 99, 0.08);
     }
 
+    /* Preserve the one-screen guarantee on ordinary laptop displays. The
+       high-screen expansion above must not trade a fuller canvas for page
+       scrolling at 900–1080px heights. */
+    @media (min-width: 768px) and (max-height: 1100px) {
+      .header { margin-bottom: 1rem; }
+      .diagram-container { padding: 0.875rem; }
+      .cards { margin-top: 1rem; }
+      .card { padding: 1rem; }
+    }
+    @media (min-width: 768px) and (max-height: 920px) {
+      .header { margin-bottom: 0.875rem; }
+      .cards { margin-top: 0.75rem; }
+    }
+
     html[data-preset="blueprint"] .card {
       position: relative;
       border-color: var(--panel-border);
@@ -2758,26 +2866,6 @@
     }
 
     .card li { margin-bottom: 0.375rem; }
-
-    .footer {
-      text-align: center;
-      margin-top: 1.5rem;
-      color: var(--text-faint);
-      font-size: 0.75rem;
-    }
-
-    .footer .artifact-start-link {
-      color: var(--text-faint);
-      text-decoration-color: color-mix(in srgb, var(--frontend-stroke) 48%, transparent);
-      text-underline-offset: 0.22em;
-      transition: color 0.15s ease, text-decoration-color 0.15s ease;
-    }
-
-    .footer .artifact-start-link:hover,
-    .footer .artifact-start-link:focus-visible {
-      color: var(--frontend-stroke);
-      text-decoration-color: currentColor;
-    }
 
     /* ==========================================================
        Print stylesheet — hide interactive controls, force light,
@@ -2876,7 +2964,12 @@
       top: 1rem;
       right: 1rem;
       display: flex;
+      align-items: center;
       gap: 0.5rem;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
       z-index: 100;
     }
     .toolbar button {
@@ -2884,13 +2977,15 @@
       color: var(--toolbar-text);
       border: 1px solid var(--toolbar-border);
       padding: 0.5rem 0.875rem;
-      border-radius: 0.5rem;
+      border-radius: 0.625rem;
       font-family: inherit;
       font-size: 0.75rem;
       font-weight: 500;
       cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
       display: inline-flex;
       align-items: center;
       gap: 0.375rem;
@@ -2898,7 +2993,22 @@
     }
     .toolbar button:hover {
       background: var(--toolbar-hover);
-      border-color: var(--arrow);
+      border-color: color-mix(in srgb, var(--arrow) 62%, var(--toolbar-border));
+    }
+    .toolbar button[aria-expanded="true"],
+    .toolbar button[aria-pressed="true"]:not(#btn-theme) {
+      background: color-mix(in srgb, var(--frontend-stroke) 10%, var(--toolbar-hover));
+      border-color: color-mix(in srgb, var(--frontend-stroke) 48%, var(--toolbar-border));
+    }
+    .toolbar #btn-export {
+      padding-right: 0.82rem;
+      padding-left: 0.82rem;
+    }
+    .toolbar #btn-export:hover,
+    .toolbar #btn-export[aria-expanded="true"] {
+      color: var(--toolbar-text);
+      background: color-mix(in srgb, var(--frontend-stroke) 10%, var(--toolbar-hover));
+      border-color: color-mix(in srgb, var(--frontend-stroke) 54%, var(--toolbar-border));
     }
     .toolbar button:focus-visible {
       outline: 2px solid var(--frontend-stroke);
@@ -2907,7 +3017,49 @@
     .toolbar #btn-motion[hidden] { display: none !important; }
     .toolbar #btn-motion { min-width: 4.4rem; }
     .toolbar #btn-motion:disabled { cursor: default; opacity: 0.58; }
-    .toolbar .preset-wrap { position: relative; }
+    .toolbar .preset-wrap,
+    .toolbar .export-wrap {
+      position: relative;
+    }
+    .toolbar-icon {
+      display: inline-block;
+      width: 0.95rem;
+      height: 0.95rem;
+      flex: 0 0 auto;
+      background: currentColor;
+      -webkit-mask-position: center;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: contain;
+      mask-position: center;
+      mask-repeat: no-repeat;
+      mask-size: contain;
+    }
+    .toolbar-chevron {
+      width: 0.65rem;
+      height: 0.65rem;
+      transition: transform 0.15s ease;
+    }
+    [aria-expanded="true"] > .toolbar-chevron { transform: rotate(180deg); }
+    [data-theme="light"] #theme-icon {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'%3E%3Ccircle cx='10' cy='10' r='3.1'/%3E%3Cpath d='M10 2.2v1.4M10 16.4v1.4M2.2 10h1.4M16.4 10h1.4M4.5 4.5l1 1M14.5 14.5l1 1M15.5 4.5l-1 1M5.5 14.5l-1 1'/%3E%3C/g%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'%3E%3Ccircle cx='10' cy='10' r='3.1'/%3E%3Cpath d='M10 2.2v1.4M10 16.4v1.4M2.2 10h1.4M16.4 10h1.4M4.5 4.5l1 1M14.5 14.5l1 1M15.5 4.5l-1 1M5.5 14.5l-1 1'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    [data-theme="dark"] #theme-icon {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M15.2 12.7A6.3 6.3 0 017.3 4.8a6.3 6.3 0 107.9 7.9Z' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='round'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M15.2 12.7A6.3 6.3 0 017.3 4.8a6.3 6.3 0 107.9 7.9Z' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    #btn-present[aria-pressed="false"] #present-icon {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.2 3.2h-4v4M12.8 3.2h4v4M7.2 16.8h-4v-4M12.8 16.8h4v-4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.2 3.2h-4v4M12.8 3.2h4v4M7.2 16.8h-4v-4M12.8 16.8h4v-4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+    #btn-present[aria-pressed="true"] #present-icon {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.2 7.2h-4v-4M12.8 7.2h4v-4M7.2 12.8h-4v4M12.8 12.8h4v4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.2 7.2h-4v-4M12.8 7.2h4v-4M7.2 12.8h-4v4M12.8 12.8h4v4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+    .toolbar-chevron {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
     .toolbar #btn-preset { min-width: 5.4rem; }
     .preset-control-mark {
       width: 0.58rem;
@@ -2940,14 +3092,24 @@
       top: calc(100% + 0.375rem);
       right: 0;
       display: none;
-      width: 16.5rem;
-      padding: 0.4rem;
+      width: 18.5rem;
+      max-width: calc(100vw - 2rem);
+      padding: 0.45rem;
       border: 1px solid var(--toolbar-border);
-      border-radius: 0.5rem;
+      border-radius: 0.875rem;
       background: var(--toolbar-menu-bg);
-      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
     }
     .toolbar .preset-menu.open { display: block; }
+    .toolbar .preset-menu.open,
+    .toolbar .export-menu.open {
+      animation: toolbar-menu-in 0.16s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transform-origin: top right;
+    }
+    @keyframes toolbar-menu-in {
+      from { opacity: 0; transform: translateY(-0.25rem) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
     .preset-menu-heading {
       display: flex;
       align-items: baseline;
@@ -2973,12 +3135,18 @@
       min-height: 3.35rem;
       padding: 0.5rem 0.62rem;
       border: 0;
-      border-radius: 0.34rem;
+      border-radius: 0.5rem;
       background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
       text-align: left;
     }
     .toolbar .preset-option:hover,
     .toolbar .preset-option:focus-visible { background: var(--toolbar-hover); }
+    .toolbar .preset-option[aria-checked="true"] {
+      background: color-mix(in srgb, var(--frontend-stroke) 9%, transparent);
+      border-color: color-mix(in srgb, var(--frontend-stroke) 36%, transparent);
+    }
     .preset-option-swatch {
       position: relative;
       width: 2rem;
@@ -3076,8 +3244,19 @@
       text-overflow: ellipsis;
     }
     .preset-option-check {
+      display: inline-block;
+      width: 0.9rem;
+      height: 0.9rem;
       color: var(--frontend-stroke);
-      font-size: 0.78rem;
+      background: currentColor;
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3 8.5 3 3 7-7' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      -webkit-mask-position: center;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: contain;
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3 8.5 3 3 7-7' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      mask-position: center;
+      mask-repeat: no-repeat;
+      mask-size: contain;
       opacity: 0;
     }
     .preset-option[aria-checked="true"] .preset-option-check { opacity: 1; }
@@ -3107,42 +3286,171 @@
       background: transparent;
       box-shadow: none;
     }
-    .toolbar .export-wrap { position: relative; }
     .toolbar .export-menu {
       position: absolute;
       top: calc(100% + 0.375rem);
       right: 0;
       background: var(--toolbar-menu-bg);
       border: 1px solid var(--toolbar-border);
-      border-radius: 0.5rem;
-      padding: 0.375rem;
-      min-width: 160px;
+      width: 19rem;
+      max-width: calc(100vw - 2rem);
+      max-height: calc(100vh - 5.5rem);
+      overflow-y: auto;
+      border-radius: 0.875rem;
+      padding: 0.55rem;
       display: none;
       flex-direction: column;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.24);
     }
     .toolbar .export-menu.open { display: flex; }
-    .toolbar .export-menu button {
-      background: transparent;
-      border: 0;
+    .export-menu-header {
+      display: flex;
+      align-items: flex-start;
       justify-content: space-between;
+      gap: 1rem;
+      padding: 0.5rem 0.55rem 0.72rem;
+    }
+    .export-menu-header strong,
+    .export-menu-header span { display: block; }
+    .export-menu-header strong {
+      color: var(--toolbar-text);
+      font-size: 0.78rem;
+      font-weight: 650;
+      letter-spacing: -0.015em;
+    }
+    .export-menu-header span {
+      margin-top: 0.16rem;
+      color: var(--text-faint);
+      font-size: 0.56rem;
+    }
+    .export-menu-header kbd {
+      padding: 0.16rem 0.36rem;
+      border: 1px solid var(--toolbar-border);
+      border-radius: 0.3rem;
+      color: var(--text-faint);
+      background: color-mix(in srgb, var(--toolbar-border) 16%, transparent);
+      font-family: inherit;
+      font-size: 0.54rem;
+      font-weight: 600;
+    }
+    .export-menu-section {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.18rem;
+    }
+    .export-menu-section + .export-menu-section {
+      margin-top: 0.42rem;
+      padding-top: 0.42rem;
+      border-top: 1px solid color-mix(in srgb, var(--toolbar-border) 68%, transparent);
+    }
+    .export-menu-heading {
+      grid-column: 1 / -1;
+      display: block;
+      padding: 0.24rem 0.55rem 0.2rem;
+      color: var(--text-faint);
+      font-size: 0.54rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .toolbar .export-menu button {
+      display: grid;
+      grid-template-columns: 1.15rem minmax(0, 1fr);
+      align-items: center;
+      column-gap: 0.52rem;
+      background: transparent;
+      border: 1px solid transparent;
+      box-shadow: none;
+      backdrop-filter: none;
       width: 100%;
+      min-height: 3rem;
       text-align: left;
-      padding: 0.5rem 0.75rem;
+      padding: 0.48rem 0.55rem;
+      border-radius: 0.5rem;
+      white-space: nowrap;
+    }
+    .export-item-copy {
+      display: block;
+      min-width: 0;
+    }
+    .export-item-copy strong,
+    .export-item-copy small { display: block; }
+    .export-item-copy strong {
+      overflow: hidden;
+      color: inherit;
+      font-size: 0.7rem;
+      font-weight: 550;
+      text-overflow: ellipsis;
+    }
+    .export-item-copy small {
+      margin-top: 0.12rem;
+      overflow: hidden;
+      color: var(--text-faint);
+      font-size: 0.55rem;
+      font-weight: 450;
+      text-overflow: ellipsis;
+    }
+    .toolbar .export-menu button::before {
+      width: 1rem;
+      height: 1rem;
+      background: currentColor;
+      content: "";
+      opacity: 0.72;
+      -webkit-mask-position: center;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: contain;
+      mask-position: center;
+      mask-repeat: no-repeat;
+      mask-size: contain;
+    }
+    .toolbar .export-menu button[data-format="share-card"]::before,
+    .toolbar .export-menu button[data-action="route-share-card"]::before,
+    .toolbar .export-menu button[data-action="reach-share-card"]::before {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='none' stroke='black' stroke-width='1.7' d='M3 4.5h14v11H3zM6 12l2.5-2.5 2 2 1.5-1.5 2 2'/%3E%3Ccircle cx='13.8' cy='7.3' r='1.2' fill='black'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='none' stroke='black' stroke-width='1.7' d='M3 4.5h14v11H3zM6 12l2.5-2.5 2 2 1.5-1.5 2 2'/%3E%3Ccircle cx='13.8' cy='7.3' r='1.2' fill='black'/%3E%3C/svg%3E");
+    }
+    .toolbar .export-menu button[data-action^="copy"]::before {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='6' y='6' width='10' height='10' rx='1.5' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M4 13H3.5A1.5 1.5 0 012 11.5v-8A1.5 1.5 0 013.5 2h8A1.5 1.5 0 0113 3.5V4' fill='none' stroke='black' stroke-width='1.7'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='6' y='6' width='10' height='10' rx='1.5' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M4 13H3.5A1.5 1.5 0 012 11.5v-8A1.5 1.5 0 013.5 2h8A1.5 1.5 0 0113 3.5V4' fill='none' stroke='black' stroke-width='1.7'/%3E%3C/svg%3E");
+    }
+    .toolbar .export-menu button[data-format="png"]::before,
+    .toolbar .export-menu button[data-format="jpeg"]::before,
+    .toolbar .export-menu button[data-format="webp"]::before {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 2.5h7l3 3v12H5zM12 2.5v3h3' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M7.5 14l2-2 1.5 1.5 1.5-1.5' fill='none' stroke='black' stroke-width='1.7'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 2.5h7l3 3v12H5zM12 2.5v3h3' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M7.5 14l2-2 1.5 1.5 1.5-1.5' fill='none' stroke='black' stroke-width='1.7'/%3E%3C/svg%3E");
+    }
+    .toolbar .export-menu button[data-format="svg"]::before,
+    .toolbar .export-menu button[data-format="webm"]::before {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 2.5l7 4v7l-7 4-7-4v-7zM3 6.5l7 4 7-4M10 10.5v7' fill='none' stroke='black' stroke-width='1.7'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 2.5l7 4v7l-7 4-7-4v-7zM3 6.5l7 4 7-4M10 10.5v7' fill='none' stroke='black' stroke-width='1.7'/%3E%3C/svg%3E");
+    }
+    .toolbar .export-menu button[data-format="share-card"],
+    .toolbar .export-menu button[data-action="route-share-card"],
+    .toolbar .export-menu button[data-action="reach-share-card"] {
+      min-height: 3.35rem;
+      color: var(--toolbar-text);
+      background: color-mix(in srgb, var(--frontend-stroke) 8%, transparent);
+      border-color: color-mix(in srgb, var(--frontend-stroke) 24%, var(--toolbar-border));
     }
     .toolbar .export-menu button[hidden] { display: none; }
     .toolbar .export-menu button:hover {
       background: var(--toolbar-hover);
     }
+    .toolbar .export-menu button:focus-visible {
+      background: var(--toolbar-hover);
+      outline-offset: -2px;
+    }
+    .toolbar .export-menu button:disabled {
+      color: var(--text-faint);
+      background: color-mix(in srgb, var(--toolbar-border) 18%, transparent);
+      cursor: not-allowed;
+    }
+    .toolbar .export-menu button:disabled:hover {
+      border-color: transparent;
+    }
     .toolbar .export-menu .hint {
       color: var(--text-faint);
-      font-size: 0.625rem;
-    }
-    .toolbar .export-menu hr {
-      border: 0;
-      border-top: 1px solid var(--toolbar-border);
-      margin: 0.25rem 0.375rem;
-      opacity: 0.5;
+      font-size: 0.55rem;
     }
 
     /* Toast — brief feedback for actions like "copied" */
@@ -3171,16 +3479,21 @@
 
     @media (max-width: 720px) {
       body { padding: 1rem; }
-      .toolbar .preset-menu {
+      .toolbar .preset-menu,
+      .toolbar .export-menu {
         position: fixed;
         top: 4.5rem;
         right: 1rem;
         left: 1rem;
         width: auto;
+        max-width: none;
       }
       .toolbar {
         position: relative;
         justify-content: flex-end;
+        width: max-content;
+        max-width: 100%;
+        margin-left: auto;
         margin-bottom: 1rem;
       }
       .header { margin-bottom: 1.25rem; padding-right: 0; }
@@ -3242,6 +3555,12 @@
         transform: translateX(var(--archify-scroll-x, 0px));
       }
       .diagram-nav { right: 0.5rem; bottom: 0.5rem; }
+      .diagram-nav button {
+        min-width: 2.75rem;
+        height: 2.75rem;
+      }
+      .diagram-nav [data-view="reset"] { min-width: 3.75rem; }
+      .diagram-nav [data-view="reset"][data-detail-visible] { min-width: 4.35rem; }
       .overview-map {
         right: 0.5rem;
         bottom: 3.7rem;
@@ -3498,8 +3817,19 @@
       }
     }
 
+    @media (max-width: 420px) {
+      .export-menu-section { grid-template-columns: 1fr; }
+      .export-menu-heading,
+      .toolbar .export-menu button[data-format="share-card"],
+      .toolbar .export-menu button[data-action="route-share-card"],
+      .toolbar .export-menu button[data-action="reach-share-card"] { grid-column: 1; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .guided-story-caption { animation: none !important; }
+      .toolbar .preset-menu.open,
+      .toolbar .export-menu.open { animation: none; }
+      .toolbar-chevron { transition: none; }
     }
 
     @media (max-width: 360px) {
@@ -3688,7 +4018,7 @@
     }
     svg [data-legend-count-badge] text {
       fill: var(--text-muted);
-      font-size: 7px;
+      font-size: 8px;
       font-weight: 700;
       text-anchor: middle;
     }
@@ -4406,87 +4736,97 @@
   <!-- Toolbar: theme, live visual style, trace motion, presentation stage, and export.
        Motion appears only for trace-enabled artifacts and has no shortcut;
        Keyboard: T toggles theme, S cycles style, F toggles the stage, E opens export. -->
-  <div class="toolbar" role="toolbar" aria-label="图表操作">
+  <div class="toolbar" role="toolbar" aria-label="Diagram actions">
     <button id="btn-theme" type="button"
-            title="切换主题 (T)"
-            aria-label="切换颜色主题"
+            title="Toggle theme (T)"
+            aria-label="Toggle color theme"
             aria-pressed="false">
-      <span id="theme-icon" aria-hidden="true">&#9790;</span>
-      <span id="theme-label">深色</span>
+      <span id="theme-icon" class="toolbar-icon" aria-hidden="true"></span>
+      <span id="theme-label">Dark</span>
     </button>
     <div class="preset-wrap">
       <button id="btn-preset" type="button"
-              title="选择视觉风格（S 键循环）"
-              aria-label="选择视觉风格"
+              title="Choose visual style (S cycles)"
+              aria-label="Choose visual style"
               aria-haspopup="menu"
               aria-expanded="false"
               aria-controls="preset-menu"
               aria-keyshortcuts="S">
         <span class="preset-control-mark" aria-hidden="true"></span>
-        <span id="preset-label">风格</span>
-        <span aria-hidden="true">&#9662;</span>
+        <span id="preset-label">Style</span>
+        <span class="toolbar-icon toolbar-chevron" aria-hidden="true"></span>
       </button>
-      <div class="preset-menu" id="preset-menu" role="menu" aria-label="视觉风格">
+      <div class="preset-menu" id="preset-menu" role="menu" aria-label="Visual style">
         <div class="preset-menu-heading" role="presentation"><span>Visual identity</span><span>S cycles</span></div>
         <button class="preset-option" data-preset-value="classic" type="button" role="menuitemradio" aria-checked="false" tabindex="-1">
           <span class="preset-option-swatch classic" aria-hidden="true"></span>
           <span class="preset-option-copy"><strong>Classic</strong><small>Stable technical default</small></span>
-          <span class="preset-option-check" aria-hidden="true">&#10003;</span>
+          <span class="preset-option-check" aria-hidden="true"></span>
         </button>
         <button class="preset-option" data-preset-value="signal-flow" type="button" role="menuitemradio" aria-checked="false" tabindex="-1">
           <span class="preset-option-swatch signal-flow" aria-hidden="true"></span>
           <span class="preset-option-copy"><strong>Signal Flow</strong><small>Motion-forward presentation</small></span>
-          <span class="preset-option-check" aria-hidden="true">&#10003;</span>
+          <span class="preset-option-check" aria-hidden="true"></span>
         </button>
         <button class="preset-option" data-preset-value="blueprint" type="button" role="menuitemradio" aria-checked="false" tabindex="-1">
           <span class="preset-option-swatch blueprint" aria-hidden="true"></span>
           <span class="preset-option-copy"><strong>Blueprint</strong><small>Engineering review</small></span>
-          <span class="preset-option-check" aria-hidden="true">&#10003;</span>
+          <span class="preset-option-check" aria-hidden="true"></span>
         </button>
         <button class="preset-option" data-preset-value="editorial" type="button" role="menuitemradio" aria-checked="false" tabindex="-1">
           <span class="preset-option-swatch editorial" aria-hidden="true"></span>
           <span class="preset-option-copy"><strong>Editorial</strong><small>Publication and launch notes</small></span>
-          <span class="preset-option-check" aria-hidden="true">&#10003;</span>
+          <span class="preset-option-check" aria-hidden="true"></span>
         </button>
       </div>
     </div>
     <button id="btn-motion" type="button" hidden
-            title="暂停动效"
-            aria-label="暂停动效"
+            title="Pause motion"
+            aria-label="Pause motion"
             aria-pressed="true">
       <span class="motion-control-dot" aria-hidden="true"></span>
       <span id="motion-label">Live</span>
     </button>
     <button id="btn-present" type="button"
-            title="演示模式 (F)"
-            aria-label="进入演示模式"
+            title="Presentation stage (F)"
+            aria-label="Enter presentation stage"
             aria-pressed="false">
-      <span id="present-icon" aria-hidden="true">&#9633;</span>
-      <span id="present-label">演示</span>
+      <span id="present-icon" class="toolbar-icon" aria-hidden="true"></span>
+      <span id="present-label">Present</span>
     </button>
     <div class="export-wrap">
       <button id="btn-export" type="button"
-              title="导出图片 (E)"
-              aria-label="导出图片"
+              title="Export diagram (E)"
+              aria-label="Export diagram"
               aria-haspopup="menu"
               aria-expanded="false"
               aria-controls="export-menu">
-        Export <span aria-hidden="true">&#9662;</span>
+        Export <span class="toolbar-icon toolbar-chevron" aria-hidden="true"></span>
       </button>
-      <div class="export-menu" id="export-menu" role="menu" aria-label="导出图片">
-        <button data-format="share-card" type="button" role="menuitem" tabindex="-1">分享卡片 <span class="hint">1200&times;630 PNG</span></button>
-        <button data-action="route-share-card" type="button" role="menuitem" tabindex="-1" hidden disabled>路径分享卡 <span class="hint">1200&times;630 PNG</span></button>
-        <button data-action="reach-share-card" type="button" role="menuitem" tabindex="-1" hidden disabled>可达分享卡 <span class="hint">1200&times;630 PNG</span></button>
-        <button data-action="copy-share-card" type="button" role="menuitem" tabindex="-1">Copy Share Card <span class="hint">PNG</span></button>
-        <hr role="separator">
-        <button data-action="copy"  type="button" role="menuitem" tabindex="-1">Copy to clipboard <span class="hint">PNG</span></button>
-        <hr role="separator">
-        <button data-format="png"   type="button" role="menuitem" tabindex="-1">下载 PNG</button>
-        <button data-format="jpeg"  type="button" role="menuitem" tabindex="-1">下载 JPEG</button>
-        <button data-format="webp"  type="button" role="menuitem" tabindex="-1">下载 WebP</button>
-        <hr role="separator">
-        <button data-format="svg"   type="button" role="menuitem" tabindex="-1">Download SVG <span class="hint">vector</span></button>
-        <button data-format="webm"  type="button" role="menuitem" tabindex="-1">Download WebM <span class="hint">6s motion</span></button>
+      <div class="export-menu" id="export-menu" role="menu" aria-label="Export">
+        <div class="export-menu-header" role="presentation">
+          <div><strong>Export diagram</strong><span>Portable, clean outputs</span></div>
+          <kbd>E</kbd>
+        </div>
+        <div class="export-menu-section" role="group" aria-label="Share">
+          <span class="export-menu-heading" aria-hidden="true">Share</span>
+          <button data-format="share-card" type="button" role="menuitem" tabindex="-1"><span class="export-item-copy"><strong>Share Card</strong><small class="hint">1200&times;630 PNG</small></span></button>
+          <button data-action="route-share-card" type="button" role="menuitem" tabindex="-1" hidden disabled><span class="export-item-copy"><strong>Route Share Card</strong><small class="hint">1200&times;630 PNG</small></span></button>
+          <button data-action="reach-share-card" type="button" role="menuitem" tabindex="-1" hidden disabled><span class="export-item-copy"><strong>Reach Share Card</strong><small class="hint">1200&times;630 PNG</small></span></button>
+          <button data-action="copy-share-card" type="button" role="menuitem" tabindex="-1"><span class="export-item-copy"><strong>Copy Share Card</strong><small class="hint">PNG to clipboard</small></span></button>
+          <button data-action="copy" type="button" role="menuitem" tabindex="-1"><span class="export-item-copy"><strong>Copy diagram</strong><small class="hint">PNG to clipboard</small></span></button>
+        </div>
+        <div class="export-menu-section" role="group" aria-label="Raster images">
+          <span class="export-menu-heading" aria-hidden="true">Image</span>
+          <button data-format="png" type="button" role="menuitem" tabindex="-1"><span class="export-item-copy"><strong>PNG</strong><small class="hint">Lossless image</small></span></button>
+          <button data-format="jpeg" type="button" role="menuitem" tabindex="-1"><span class="export-item-copy"><strong>JPEG</strong><small class="hint">Compact image</small></span></button>
+          <button data-format="webp" type="button" role="menuitem" tabindex="-1"><span class="export-item-copy"><strong>WebP</strong><small class="hint">Modern image</small></span></button>
+        </div>
+        <div class="export-menu-section" role="group" aria-label="Vector and motion">
+          <span class="export-menu-heading" aria-hidden="true">Vector &amp; motion</span>
+          <button data-format="svg" type="button" role="menuitem" tabindex="-1"><span class="export-item-copy"><strong>SVG</strong><small class="hint">Editable vector</small></span></button>
+          <button data-format="webm" type="button" role="menuitem" tabindex="-1"><span class="export-item-copy"><strong>WebM</strong><small class="hint">6s motion</small></span></button>
+        </div>
       </div>
     </div>
   </div>
@@ -4498,13 +4838,12 @@
         <div class="pulse-dot"></div>
         <h1>简历评估专家团 · 系统架构</h1>
       </div>
-      <p class="subtitle">三 Agent 并行评估流水线 · Electron 桌面应用</p>
     </div>
 
     <script id="archify-guided-views-data" type="application/json">[]</script>
-
-    <div class="guided-views no-print" id="guided-views" hidden aria-label="导览视图">
-      <button id="guided-view-prev" type="button" aria-label="上一个视图" title="上一个视图 ([)">&#8592;</button>
+    <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/gjj-star/resume-map-agents","revision":"0905bb82628aec0214e979706721df2411fcf04a","shortRevision":"0905bb8"},"referenceCount":13,"nodes":{"ui":[{"path":"renderer/index.html","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/renderer/index.html"},{"path":"renderer/app.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/renderer/app.js"}],"api":[{"path":"server/index.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/server/index.js"}],"orch":[{"path":"server/agents.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/server/agents.js"}],"ability":[{"path":"server/agents.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/server/agents.js"},{"path":"server/prompts.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/server/prompts.js"}],"jdmatch":[{"path":"server/agents.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/server/agents.js"},{"path":"server/prompts.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/server/prompts.js"}],"report":[{"path":"server/agents.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/server/agents.js"},{"path":"server/prompts.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/server/prompts.js"}],"ds":[{"path":"server/agents.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/server/agents.js"}],"main":[{"path":"main.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/main.js"}],"gh":[{"path":"main.js","href":"https://github.com/gjj-star/resume-map-agents/blob/0905bb82628aec0214e979706721df2411fcf04a/main.js"}]}}</script>
+    <div class="guided-views no-print" id="guided-views" hidden aria-label="Guided diagram views">
+      <button id="guided-view-prev" type="button" aria-label="Previous guided view" title="Previous guided view ([)">&#8592;</button>
       <div class="guided-view-copy">
         <div class="guided-view-meta">
           <span>Guided views</span>
@@ -4514,7 +4853,7 @@
         </div>
         <strong id="guided-view-label">Explore this system</strong>
         <small id="guided-view-note" aria-live="polite" aria-atomic="true">Step through curated paths without changing the source diagram.</small>
-        <div class="guided-view-trail" id="guided-view-trail" hidden role="group" aria-label="导览轨迹"></div>
+        <div class="guided-view-trail" id="guided-view-trail" hidden role="group" aria-label="Story trail"></div>
         <div class="guided-story-caption" id="guided-story-caption" hidden aria-live="polite" aria-atomic="true">
           <span class="guided-story-caption-index" id="guided-story-caption-index">Beat</span>
           <strong id="guided-story-caption-route"></strong>
@@ -4525,28 +4864,28 @@
           </span>
         </div>
       </div>
-      <button id="guided-view-next" type="button" aria-label="下一个视图" title="下一个视图 (])">&#8594;</button>
+      <button id="guided-view-next" type="button" aria-label="Next guided view" title="Next guided view (])">&#8594;</button>
       <div class="guided-view-actions">
-        <button class="guided-view-play" id="guided-view-play" type="button" aria-label="播放导览" aria-pressed="false" title="播放导览 (P)">
+        <button class="guided-view-play" id="guided-view-play" type="button" aria-label="Play guided story" aria-pressed="false" title="Play guided story (P)">
           <span id="guided-view-play-icon" aria-hidden="true">&#9654;</span>
           <span id="guided-view-play-label">Play story</span>
         </button>
-        <button class="guided-view-beat-link" id="guided-view-beat-link" type="button" aria-label="选择章节复制链接" title="选择章节复制链接" disabled>
+        <button class="guided-view-beat-link" id="guided-view-beat-link" type="button" aria-label="Select a Story Beat to copy its exact link" title="Select a Story Beat to copy its exact link" disabled>
           <span aria-hidden="true">&#35;</span>
           <span id="guided-view-beat-link-label">Copy moment</span>
         </button>
-        <button class="guided-view-all" id="guided-view-all" type="button" aria-label="显示全图">显示全部</button>
+        <button class="guided-view-all" id="guided-view-all" type="button" aria-label="Show entire diagram">Show all</button>
       </div>
-      <nav class="guided-view-index" id="guided-view-index" aria-label="导览章节">
+      <nav class="guided-view-index" id="guided-view-index" aria-label="Story chapters">
         <ol class="guided-view-chapters" id="guided-view-chapters"></ol>
       </nav>
     </div>
 
     <!-- Main Diagram -->
     <div class="diagram-container" data-detail-level="read">
-      <svg viewBox="0 0 1900 1080" role="img" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="signal-flow" data-quality-profile="standard">
+      <svg viewBox="0 0 1660 800" role="img" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="signal-flow" data-quality-profile="showcase">
         <title id="archify-diagram-title">简历评估专家团 · 系统架构</title>
-        <desc id="archify-diagram-description">三 Agent 并行评估流水线 · Electron 桌面应用</desc>
+        <desc id="archify-diagram-description">A architecture diagram generated by Archify.</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -4570,213 +4909,228 @@
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Boundaries (behind everything) -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" x="290" y="120" width="1475" height="592" rx="12" class="c-region" stroke-width="1"/>
-        <text x="298" y="138" class="t-cloud" font-size="9" font-weight="600">桌面应用（Electron）</text>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" x="110" y="200" width="1230" height="520" rx="12" class="c-region" stroke-width="1"/>
+        <text x="118" y="218" class="t-cloud" font-size="9" font-weight="600">桌面</text>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" x="1150" y="30" width="630" height="902" rx="12" class="c-region" stroke-width="1"/>
-        <text x="1158" y="48" class="t-cloud" font-size="9" font-weight="600">外部服务</text>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" x="1390" y="200" width="210" height="312" rx="12" class="c-region" stroke-width="1"/>
+        <text x="1398" y="218" class="t-cloud" font-size="9" font-weight="600">外部服务</text>
 
         <!-- Connection paths (before components for correct z-order) -->
-        <path data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴文本" data-edge-key="0" data-edge-id="c-user-ui" data-composition-points="170,462;194,462;194,481;296,481;296,465;320,465" d="M 170 462 L 186 462 Q 194 462 194 470 L 194 473 Q 194 481 202 481 L 288 481 Q 296 481 296 473 L 296 473 Q 296 465 304 465 L 320 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api" data-composition-points="450,465;600,465" d="M 450 465 L 600 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch" data-composition-points="750,465;920,465" d="M 750 465 L 920 465" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orch" data-edge-to="ability" data-edge-label="简历全文" data-edge-key="3" data-edge-id="c-orch-ability" data-composition-points="995,430;995,130;1255,130;1255,240" d="M 995 430 L 995 138 Q 995 130 1003 130 L 1247 130 Q 1255 130 1255 138 L 1255 240" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch" data-composition-points="995,500;995,560;1095,560;1095,620" d="M 995 500 L 995 552 Q 995 560 1003 560 L 1087 560 Q 1095 560 1095 568 L 1095 620" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="5" data-edge-id="c-ability-report" data-composition-points="1330,275;1660,275;1660,620;1660,620" d="M 1330 275 L 1652 275 Q 1660 275 1660 283 L 1660 620 L 1660 620" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="6" data-edge-id="c-jdmatch-report" data-composition-points="1170,655;1194,655;1194,672;1561,672;1561,656;1585,656" d="M 1170 655 L 1186 655 Q 1194 655 1194 663 L 1194 664 Q 1194 672 1202 672 L 1553 672 Q 1561 672 1561 664 L 1561 664 Q 1561 656 1569 656 L 1585 656" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="report" data-edge-to="ui" data-edge-label="HTML 报告" data-edge-key="7" data-edge-id="c-report-ui" data-composition-points="1660,620;1660,40;385,40;385,430" d="M 1660 620 L 1660 48 Q 1660 40 1652 40 L 393 40 Q 385 40 385 48 L 385 430" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="ability" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="8" data-edge-id="c-ability-ds" data-composition-points="1255,310;1255,826;1675,826;1675,850" d="M 1255 310 L 1255 818 Q 1255 826 1263 826 L 1667 826 Q 1675 826 1675 834 L 1675 850" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="9" data-edge-id="c-jdmatch-ds" data-composition-points="1095,690;1095,690;1095,940;1675,940;1675,912" d="M 1095 690 L 1095 690 L 1095 932 Q 1095 940 1103 940 L 1667 940 Q 1675 940 1675 932 L 1675 912" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="report" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="10" data-edge-id="c-report-ds" data-composition-points="1660,692;1660,760;1585,760;1585,881;1600,881" d="M 1660 692 L 1660 752 Q 1660 760 1652 760 L 1593 760 Q 1585 760 1585 768 L 1585 873.5 Q 1585 881 1592.5 881 L 1600 881" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="11" data-edge-id="c-main-gh" data-composition-points="675,150;675,55;1380,55;1380,91;1330,91;1330,91" d="M 675 150 L 675 63 Q 675 55 683 55 L 1372 55 Q 1380 55 1380 63 L 1380 83 Q 1380 91 1372 91 L 1330 91 L 1330 91" class="a-default" stroke-width="1.2" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴简历 + JD" data-edge-key="0" data-edge-id="c-user-ui" data-composition-points="205,294;205,630" d="M 205 294 L 205 630" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api" data-composition-points="270,672;380,672" d="M 270 672 L 380 672" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch" data-composition-points="530,665;718,665;718,520" d="M 530 665 L 710 665 Q 718 665 718 657 L 718 520" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="orch" data-edge-to="ability" data-edge-label="简历全文" data-edge-key="3" data-edge-id="c-orch-ability" data-composition-points="725,430;725,365;968,365;968,300" d="M 725 430 L 725 373 Q 725 365 733 365 L 960 365 Q 968 365 968 357 L 968 300" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch" data-composition-points="732,520;732,575;968,575;968,630" d="M 732 520 L 732 567 Q 732 575 740 575 L 960 575 Q 968 575 968 583 L 968 630" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="5" data-edge-id="c-ability-report" data-composition-points="982,300;982,365;1235,365;1235,430" d="M 982 300 L 982 357 Q 982 365 990 365 L 1227 365 Q 1235 365 1235 373 L 1235 430" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="6" data-edge-id="c-jdmatch-report" data-composition-points="982,630;982,566;1235,566;1235,502" d="M 982 630 L 982 574 Q 982 566 990 566 L 1227 566 Q 1235 566 1235 558 L 1235 502" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="ability" data-edge-to="ds" data-edge-label="能力透视" data-edge-key="7" data-edge-id="c-ability-ds" data-composition-points="1050,265;1396,265;1396,447;1420,447" d="M 1050 265 L 1388 265 Q 1396 265 1396 273 L 1396 439 Q 1396 447 1404 447 L 1420 447" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="岗位匹配" data-edge-key="8" data-edge-id="c-jdmatch-ds" data-composition-points="1050,665;1396,665;1396,475;1420,475" d="M 1050 665 L 1388 665 Q 1396 665 1396 657 L 1396 483 Q 1396 475 1404 475 L 1420 475" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="report" data-edge-to="ds" data-edge-label="生成 HTML" data-edge-key="9" data-edge-id="c-report-ds" data-composition-points="1310,461;1420,461" d="M 1310 461 L 1420 461" class="a-security" stroke-width="1.2" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="report" data-edge-to="orch" data-edge-label="写回报告" data-edge-key="10" data-edge-id="c-report-orch" data-composition-points="1160,466;810,466" d="M 1160 466 L 810 466" class="a-dashed" stroke-width="1.2" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="orch" data-edge-to="api" data-edge-label="读取状态" data-edge-key="11" data-edge-id="c-orch-api" data-composition-points="640,475;462,475;462,630" d="M 640 475 L 470 475 Q 462 475 462 483 L 462 630" class="a-dashed" stroke-width="1.2" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="api" data-edge-to="ui" data-edge-label="轮询 /status" data-edge-key="12" data-edge-id="c-api-ui" data-composition-points="380,658;270,658" d="M 380 658 L 270 658" class="a-dashed" stroke-width="1.2" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="main" data-edge-to="api" data-edge-label="启动 Express" data-edge-key="13" data-edge-id="c-main-api" data-composition-points="448,302;448,630" d="M 448 302 L 448 630" class="a-default" stroke-width="1.2" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="14" data-edge-id="c-main-gh" data-composition-points="455,230;455,206;1495,206;1495,230" d="M 455 230 L 455 214 Q 455 206 463 206 L 1487 206 Q 1495 206 1495 214 L 1495 230" class="a-default" stroke-width="1.2" marker-end="url(#arrowhead)"/>
 
         <!-- Components -->
-        <g id="node-user" data-node-id="user" data-node-label="候选人" tabindex="0" role="button" aria-label="定位 候选人, 粘贴简历 + JD, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="粘贴简历 + JD" data-node-context="Architecture component">
-          <title>候选人 · 粘贴简历 + JD · Architecture component</title>
-          <rect x="60" y="430" width="110" height="64" rx="6" class="c-mask"/>
-          <rect x="60" y="430" width="110" height="64" rx="6" class="c-external" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(66 436) scale(0.6875)">
+        <g id="node-user" data-node-id="user" data-node-label="候选人" tabindex="0" role="button" aria-label="Focus 候选人, 粘贴简历 + JD, 桌面" aria-pressed="false" data-node-kind="external" data-node-sublabel="粘贴简历 + JD" data-node-context="桌面">
+          <title>候选人 · 粘贴简历 + JD · 桌面</title>
+          <rect x="145" y="230" width="120" height="64" rx="6" class="c-mask"/>
+          <rect x="145" y="230" width="120" height="64" rx="6" class="c-external" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(151 236) scale(0.6875)">
             <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
-          <text data-detail-anchor x="115" y="460" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">候选人</text>
-        <text data-detail="context" x="115" y="476" class="t-muted" font-size="9" text-anchor="middle">粘贴简历 + JD</text>
+          <text data-detail-anchor x="205" y="260" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">候选人</text>
+        <text data-detail="context" x="205" y="276" class="t-muted" font-size="9" text-anchor="middle">粘贴简历 + JD</text>
         </g>
 
-        <g id="node-ui" data-node-id="ui" data-node-label="渲染进程 UI" tabindex="0" role="button" aria-label="定位 渲染进程 UI, 轮询 · 预览 · 导出, 桌面应用（Electron）" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="轮询 · 预览 · 导出" data-node-context="桌面应用（Electron）">
-          <title>渲染进程 UI · 轮询 · 预览 · 导出 · 桌面应用（Electron）</title>
-          <rect x="320" y="430" width="130" height="70" rx="6" class="c-mask"/>
-          <rect x="320" y="430" width="130" height="70" rx="6" class="c-frontend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(326 436) scale(0.6875)">
+        <g id="node-ui" data-node-id="ui" data-node-label="渲染进程 UI" tabindex="0" role="button" aria-label="Focus 渲染进程 UI, 轮询 · 预览 · 导出, 桌面" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="轮询 · 预览 · 导出" data-node-context="桌面">
+          <title>渲染进程 UI · 轮询 · 预览 · 导出 · 桌面</title>
+          <rect x="140" y="630" width="130" height="70" rx="6" class="c-mask"/>
+          <rect x="140" y="630" width="130" height="70" rx="6" class="c-frontend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(146 636) scale(0.6875)">
             <rect x="2" y="3" width="12" height="10" rx="2"/>
             <path d="M2 6.5h12"/>
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-detail-anchor x="385" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">渲染进程 UI</text>
-        <text data-detail="context" x="385" y="479" class="t-muted" font-size="9" text-anchor="middle">轮询 · 预览 · 导出</text>
+          <text data-detail-anchor x="205" y="663" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">渲染进程 UI</text>
+        <text data-detail="context" x="205" y="679" class="t-muted" font-size="9" text-anchor="middle">轮询 · 预览 · 导出</text>
         </g>
 
-        <g id="node-main" data-node-id="main" data-node-label="Electron 主进程" tabindex="0" role="button" aria-label="定位 Electron 主进程, 窗口 · preload 桥 · 更新器, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="窗口 · preload 桥 · 更新器" data-node-context="桌面应用（Electron）">
-          <title>Electron 主进程 · 窗口 · preload 桥 · 更新器 · 桌面应用（Electron）</title>
-          <rect x="600" y="150" width="150" height="72" rx="6" class="c-mask"/>
-          <rect x="600" y="150" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(606 156) scale(0.6875)">
+        <g id="node-api" data-node-id="api" data-node-label="Express API" tabindex="0" role="button" aria-label="Focus Express API, /analyze · /status · /health, 桌面" aria-pressed="false" data-node-kind="backend" data-node-sublabel="/analyze · /status · /health" data-node-context="桌面">
+          <title>Express API · /analyze · /status · /health · 桌面</title>
+          <rect x="380" y="630" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="380" y="630" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(386 636) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="675" y="184" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Electron 主进程</text>
-        <text data-detail="context" x="675" y="200" class="t-muted" font-size="9" text-anchor="middle">窗口 · preload 桥 · 更新器</text>
+          <text data-detail-anchor x="455" y="663" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Express API</text>
+        <text data-detail="context" x="455" y="679" class="t-muted" font-size="8.4" text-anchor="middle">/analyze · /status · /health</text>
         </g>
 
-        <g id="node-api" data-node-id="api" data-node-label="Express API" tabindex="0" role="button" aria-label="定位 Express API, /analyze · /status · /health, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="/analyze · /status · /health" data-node-context="桌面应用（Electron）">
-          <title>Express API · /analyze · /status · /health · 桌面应用（Electron）</title>
-          <rect x="600" y="430" width="150" height="70" rx="6" class="c-mask"/>
-          <rect x="600" y="430" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(606 436) scale(0.6875)">
+        <g id="node-orch" data-node-id="orch" data-node-label="任务编排器" tabindex="0" role="button" aria-label="Focus 任务编排器, tasks Map · 并行调度, 桌面" aria-pressed="false" data-node-kind="backend" data-node-sublabel="tasks Map · 并行调度" data-node-tag="并行→串行" data-node-context="桌面">
+          <title>任务编排器 · tasks Map · 并行调度 · 桌面 · 并行→串行</title>
+          <rect x="640" y="430" width="170" height="90" rx="6" class="c-mask"/>
+          <rect x="640" y="430" width="170" height="90" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(646 436) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="675" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Express API</text>
-        <text data-detail="context" x="675" y="479" class="t-muted" font-size="8.4" text-anchor="middle">/analyze · /status · /health</text>
+          <text data-detail-anchor x="725" y="473" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">任务编排器</text>
+        <text data-detail="context" x="725" y="489" class="t-muted" font-size="9" text-anchor="middle">tasks Map · 并行调度</text>
+        <text data-detail="fine" x="725" y="512" class="t-backend" font-size="7" text-anchor="middle">并行→串行</text>
         </g>
 
-        <g id="node-orch" data-node-id="orch" data-node-label="任务编排器" tabindex="0" role="button" aria-label="定位 任务编排器, tasks Map · taskId 轮询, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="tasks Map · taskId 轮询" data-node-tag="并行→串行" data-node-context="桌面应用（Electron）">
-          <title>任务编排器 · tasks Map · taskId 轮询 · 桌面应用（Electron） · 并行→串行</title>
-          <rect x="920" y="430" width="150" height="70" rx="6" class="c-mask"/>
-          <rect x="920" y="430" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(926 436) scale(0.6875)">
+        <g id="node-ability" data-node-id="ability" data-node-label="能力透视专家" tabindex="0" role="button" aria-label="Focus 能力透视专家, 雷达 · 竞争力 · 风险, 桌面" aria-pressed="false" data-node-kind="backend" data-node-sublabel="雷达 · 竞争力 · 风险" data-node-tag="并行" data-node-context="桌面">
+          <title>能力透视专家 · 雷达 · 竞争力 · 风险 · 桌面 · 并行</title>
+          <rect x="900" y="230" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="900" y="230" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(906 236) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="995" y="463" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">任务编排器</text>
-        <text data-detail="context" x="995" y="479" class="t-muted" font-size="9" text-anchor="middle">tasks Map · taskId 轮询</text>
-        <text data-detail="fine" x="995" y="492" class="t-backend" font-size="7" text-anchor="middle">并行→串行</text>
+          <text data-detail-anchor x="975" y="263" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">能力透视专家</text>
+        <text data-detail="context" x="975" y="279" class="t-muted" font-size="9" text-anchor="middle">雷达 · 竞争力 · 风险</text>
+        <text data-detail="fine" x="975" y="292" class="t-backend" font-size="7" text-anchor="middle">并行</text>
         </g>
 
-        <g id="node-ability" data-node-id="ability" data-node-label="能力透视专家" tabindex="0" role="button" aria-label="定位 能力透视专家, 雷达 · 竞争力 · 风险, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="雷达 · 竞争力 · 风险" data-node-tag="AB 并行" data-node-context="桌面应用（Electron）">
-          <title>能力透视专家 · 雷达 · 竞争力 · 风险 · 桌面应用（Electron） · AB 并行</title>
-          <rect x="1180" y="240" width="150" height="70" rx="6" class="c-mask"/>
-          <rect x="1180" y="240" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1186 246) scale(0.6875)">
+        <g id="node-jdmatch" data-node-id="jdmatch" data-node-label="岗位匹配专家" tabindex="0" role="button" aria-label="Focus 岗位匹配专家, 匹配度 · 补强路线, 桌面" aria-pressed="false" data-node-kind="backend" data-node-sublabel="匹配度 · 补强路线" data-node-tag="需 JD" data-node-context="桌面">
+          <title>岗位匹配专家 · 匹配度 · 补强路线 · 桌面 · 需 JD</title>
+          <rect x="900" y="630" width="150" height="70" rx="6" class="c-mask"/>
+          <rect x="900" y="630" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(906 636) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="1255" y="273" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">能力透视专家</text>
-        <text data-detail="context" x="1255" y="289" class="t-muted" font-size="9" text-anchor="middle">雷达 · 竞争力 · 风险</text>
-        <text data-detail="fine" x="1255" y="302" class="t-backend" font-size="7" text-anchor="middle">AB 并行</text>
+          <text data-detail-anchor x="975" y="663" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">岗位匹配专家</text>
+        <text data-detail="context" x="975" y="679" class="t-muted" font-size="9" text-anchor="middle">匹配度 · 补强路线</text>
+        <text data-detail="fine" x="975" y="692" class="t-backend" font-size="7" text-anchor="middle">需 JD</text>
         </g>
 
-        <g id="node-jdmatch" data-node-id="jdmatch" data-node-label="岗位匹配专家" tabindex="0" role="button" aria-label="定位 岗位匹配专家, 匹配度 · 补强路线, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="匹配度 · 补强路线" data-node-tag="需 JD" data-node-context="桌面应用（Electron）">
-          <title>岗位匹配专家 · 匹配度 · 补强路线 · 桌面应用（Electron） · 需 JD</title>
-          <rect x="1020" y="620" width="150" height="70" rx="6" class="c-mask"/>
-          <rect x="1020" y="620" width="150" height="70" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1026 626) scale(0.6875)">
+        <g id="node-report" data-node-id="report" data-node-label="可视化报告专家" tabindex="0" role="button" aria-label="Focus 可视化报告专家, 双 JSON → 单文件 HTML, 桌面" aria-pressed="false" data-node-kind="backend" data-node-sublabel="双 JSON → 单文件 HTML" data-node-tag="串行收尾" data-node-context="桌面">
+          <title>可视化报告专家 · 双 JSON → 单文件 HTML · 桌面 · 串行收尾</title>
+          <rect x="1160" y="430" width="150" height="72" rx="6" class="c-mask"/>
+          <rect x="1160" y="430" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1166 436) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="1095" y="653" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">岗位匹配专家</text>
-        <text data-detail="context" x="1095" y="669" class="t-muted" font-size="9" text-anchor="middle">匹配度 · 补强路线</text>
-        <text data-detail="fine" x="1095" y="682" class="t-backend" font-size="7" text-anchor="middle">需 JD</text>
+          <text data-detail-anchor x="1235" y="464" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">可视化报告专家</text>
+        <text data-detail="context" x="1235" y="480" class="t-muted" font-size="9" text-anchor="middle">双 JSON → 单文件 HTML</text>
+        <text data-detail="fine" x="1235" y="494" class="t-backend" font-size="7" text-anchor="middle">串行收尾</text>
         </g>
 
-        <g id="node-report" data-node-id="report" data-node-label="可视化报告专家" tabindex="0" role="button" aria-label="定位 可视化报告专家, 双 JSON → 单文件 HTML, 桌面应用（Electron）" aria-pressed="false" data-node-kind="backend" data-node-sublabel="双 JSON → 单文件 HTML" data-node-tag="串行收尾" data-node-context="桌面应用（Electron）">
-          <title>可视化报告专家 · 双 JSON → 单文件 HTML · 桌面应用（Electron） · 串行收尾</title>
-          <rect x="1585" y="620" width="150" height="72" rx="6" class="c-mask"/>
-          <rect x="1585" y="620" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1591 626) scale(0.6875)">
-            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
-          </g>
-          <text data-detail-anchor x="1660" y="654" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">可视化报告专家</text>
-        <text data-detail="context" x="1660" y="670" class="t-muted" font-size="9" text-anchor="middle">双 JSON → 单文件 HTML</text>
-        <text data-detail="fine" x="1660" y="684" class="t-backend" font-size="7" text-anchor="middle">串行收尾</text>
-        </g>
-
-        <g id="node-ds" data-node-id="ds" data-node-label="DeepSeek API" tabindex="0" role="button" aria-label="定位 DeepSeek API, deepseek-chat, 外部服务" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="deepseek-chat" data-node-context="外部服务">
+        <g id="node-ds" data-node-id="ds" data-node-label="DeepSeek API" tabindex="0" role="button" aria-label="Focus DeepSeek API, deepseek-chat, 外部服务" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="deepseek-chat" data-node-context="外部服务">
           <title>DeepSeek API · deepseek-chat · 外部服务</title>
-          <rect x="1600" y="850" width="150" height="62" rx="6" class="c-mask"/>
-          <rect x="1600" y="850" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(1606 856) scale(0.6875)">
+          <rect x="1420" y="430" width="150" height="62" rx="6" class="c-mask"/>
+          <rect x="1420" y="430" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(1426 436) scale(0.6875)">
             <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
           </g>
-          <text data-detail-anchor x="1675" y="879" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">DeepSeek API</text>
-        <text data-detail="context" x="1675" y="895" class="t-muted" font-size="9" text-anchor="middle">deepseek-chat</text>
+          <text data-detail-anchor x="1495" y="459" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">DeepSeek API</text>
+        <text data-detail="context" x="1495" y="475" class="t-muted" font-size="9" text-anchor="middle">deepseek-chat</text>
         </g>
 
-        <g id="node-gh" data-node-id="gh" data-node-label="GitHub Releases" tabindex="0" role="button" aria-label="定位 GitHub Releases, 自动更新源, 外部服务" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="自动更新源" data-node-context="外部服务">
+        <g id="node-main" data-node-id="main" data-node-label="Electron 主进程" tabindex="0" role="button" aria-label="Focus Electron 主进程, 窗口 · preload · 更新器, 桌面" aria-pressed="false" data-node-kind="backend" data-node-sublabel="窗口 · preload · 更新器" data-node-context="桌面">
+          <title>Electron 主进程 · 窗口 · preload · 更新器 · 桌面</title>
+          <rect x="380" y="230" width="150" height="72" rx="6" class="c-mask"/>
+          <rect x="380" y="230" width="150" height="72" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(386 236) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-detail-anchor x="455" y="264" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Electron 主进程</text>
+        <text data-detail="context" x="455" y="280" class="t-muted" font-size="9" text-anchor="middle">窗口 · preload · 更新器</text>
+        </g>
+
+        <g id="node-gh" data-node-id="gh" data-node-label="GitHub Releases" tabindex="0" role="button" aria-label="Focus GitHub Releases, 自动更新源, 外部服务" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="自动更新源" data-node-context="外部服务">
           <title>GitHub Releases · 自动更新源 · 外部服务</title>
-          <rect x="1180" y="60" width="150" height="62" rx="6" class="c-mask"/>
-          <rect x="1180" y="60" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(1186 66) scale(0.6875)">
+          <rect x="1420" y="230" width="150" height="62" rx="6" class="c-mask"/>
+          <rect x="1420" y="230" width="150" height="62" rx="6" class="c-cloud" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(1426 236) scale(0.6875)">
             <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
           </g>
-          <text data-detail-anchor x="1255" y="89" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">GitHub Releases</text>
-        <text data-detail="context" x="1255" y="105" class="t-muted" font-size="9" text-anchor="middle">自动更新源</text>
+          <text data-detail-anchor x="1495" y="259" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">GitHub Releases</text>
+        <text data-detail="context" x="1495" y="275" class="t-muted" font-size="9" text-anchor="middle">自动更新源</text>
         </g>
 
         <!-- Connection labels -->
-        <g data-detail="context" data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴文本" data-edge-key="0" data-edge-id="c-user-ui">
-          <rect x="169.8" y="451.5" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="194" y="461.5" class="t-backend" font-size="8" text-anchor="middle">粘贴文本</text>
+        <g data-detail="context" data-edge-from="user" data-edge-to="ui" data-edge-label="粘贴简历 + JD" data-edge-key="0" data-edge-id="c-user-ui">
+          <rect x="168.8" y="298" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="205" y="308" class="t-backend" font-size="8" text-anchor="middle">粘贴简历 + JD</text>
         </g>
         <g data-detail="context" data-edge-from="ui" data-edge-to="api" data-edge-label="POST /analyze" data-edge-key="1" data-edge-id="c-ui-api">
-          <rect x="488.8" y="445" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="525" y="455" class="t-backend" font-size="8" text-anchor="middle">POST /analyze</text>
+          <rect x="288.8" y="640" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="325" y="650" class="t-backend" font-size="8" text-anchor="middle">POST /analyze</text>
         </g>
         <g data-detail="context" data-edge-from="api" data-edge-to="orch" data-edge-label="创建任务" data-edge-key="2" data-edge-id="c-api-orch">
-          <rect x="810.8" y="445" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="835" y="455" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
+          <rect x="599.8" y="633" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="624" y="643" class="t-backend" font-size="8" text-anchor="middle">创建任务</text>
         </g>
         <g data-detail="context" data-edge-from="orch" data-edge-to="ability" data-edge-label="简历全文" data-edge-key="3" data-edge-id="c-orch-ability">
-          <rect x="1100.8" y="110" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="1125" y="120" class="t-backend" font-size="8" text-anchor="middle">简历全文</text>
+          <rect x="822.3" y="345" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="846.5" y="355" class="t-backend" font-size="8" text-anchor="middle">简历全文</text>
         </g>
         <g data-detail="context" data-edge-from="orch" data-edge-to="jdmatch" data-edge-label="简历 + JD" data-edge-key="4" data-edge-id="c-orch-jdmatch">
-          <rect x="1018.4" y="540" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
-          <text x="1045" y="550" class="t-backend" font-size="8" text-anchor="middle">简历 + JD</text>
+          <rect x="823.4" y="555" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="850" y="565" class="t-backend" font-size="8" text-anchor="middle">简历 + JD</text>
         </g>
         <g data-detail="context" data-edge-from="ability" data-edge-to="report" data-edge-label="ability_report" data-edge-key="5" data-edge-id="c-ability-report">
-          <rect x="1621.4" y="427.5" width="77.2" height="14" rx="3" class="c-mask"/>
-          <text x="1660" y="437.5" class="t-backend" font-size="8" text-anchor="middle">ability_report</text>
+          <rect x="1069.9" y="345" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="1108.5" y="355" class="t-backend" font-size="8" text-anchor="middle">ability_report</text>
         </g>
         <g data-detail="context" data-edge-from="jdmatch" data-edge-to="report" data-edge-label="match_report" data-edge-key="6" data-edge-id="c-jdmatch-report">
-          <rect x="1160.2" y="693.5" width="67.6" height="14" rx="3" class="c-mask"/>
-          <text x="1194" y="703.5" class="t-backend" font-size="8" text-anchor="middle">match_report</text>
+          <rect x="1074.7" y="546" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="1108.5" y="556" class="t-backend" font-size="8" text-anchor="middle">match_report</text>
         </g>
-        <g data-detail="context" data-edge-from="report" data-edge-to="ui" data-edge-label="HTML 报告" data-edge-key="7" data-edge-id="c-report-ui">
-          <rect x="995.9" y="20" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
-          <text x="1022.5" y="30" class="t-backend" font-size="8" text-anchor="middle">HTML 报告</text>
+        <g data-detail="context" data-edge-from="ability" data-edge-to="ds" data-edge-label="能力透视" data-edge-key="7" data-edge-id="c-ability-ds">
+          <rect x="1371.8" y="336" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="1396" y="346" class="t-security" font-size="8" text-anchor="middle">能力透视</text>
         </g>
-        <g data-detail="context" data-edge-from="ability" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="8" data-edge-id="c-ability-ds">
-          <rect x="1428.8" y="806" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="1465" y="816" class="t-security" font-size="8" text-anchor="middle">deepseek-chat</text>
+        <g data-detail="context" data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="岗位匹配" data-edge-key="8" data-edge-id="c-jdmatch-ds">
+          <rect x="1371.8" y="550" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="1396" y="560" class="t-security" font-size="8" text-anchor="middle">岗位匹配</text>
         </g>
-        <g data-detail="context" data-edge-from="jdmatch" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="9" data-edge-id="c-jdmatch-ds">
-          <rect x="1058.8" y="795" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="1095" y="805" class="t-security" font-size="8" text-anchor="middle">deepseek-chat</text>
+        <g data-detail="context" data-edge-from="report" data-edge-to="ds" data-edge-label="生成 HTML" data-edge-key="9" data-edge-id="c-report-ds">
+          <rect x="1328.4" y="441" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="1355" y="451" class="t-security" font-size="8" text-anchor="middle">生成 HTML</text>
         </g>
-        <g data-detail="context" data-edge-from="report" data-edge-to="ds" data-edge-label="deepseek-chat" data-edge-key="10" data-edge-id="c-report-ds">
-          <rect x="1586.3" y="740" width="72.4" height="14" rx="3" class="c-mask"/>
-          <text x="1622.5" y="750" class="t-security" font-size="8" text-anchor="middle">deepseek-chat</text>
+        <g data-detail="context" data-edge-from="report" data-edge-to="orch" data-edge-label="写回报告" data-edge-key="10" data-edge-id="c-report-orch">
+          <rect x="960.8" y="446" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="985" y="456" class="t-messagebus" font-size="8" text-anchor="middle">写回报告</text>
         </g>
-        <g data-detail="context" data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="11" data-edge-id="c-main-gh">
-          <rect x="1003.3" y="35" width="48.4" height="14" rx="3" class="c-mask"/>
-          <text x="1027.5" y="45" class="t-muted" font-size="8" text-anchor="middle">检查更新</text>
+        <g data-detail="context" data-edge-from="orch" data-edge-to="api" data-edge-label="读取状态" data-edge-key="11" data-edge-id="c-orch-api">
+          <rect x="526.8" y="443" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="551" y="453" class="t-messagebus" font-size="8" text-anchor="middle">读取状态</text>
+        </g>
+        <g data-detail="context" data-edge-from="api" data-edge-to="ui" data-edge-label="轮询 /status" data-edge-key="12" data-edge-id="c-api-ui">
+          <rect x="291.2" y="650" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="325" y="660" class="t-messagebus" font-size="8" text-anchor="middle">轮询 /status</text>
+        </g>
+        <g data-detail="context" data-edge-from="main" data-edge-to="api" data-edge-label="启动 Express" data-edge-key="13" data-edge-id="c-main-api">
+          <rect x="414.2" y="306" width="67.6" height="14" rx="3" class="c-mask"/>
+          <text x="448" y="316" class="t-muted" font-size="8" text-anchor="middle">启动 Express</text>
+        </g>
+        <g data-detail="context" data-edge-from="main" data-edge-to="gh" data-edge-label="检查更新" data-edge-key="14" data-edge-id="c-main-gh">
+          <rect x="950.8" y="186" width="48.4" height="14" rx="3" class="c-mask"/>
+          <text x="975" y="196" class="t-muted" font-size="8" text-anchor="middle">检查更新</text>
         </g>
 
         <!-- Legend -->
         <g data-legend data-legend-bridge>
-          <text x="40" y="1044" class="t-primary" font-size="10" font-weight="600">图例</text>
-          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="Frontend" data-legend-x="40" data-legend-baseline="1064" data-legend-width="82">
-            <rect x="40" y="1056" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
-            <text x="61" y="1064" class="t-muted" font-size="8">Frontend</text>
+          <text x="40" y="764" class="t-primary" font-size="12" font-weight="650">Legend</text>
+          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="前端界面" data-legend-x="40" data-legend-baseline="784" data-legend-width="83">
+            <rect x="40" y="775" width="16" height="10" rx="2.5" class="c-frontend" stroke-width="1"/>
+            <text x="62" y="784" class="t-muted" font-size="10" font-weight="500">前端界面</text>
           </g>
-          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Backend" data-legend-x="144" data-legend-baseline="1064" data-legend-width="77">
-            <rect x="144" y="1056" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
-            <text x="165" y="1064" class="t-muted" font-size="8">Backend</text>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="后端服务" data-legend-x="145" data-legend-baseline="784" data-legend-width="83">
+            <rect x="145" y="775" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
+            <text x="167" y="784" class="t-muted" font-size="10" font-weight="500">后端服务</text>
           </g>
-          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="Cloud" data-legend-x="243" data-legend-baseline="1064" data-legend-width="67">
-            <rect x="243" y="1056" width="14" height="9" rx="2" class="c-cloud" stroke-width="1"/>
-            <text x="264" y="1064" class="t-muted" font-size="8">Cloud</text>
+          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="外部云服务" data-legend-x="250" data-legend-baseline="784" data-legend-width="93">
+            <rect x="250" y="775" width="16" height="10" rx="2.5" class="c-cloud" stroke-width="1"/>
+            <text x="272" y="784" class="t-muted" font-size="10" font-weight="500">外部云服务</text>
           </g>
-          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External" data-legend-x="332" data-legend-baseline="1064" data-legend-width="82">
-            <rect x="332" y="1056" width="14" height="9" rx="2" class="c-external" stroke-width="1"/>
-            <text x="353" y="1064" class="t-muted" font-size="8">External</text>
+          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="外部用户" data-legend-x="365" data-legend-baseline="784" data-legend-width="83">
+            <rect x="365" y="775" width="16" height="10" rx="2.5" class="c-external" stroke-width="1"/>
+            <text x="387" y="784" class="t-muted" font-size="10" font-weight="500">外部用户</text>
           </g>
         </g>
       </svg>
@@ -4799,42 +5153,42 @@
             <span class="diagram-guide-eyebrow">Diagram guide</span>
             <strong class="diagram-guide-title" id="diagram-guide-title">Explore this system</strong>
           </span>
-          <button class="diagram-guide-close" id="diagram-guide-close" type="button" aria-label="关闭指南">&#215;</button>
+          <button class="diagram-guide-close" id="diagram-guide-close" type="button" aria-label="Close diagram guide">&#215;</button>
         </div>
         <p class="diagram-guide-stats" id="diagram-guide-stats">Inspecting compiled semantics</p>
-        <div class="diagram-guide-actions" id="diagram-guide-actions" role="group" aria-label="图表探索操作">
-          <button class="diagram-guide-action" type="button" data-guide-action="find" aria-label="查找节点">
+        <div class="diagram-guide-actions" id="diagram-guide-actions" role="group" aria-label="Diagram exploration actions">
+          <button class="diagram-guide-action" type="button" data-guide-action="find" aria-label="Find any node">
             <span class="diagram-guide-index" aria-hidden="true">01</span>
-            <span class="diagram-guide-action-copy"><strong>查找节点</strong><small>Search labels, responsibilities, kinds, and stable IDs.</small></span>
+            <span class="diagram-guide-action-copy"><strong>Find any node</strong><small>Search labels, responsibilities, kinds, and stable IDs.</small></span>
             <kbd aria-hidden="true">/</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="route" aria-label="追踪路径">
+          <button class="diagram-guide-action" type="button" data-guide-action="route" aria-label="Trace a directed route">
             <span class="diagram-guide-index" aria-hidden="true">02</span>
             <span class="diagram-guide-action-copy"><strong>Trace a route</strong><small>Ask how two semantic nodes connect in authored direction.</small></span>
             <kbd aria-hidden="true">R</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="map" aria-label="查看全局">
+          <button class="diagram-guide-action" type="button" data-guide-action="map" aria-label="See the whole system">
             <span class="diagram-guide-index" aria-hidden="true">03</span>
-            <span class="diagram-guide-action-copy"><strong>查看全局</strong><small>Open Semantic Radar with a live viewport and stable nodes.</small></span>
+            <span class="diagram-guide-action-copy"><strong>See the whole system</strong><small>Open Semantic Radar with a live viewport and stable nodes.</small></span>
             <kbd aria-hidden="true">M</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="lens" aria-label="对比类型">
+          <button class="diagram-guide-action" type="button" data-guide-action="lens" aria-label="Compare semantic kinds">
             <span class="diagram-guide-index" aria-hidden="true">04</span>
-            <span class="diagram-guide-action-copy"><strong>对比类型</strong><small>Count roles, reveal their traffic, and compare direct authored links.</small></span>
+            <span class="diagram-guide-action-copy"><strong>Compare semantic kinds</strong><small>Count roles, reveal their traffic, and compare direct authored links.</small></span>
             <kbd aria-hidden="true">L</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="story" aria-label="播放导览">
+          <button class="diagram-guide-action" type="button" data-guide-action="story" aria-label="Play the guided story">
             <span class="diagram-guide-index" aria-hidden="true">05</span>
-            <span class="diagram-guide-action-copy"><strong>播放导览</strong><small id="diagram-guide-story-copy">Walk the authored chapters and real relationships.</small></span>
+            <span class="diagram-guide-action-copy"><strong>Play the guided story</strong><small id="diagram-guide-story-copy">Walk the authored chapters and real relationships.</small></span>
             <kbd aria-hidden="true">P</kbd>
           </button>
-          <button class="diagram-guide-action" type="button" data-guide-action="present" aria-label="进入演示模式">
+          <button class="diagram-guide-action" type="button" data-guide-action="present" aria-label="Enter presentation stage">
             <span class="diagram-guide-index" aria-hidden="true">06</span>
             <span class="diagram-guide-action-copy"><strong>Enter Presentation Stage</strong><small>Give the live diagram the viewport without changing export.</small></span>
             <kbd aria-hidden="true">F</kbd>
           </button>
         </div>
-        <div class="diagram-guide-shortcuts" aria-label="更多快捷键">
+        <div class="diagram-guide-shortcuts" aria-label="Additional keyboard shortcuts">
           <span><kbd>E</kbd> Export</span><span><kbd>T</kbd> Theme</span><span><kbd>S</kbd> Style</span><span><kbd>0</kbd> Reset</span><span><kbd>+</kbd> Zoom in</span><span><kbd>-</kbd> Zoom out</span><span><kbd>Esc</kbd> Close</span>
         </div>
         <p class="diagram-guide-feedback" id="diagram-guide-feedback" aria-live="polite"></p>
@@ -4842,7 +5196,7 @@
       <div class="node-finder no-print" id="node-finder" hidden role="dialog" aria-modal="false" aria-labelledby="node-finder-title">
         <div class="node-finder-head">
           <strong id="node-finder-title">Find a node</strong>
-          <button class="node-finder-close" id="node-finder-close" type="button" aria-label="关闭查找">&#215;</button>
+          <button class="node-finder-close" id="node-finder-close" type="button" aria-label="Close node finder">&#215;</button>
         </div>
         <div class="node-finder-search">
           <span aria-hidden="true">&#8981;</span>
@@ -4888,8 +5242,8 @@
           </div>
           <div class="relationship-lens-actions">
             <button id="btn-focus-clear" type="button" aria-label="Close semantic passport" title="Close">&#215;</button>
-            <button id="btn-focus-copy" type="button" aria-label="Copy link to focused node">复制链接</button>
-            <button id="btn-focus-relations" type="button" aria-label="Show connected relationships" aria-expanded="false" aria-controls="relationship-lens-list">关系</button>
+            <button id="btn-focus-copy" type="button" aria-label="Copy link to focused node">Copy link</button>
+            <button id="btn-focus-relations" type="button" aria-label="Show connected relationships" aria-expanded="false" aria-controls="relationship-lens-list">Relations</button>
           </div>
         </div>
         <div class="relationship-lens-list" id="relationship-lens-list" aria-label="Connected relationships"></div>
@@ -4901,9 +5255,9 @@
             <strong class="route-probe-title" id="route-probe-title">Choose a start node</strong>
           </span>
           <span class="route-probe-actions">
-            <button class="route-probe-find" id="route-probe-find" type="button" aria-label="Find a route start" data-node-finder-trigger>找起点</button>
-            <button class="route-probe-copy-link" id="route-probe-copy" type="button" aria-label="Copy link to traced route" hidden>复制链接</button>
-            <button id="route-probe-clear" type="button" aria-label="Clear route probe">清除</button>
+            <button class="route-probe-find" id="route-probe-find" type="button" aria-label="Find a route start" data-node-finder-trigger>Find start</button>
+            <button class="route-probe-copy-link" id="route-probe-copy" type="button" aria-label="Copy link to traced route" hidden>Copy link</button>
+            <button id="route-probe-clear" type="button" aria-label="Clear route probe">Clear</button>
           </span>
         </div>
         <div class="route-probe-path" id="route-probe-path" aria-label="Traced route">
@@ -4916,7 +5270,7 @@
             <span id="route-journey-play-label">Journey</span>
           </button>
           <button id="route-journey-next" type="button" aria-label="Next route position" title="Next route position">&#8594;</button>
-          <button class="route-journey-overview" id="route-journey-overview" type="button" aria-label="Show complete route overview" title="Show complete route overview">总览</button>
+          <button class="route-journey-overview" id="route-journey-overview" type="button" aria-label="Show complete route overview" title="Show complete route overview">Overview</button>
         </div>
         <small class="route-probe-status" id="route-probe-status" aria-live="polite">Choose the source, then the destination. Direction matters.</small>
       </div>
@@ -4932,8 +5286,8 @@
         <div class="semantic-lens-kinds" id="semantic-lens-kinds" role="group" aria-label="Semantic kinds"></div>
         <p class="semantic-lens-status" id="semantic-lens-status" aria-live="polite">Choose a kind to inspect its nodes and touching relationships.</p>
         <div class="semantic-lens-actions">
-          <button id="semantic-lens-copy" type="button" aria-label="Copy link to semantic lens" hidden>复制链接</button>
-          <button id="semantic-lens-clear" type="button" aria-label="Clear semantic lens">清除</button>
+          <button id="semantic-lens-copy" type="button" aria-label="Copy link to semantic lens" hidden>Copy link</button>
+          <button id="semantic-lens-clear" type="button" aria-label="Clear semantic lens">Clear</button>
         </div>
       </div>
       <div class="overview-map no-print" id="overview-map" hidden role="region" aria-labelledby="overview-map-title">
@@ -4949,14 +5303,14 @@
         <div class="overview-map-hint" aria-hidden="true"><span>Click node</span><span>Drag to pan</span></div>
       </div>
       <div class="diagram-nav no-print" role="toolbar" aria-label="Diagram view controls">
-        <button id="btn-route-probe" type="button" aria-label="追踪路径" aria-pressed="false" aria-controls="route-probe" title="Trace route (R)">路径</button>
-        <button id="btn-overview-map" type="button" aria-label="Open semantic radar" aria-expanded="false" aria-controls="overview-map" title="Semantic radar (M)">全景</button>
-        <button id="btn-semantic-lens" type="button" aria-label="Open semantic lens" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false" aria-controls="semantic-lens" title="Semantic lens (L)">聚焦</button>
-        <button id="btn-node-finder" type="button" aria-label="Find a node" aria-haspopup="dialog" aria-expanded="false" aria-controls="node-finder" title="Find a node (/)" data-node-finder-trigger>&#8981;</button>
-        <button id="btn-diagram-guide" type="button" aria-label="Open diagram guide" aria-haspopup="dialog" aria-expanded="false" aria-controls="diagram-guide" title="Diagram guide (?)">?</button>
-        <button data-view="out" type="button" aria-label="Zoom out" title="Zoom out (-)">&#8722;</button>
-        <button data-view="reset" type="button" aria-label="Reset diagram view" title="Reset view (0)">100%</button>
-        <button data-view="in" type="button" aria-label="Zoom in" title="Zoom in (+)">+</button>
+        <button id="btn-route-probe" type="button" aria-label="Trace a directed route" aria-pressed="false" aria-controls="route-probe" title="Trace route (R)">PATH</button>
+        <button id="btn-overview-map" type="button" aria-label="Open semantic radar" aria-expanded="false" aria-controls="overview-map" title="Semantic radar (M)">MAP</button>
+        <button id="btn-semantic-lens" type="button" aria-label="Open semantic lens" aria-haspopup="dialog" aria-expanded="false" aria-pressed="false" aria-controls="semantic-lens" title="Semantic lens (L)">LENS</button>
+        <button id="btn-node-finder" type="button" aria-label="Find a node" aria-haspopup="dialog" aria-expanded="false" aria-controls="node-finder" title="Find a node (/)" data-node-finder-trigger><span class="diagram-nav-icon find" aria-hidden="true"></span></button>
+        <button id="btn-diagram-guide" type="button" aria-label="Open diagram guide" aria-haspopup="dialog" aria-expanded="false" aria-controls="diagram-guide" title="Diagram guide (?)"><span class="diagram-nav-icon guide" aria-hidden="true"></span></button>
+        <button data-view="out" type="button" aria-label="Zoom out" title="Zoom out (-)"><span class="diagram-nav-icon minus" aria-hidden="true"></span></button>
+        <button data-view="reset" type="button" aria-label="Reset diagram view" title="Reset view (0)"><span class="diagram-nav-detail" data-view-detail hidden>READ</span><span class="diagram-nav-percent" data-view-percent>100%</span></button>
+        <button data-view="in" type="button" aria-label="Zoom in" title="Zoom in (+)"><span class="diagram-nav-icon plus" aria-hidden="true"></span></button>
       </div>
     </div>
 
@@ -4971,7 +5325,7 @@
           <li>&bull; 粘贴简历 + JD → 本地 API → 任务编排</li>
           <li>&bull; 能力透视 / 岗位匹配并行评估</li>
           <li>&bull; 报告专家汇总双 JSON → 单文件 HTML</li>
-          <li>&bull; 前端按 taskId 轮询进度并预览导出</li>
+          <li>&bull; 前端轮询 /status 取回报告并预览导出</li>
         </ul>
       </div>
 
@@ -5000,10 +5354,6 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <p class="footer">
-      Architecture diagram &bull; Built with Archify<span class="no-print"> &bull; <a class="artifact-start-link" href="https://tt-a1i.github.io/archify/start.html?type=architecture&amp;source=artifact" target="_blank" rel="noopener noreferrer">Create yours &nearr;</a> &bull; Hover to trace &bull; <kbd>R</kbd> route &bull; Click to focus &bull; <kbd>+</kbd>/<kbd>&minus;</kbd> zoom &bull; <kbd>M</kbd> radar &bull; <kbd>T</kbd> theme &bull; <kbd>E</kbd> export</span>
-    </p>
   </div>
 
   <script>
@@ -5031,7 +5381,7 @@
     }
 
     /* ============================================================
-       视觉风格 try-on — one topology, four bundled presets.
+       Visual style try-on — one topology, four bundled presets.
        The reader's choice is intentionally session-only: it updates the
        live page and canonical SVG together, but never rewrites the source,
        URL, or a later diagram's authored default.
@@ -5065,8 +5415,8 @@
         svg.setAttribute('data-preset', preset);
         btn.setAttribute('data-preset-option', preset);
         label.textContent = LABELS[preset];
-        btn.setAttribute('aria-label', '视觉风格: ' + LABELS[preset] + '. 选择视觉风格');
-        btn.title = '选择视觉风格（S 键循环）';
+        btn.setAttribute('aria-label', 'Visual style: ' + LABELS[preset] + '. Choose visual style');
+        btn.title = 'Choose visual style (S cycles)';
         options().forEach(function (option) {
           var selected = option.getAttribute('data-preset-value') === preset;
           option.setAttribute('aria-checked', String(selected));
@@ -5149,7 +5499,6 @@
       var STORAGE_KEY = 'archify-theme';
       var html = document.documentElement;
       var btn = document.getElementById('btn-theme');
-      var icon = document.getElementById('theme-icon');
       var label = document.getElementById('theme-label');
 
       // localStorage can throw (blocked cookies, sandboxed iframes); the whole
@@ -5179,8 +5528,7 @@
 
       function apply(theme) {
         html.setAttribute('data-theme', theme);
-        icon.textContent = theme === 'dark' ? '\u263E' : '\u263C';
-        label.textContent = theme === 'dark' ? '深色' : '浅色';
+        label.textContent = theme === 'dark' ? 'Dark' : 'Light';
         btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
       }
 
@@ -6302,12 +6650,10 @@
         if (it.dataset.format && !supports(it.dataset.format)) {
           it.disabled = true;
           it.title = 'Not supported by this browser';
-          it.style.opacity = '0.5';
         }
         if ((it.dataset.action === 'copy' || it.dataset.action === 'copy-share-card') && !canCopyImage()) {
           it.disabled = true;
           it.title = 'Clipboard image write not supported by this browser';
-          it.style.opacity = '0.5';
         }
       });
 
@@ -6748,11 +7094,11 @@
           btn.setAttribute('aria-label', 'Resume motion');
           btn.title = 'Resume motion';
         } else if (owner) {
-          btn.setAttribute('aria-label', '暂停动效; currently yielding to ' + ownerLabel(owner));
+          btn.setAttribute('aria-label', 'Pause motion; currently yielding to ' + ownerLabel(owner));
           btn.title = 'Live preview enabled · yielding to ' + ownerLabel(owner);
         } else {
-          btn.setAttribute('aria-label', '暂停动效');
-          btn.title = '暂停动效';
+          btn.setAttribute('aria-label', 'Pause motion');
+          btn.title = 'Pause motion';
         }
       }
       function setPaused(next, options) {
@@ -7992,7 +8338,7 @@
       }
       function clear(options) {
         options = options || {};
-        var restoreNode = options.restore定位 === true && activeIds.length === 1
+        var restoreNode = options.restoreFocus === true && activeIds.length === 1
           ? svg.querySelector('[data-node-id="' + activeIds[0] + '"]')
           : null;
         clearReachability({ updateUrl: false });
@@ -8634,8 +8980,8 @@
       }
 
       function chapterDelta(previous, destination) {
-        var previous定位 = previous ? previous.focus : [];
-        var destination定位 = destination ? destination.focus : [];
+        var previousFocus = previous ? previous.focus : [];
+        var destinationFocus = destination ? destination.focus : [];
         var previousIds = {};
         var destinationIds = {};
         previousFocus.forEach(function (id) { previousIds[id] = true; });
@@ -9272,7 +9618,7 @@
         if (!beatLink.hasAttribute('data-copy-state')) beatLinkLabel.textContent = 'Copy moment';
         var description = available
           ? 'Copy link to current story moment: Beat ' + (step.index + 1) + ' of ' + storySteps.length + ': ' + step.nodeLabel
-          : '选择章节复制链接';
+          : 'Select a Story Beat to copy its exact link';
         beatLink.setAttribute('aria-label', description);
         beatLink.title = description;
       }
@@ -9614,7 +9960,7 @@
           trail.appendChild(stop);
         });
         trail.hidden = labels.length === 0;
-        trail.setAttribute('aria-label', '导览轨迹 for ' + view.label + ': ' + labels.length + ' beats');
+        trail.setAttribute('aria-label', 'Story trail for ' + view.label + ': ' + labels.length + ' beats');
         trail.scrollLeft = 0;
         svg.setAttribute('data-story-active', view.id);
 
@@ -9693,8 +10039,8 @@
         syncStoryPlayback();
         play.disabled = !playing && !automaticPlaybackAllowed;
         play.setAttribute('aria-pressed', playing ? 'true' : 'false');
-        play.setAttribute('aria-label', playing ? 'Pause guided story' : (!automaticPlaybackAllowed ? 'Story playback unavailable while motion is Still' : (storyPlaybackComplete ? 'Replay guided story' : '播放导览')));
-        play.title = playing ? 'Pause guided story (P)' : (!automaticPlaybackAllowed ? 'Switch motion to Live to play the guided story' : (storyPlaybackComplete ? 'Replay guided story (P)' : '播放导览 (P)'));
+        play.setAttribute('aria-label', playing ? 'Pause guided story' : (!automaticPlaybackAllowed ? 'Story playback unavailable while motion is Still' : (storyPlaybackComplete ? 'Replay guided story' : 'Play guided story')));
+        play.title = playing ? 'Pause guided story (P)' : (!automaticPlaybackAllowed ? 'Switch motion to Live to play the guided story' : (storyPlaybackComplete ? 'Replay guided story (P)' : 'Play guided story (P)'));
         playIcon.textContent = playing ? '\u2016' : '\u25b6';
         playLabel.textContent = playing ? 'Pause' : (storyPlaybackComplete ? 'Replay story' : 'Play story');
         if (storyCaption && !storyCaption.hidden) storyCaption.setAttribute('aria-live', playing ? 'off' : 'polite');
@@ -9925,7 +10271,7 @@
         cancelHandoff('overview');
         activeIndex = -1;
         renderStoryTrail(null);
-        if (options.clear定位 !== false) Archify.focus.clear({ updateUrl: false });
+        if (options.clearFocus !== false) Archify.focus.clear({ updateUrl: false });
         if (options.resetView !== false && Archify.view && typeof Archify.view.reset === 'function') {
           Archify.view.reset({ automatic: true });
         }
@@ -10183,11 +10529,164 @@
       };
     })();
 
+    /* ============================================================
+       Adaptive Reader Shell — one diagram across laptop and monitor.
+       The canonical SVG and viewBox never change. On ordinary desktop pages,
+       wide diagrams receive only enough outer width to use the available
+       height without pushing summary cards below the viewport. Mobile,
+       embed, presentation, print, and non-wide diagrams retain their own
+       established layout contracts.
+       ============================================================ */
+    Archify.readerLayout = (function () {
+      var html = document.documentElement;
+      var body = document.body;
+      var shell = document.querySelector('.container');
+      var diagram = document.querySelector('.diagram-container');
+      var svg = diagram && diagram.querySelector(':scope > svg');
+      var header = shell && shell.querySelector('.header');
+      var guided = shell && shell.querySelector('.guided-views');
+      var cards = shell && shell.querySelector('.cards');
+      var viewBox = svg && svg.viewBox && svg.viewBox.baseVal;
+      var ratio = viewBox && viewBox.height > 0 ? viewBox.width / viewBox.height : 0;
+      var frame = 0;
+      var settleFrame = 0;
+      var lastWidth = 0;
+      var WIDE_RATIO = 1.55;
+      var MIN_DESKTOP_WIDTH = 1024;
+      var MIN_READER_WIDTH = 960;
+      var MAX_READER_WIDTH = 1920;
+      var SAFE_BOTTOM_GAP = 12;
+
+      if (diagram && ratio >= WIDE_RATIO) {
+        diagram.setAttribute('data-wide-diagram', 'true');
+        html.setAttribute('data-diagram-shape', 'wide');
+      }
+
+      function number(value) {
+        var parsed = parseFloat(value);
+        return Number.isFinite(parsed) ? parsed : 0;
+      }
+      function visible(element) {
+        return Boolean(element && !element.hidden && window.getComputedStyle(element).display !== 'none');
+      }
+      function outerHeight(element) {
+        if (!visible(element)) return 0;
+        var style = window.getComputedStyle(element);
+        return element.getBoundingClientRect().height + number(style.marginTop) + number(style.marginBottom);
+      }
+      function eligible() {
+        return Boolean(
+          shell && diagram && svg && ratio >= WIDE_RATIO &&
+          window.innerWidth >= MIN_DESKTOP_WIDTH &&
+          html.getAttribute('data-embed') !== 'true' &&
+          html.getAttribute('data-present') !== 'true' &&
+          (!window.matchMedia || !window.matchMedia('print').matches)
+        );
+      }
+      function clear() {
+        html.style.removeProperty('--archify-reader-width');
+        html.removeAttribute('data-reader-layout');
+        html.removeAttribute('data-reader-overflow');
+        lastWidth = 0;
+      }
+      function chromeMetrics() {
+        var bodyStyle = window.getComputedStyle(body);
+        var diagramStyle = window.getComputedStyle(diagram);
+        return {
+          bodyX: number(bodyStyle.paddingLeft) + number(bodyStyle.paddingRight),
+          bodyY: number(bodyStyle.paddingTop) + number(bodyStyle.paddingBottom),
+          diagramX: number(diagramStyle.paddingLeft) + number(diagramStyle.paddingRight) +
+            number(diagramStyle.borderLeftWidth) + number(diagramStyle.borderRightWidth),
+          diagramY: number(diagramStyle.paddingTop) + number(diagramStyle.paddingBottom) +
+            number(diagramStyle.borderTopWidth) + number(diagramStyle.borderBottomWidth)
+        };
+      }
+      function applyWidth(width) {
+        var rounded = Math.round(width);
+        if (Math.abs(rounded - lastWidth) < 1) return false;
+        lastWidth = rounded;
+        html.style.setProperty('--archify-reader-width', rounded + 'px');
+        html.setAttribute('data-reader-layout', 'adaptive');
+        return true;
+      }
+      function settleOverflow(minWidth) {
+        if (settleFrame) cancelAnimationFrame(settleFrame);
+        settleFrame = requestAnimationFrame(function () {
+          settleFrame = 0;
+          if (!eligible() || !lastWidth) return;
+          var overflow = Math.max(
+            document.documentElement.scrollHeight,
+            document.body.scrollHeight
+          ) - window.innerHeight;
+          if (overflow > 1 && lastWidth > minWidth) {
+            applyWidth(Math.max(minWidth, lastWidth - overflow * ratio - 4));
+            html.setAttribute('data-reader-overflow', 'reduced');
+          } else if (overflow > 1) {
+            html.setAttribute('data-reader-overflow', 'authored');
+          } else {
+            html.removeAttribute('data-reader-overflow');
+          }
+        });
+      }
+      function measure() {
+        frame = 0;
+        if (!eligible()) {
+          clear();
+          return null;
+        }
+        var chrome = chromeMetrics();
+        var viewportCap = Math.max(0, window.innerWidth - chrome.bodyX);
+        var minWidth = Math.min(MIN_READER_WIDTH, viewportCap);
+        var maxWidth = Math.min(MAX_READER_WIDTH, viewportCap);
+        var fixedHeight = chrome.bodyY + chrome.diagramY + SAFE_BOTTOM_GAP +
+          outerHeight(header) + outerHeight(guided) + outerHeight(cards);
+        var availableSvgHeight = Math.max(1, window.innerHeight - fixedHeight);
+        var desiredWidth = availableSvgHeight * ratio + chrome.diagramX;
+        var width = Math.max(minWidth, Math.min(maxWidth, desiredWidth));
+        applyWidth(width);
+        settleOverflow(minWidth);
+        return {
+          ratio: ratio,
+          width: Math.round(width),
+          availableSvgHeight: Math.round(availableSvgHeight),
+          fixedHeight: Math.round(fixedHeight)
+        };
+      }
+      function schedule() {
+        if (frame) return;
+        frame = requestAnimationFrame(measure);
+      }
+
+      window.addEventListener('resize', schedule, { passive: true });
+      window.addEventListener('load', schedule, { once: true });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule).catch(function () {});
+      if (typeof ResizeObserver === 'function') {
+        var resizeObserver = new ResizeObserver(schedule);
+        [header, guided, cards].forEach(function (element) { if (element) resizeObserver.observe(element); });
+      }
+      if (typeof MutationObserver === 'function') {
+        var contentObserver = new MutationObserver(schedule);
+        if (guided) contentObserver.observe(guided, { attributes: true, childList: true, subtree: true });
+        if (cards) contentObserver.observe(cards, { attributes: true, childList: true, subtree: true });
+        contentObserver.observe(html, { attributes: true, attributeFilter: ['data-embed', 'data-present'] });
+      }
+      schedule();
+
+      return {
+        measure: measure,
+        schedule: schedule,
+        active: function () { return html.getAttribute('data-reader-layout') === 'adaptive'; },
+        receipt: function () { return { ratio: ratio, width: lastWidth }; }
+      };
+    })();
+
     Archify.view = (function () {
       var container = document.querySelector('.diagram-container');
       var svg = container.querySelector('svg');
       var outBtn = container.querySelector('[data-view="out"]');
       var resetBtn = container.querySelector('[data-view="reset"]');
+      var resetDetailLabel = resetBtn.querySelector('[data-view-detail]');
+      var resetPercentLabel = resetBtn.querySelector('[data-view-percent]');
       var inBtn = container.querySelector('[data-view="in"]');
       var state = { scale: 1, x: 0, y: 0, mode: 'overview' };
       var drag = null;
@@ -10199,9 +10698,6 @@
       var autoScrollUntil = 0;
 
       var viewBox = svg.viewBox && svg.viewBox.baseVal;
-      if (viewBox && viewBox.height > 0 && viewBox.width / viewBox.height >= 1.55) {
-        container.setAttribute('data-wide-diagram', 'true');
-      }
 
       function clamp() {
         var width = svg.clientWidth || 1;
@@ -10265,7 +10761,14 @@
           : detail === 'read'
             ? 'Zoom in again to reveal tags and annotations'
             : 'Full diagram detail';
-        resetBtn.textContent = (semantic ? 'AUTO ' : levelLabel) + percent;
+        var resolvedLevel = (semantic ? 'AUTO ' : levelLabel).trim();
+        var showDetailLevel = resolvedLevel !== 'READ';
+        if (resetDetailLabel) {
+          resetDetailLabel.textContent = resolvedLevel;
+          resetDetailLabel.hidden = !showDetailLevel;
+        }
+        if (resetPercentLabel) resetPercentLabel.textContent = percent;
+        resetBtn.toggleAttribute('data-detail-visible', showDetailLevel);
         resetBtn.title = (semantic ? 'Semantic camera active · ' : '') + detailHint + ' · reset view (0)';
         resetBtn.setAttribute('aria-label', detailHint + '. Reset diagram view');
         resetBtn.setAttribute('data-detail-level', detail);
@@ -10721,7 +11224,7 @@
           rect.setAttribute('data-kind', node.getAttribute('data-node-kind') || 'neutral');
           rect.setAttribute('tabindex', '0');
           rect.setAttribute('role', 'button');
-          rect.setAttribute('aria-label', '定位 ' + nodeLabel(node, id) + ' from Semantic Radar');
+          rect.setAttribute('aria-label', 'Focus ' + nodeLabel(node, id) + ' from Semantic Radar');
           nodeLayer.appendChild(rect);
           nodes.push({ id: id, node: node, rect: rect });
         });
@@ -10822,7 +11325,7 @@
           panel.style.removeProperty('--archify-radar-right');
           panel.style.removeProperty('--archify-radar-left');
           panel.style.removeProperty('--archify-radar-top');
-          if (options.restore定位 === true) trigger.focus();
+          if (options.restoreFocus === true) trigger.focus();
         }
         return next;
       }
@@ -10952,7 +11455,6 @@
     Archify.presentation = (function () {
       var html = document.documentElement;
       var btn = document.getElementById('btn-present');
-      var icon = document.getElementById('present-icon');
       var label = document.getElementById('present-label');
       var previousScrollY = 0;
 
@@ -10969,9 +11471,8 @@
 
       function render(next) {
         btn.setAttribute('aria-pressed', next ? 'true' : 'false');
-        btn.setAttribute('aria-label', next ? 'Exit presentation stage' : '进入演示模式');
-        btn.title = next ? 'Exit presentation stage (F or Escape)' : '演示模式 (F)';
-        icon.textContent = next ? '\u00d7' : '\u25a1';
+        btn.setAttribute('aria-label', next ? 'Exit presentation stage' : 'Enter presentation stage');
+        btn.title = next ? 'Exit presentation stage (F or Escape)' : 'Presentation stage (F)';
         label.textContent = next ? 'Exit' : 'Present';
       }
 
@@ -11174,7 +11675,7 @@
             ? 'Choose ' + item.label + ' as route start'
             : context.kind === 'route-target'
               ? 'Choose ' + item.label + ' as route destination, ' + badge
-              : '定位 ' + item.label + ', ' + item.links + ' related connection' + (item.links === 1 ? '' : 's');
+              : 'Focus ' + item.label + ', ' + item.links + ' related connection' + (item.links === 1 ? '' : 's');
           button.setAttribute('aria-label', action);
 
           var name = document.createElement('strong');
@@ -11222,8 +11723,8 @@
         trigger.setAttribute('aria-expanded', 'false');
         input.value = '';
         if (routeContext && Archify.routeProbe && typeof Archify.routeProbe.finderClosed === 'function') {
-          Archify.routeProbe.finderClosed({ restoreFocus: options.restore定位 !== false });
-        } else if (options.restore定位 !== false) {
+          Archify.routeProbe.finderClosed({ restoreFocus: options.restoreFocus !== false });
+        } else if (options.restoreFocus !== false) {
           trigger.focus();
         }
       }
@@ -11506,7 +12007,7 @@
       }
       function setTrigger(active) {
         trigger.setAttribute('aria-pressed', active ? 'true' : 'false');
-        trigger.setAttribute('aria-label', active ? 'Clear traced route' : '追踪路径');
+        trigger.setAttribute('aria-label', active ? 'Clear traced route' : 'Trace a directed route');
       }
       function clear(options) {
         options = options || {};
@@ -11537,7 +12038,7 @@
           Archify.view.reset({ automatic: true });
         }
         if (options.updateUrl !== false) replaceRouteHash('');
-        if (options.restore定位 === true) trigger.focus();
+        if (options.restoreFocus === true) trigger.focus();
       }
       function outgoingByNode() {
         var byId = nodesById();
@@ -12136,7 +12637,7 @@
         options = options || {};
         panel.removeAttribute('data-finder-open');
         requestDocking();
-        if (options.restore定位 === true && !findBtn.hidden) findBtn.focus();
+        if (options.restoreFocus === true && !findBtn.hidden) findBtn.focus();
       }
       function openFinder() {
         var context = finderContext();
@@ -12202,15 +12703,15 @@
         options = options || {};
         if (journeyPlaying) {
           pauseJourney({ preserveElapsed: true });
-          if (options.restore定位 === true) journeyPlayBtn.focus();
+          if (options.restoreFocus === true) journeyPlayBtn.focus();
           return 'paused';
         }
         if (journeyIndex >= 0) {
           showJourneyOverview({ reveal: true });
-          if (options.restore定位 === true) journeyOverviewBtn.focus();
+          if (options.restoreFocus === true) journeyOverviewBtn.focus();
           return 'overview';
         }
-        clear({ restoreFocus: options.restore定位 === true });
+        clear({ restoreFocus: options.restoreFocus === true });
         return 'cleared';
       }
       function syncJourneyMotion() {
@@ -12765,7 +13266,7 @@
         panel.hidden = true;
         trigger.setAttribute('aria-expanded', 'false');
         updateTrigger();
-        if (options.restore定位 !== false && lensOpener && typeof lensOpener.focus === 'function') lensOpener.focus();
+        if (options.restoreFocus !== false && lensOpener && typeof lensOpener.focus === 'function') lensOpener.focus();
         return false;
       }
       function open(options) {
@@ -13017,7 +13518,7 @@
         trigger.setAttribute('aria-expanded', 'false');
         trigger.setAttribute('aria-label', 'Open diagram guide');
         feedback.textContent = '';
-        if (options.restore定位 !== false) trigger.focus();
+        if (options.restoreFocus !== false) trigger.focus();
         return false;
       }
       function open() {
@@ -13038,7 +13539,7 @@
         html.setAttribute('data-guide-open', 'true');
         routePanel.setAttribute('data-guide-open', 'true');
         trigger.setAttribute('aria-expanded', 'true');
-        trigger.setAttribute('aria-label', '关闭指南');
+        trigger.setAttribute('aria-label', 'Close diagram guide');
         feedback.textContent = '';
         requestAnimationFrame(function () {
           var first = actionButtons()[0];
