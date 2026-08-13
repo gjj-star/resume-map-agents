@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "简历评估专家团 · 系统架构",
-    "animation": "none",
+    "animation": "trace",
     "visual_preset": "signal-flow",
     "quality_profile": "showcase",
     "repository": {
