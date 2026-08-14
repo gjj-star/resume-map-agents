@@ -107,13 +107,17 @@ function ghUpload(uploadUrl, filename, filePath, contentType) {
   });
 }
 
-function retry(fn, times = 5, delayMs = 3000) {
+// 异步重试：await fn() 才能真正捕获 Promise 拒绝（同步 return fn() 会在第一次 reject 时直接穿透）
+async function retry(fn, times = 5, delayMs = 3000) {
   let lastErr;
   for (let i = 0; i < times; i++) {
-    try { return fn(); } catch (e) { lastErr = e; console.log(`  重试 ${i + 1}/${times}: ${e.message}`); }
-    // sleep
-    const end = Date.now() + delayMs;
-    while (Date.now() < end) { /* busy wait */ }
+    try {
+      return await fn();
+    } catch (e) {
+      lastErr = e;
+      console.log(`  重试 ${i + 1}/${times}: ${e.message}`);
+      if (i < times - 1) await new Promise((r) => setTimeout(r, delayMs));
+    }
   }
   throw lastErr;
 }
@@ -193,8 +197,9 @@ function retry(fn, times = 5, delayMs = 3000) {
   }), 5, 4000);
   console.log('release id:', release.id);
 
-  await ghUpload(release.upload_url, asciiName, setupDst, 'application/octet-stream');
-  await ghUpload(release.upload_url, 'latest.yml', path.join(BUILD_DIR, 'latest.yml'), 'text/yaml');
+  // 上传失败可安全重试（未完成的 asset 不会留下记录），GitHub 网络时通时断
+  await retry(() => ghUpload(release.upload_url, asciiName, setupDst, 'application/octet-stream'), 3, 5000);
+  await retry(() => ghUpload(release.upload_url, 'latest.yml', path.join(BUILD_DIR, 'latest.yml'), 'text/yaml'), 3, 5000);
 
   // 7. git push + tag（inline 凭证避免 GCM 弹窗）
   console.log('推送 git...');
