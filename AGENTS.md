@@ -17,8 +17,9 @@ Electron 桌面应用「简历评估专家团」：粘贴简历 + JD，三个 AI
 main.js           Electron 主进程：窗口 + Express 服务 + 自动更新(autoUpdater)
 preload.js        contextBridge 安全桥接（getServerPort / onUpdateStatus / installUpdate）
 server/
-  index.js        Express API（/api/evaluation/analyze、/status/:taskId、/health）
-  agents.js       DeepSeek 调用 + 三 Agent 编排（异步任务 taskId + 轮询模式）
+  index.js        Express API（/api/evaluation/analyze、/status/:taskId、/health、/api/settings*）
+  config.js       用户 API 设置存取（settings.json：userData / 项目根），环境变量兜底
+  agents.js       API 调用（按调用读配置 + 重试退避）+ 三 Agent 编排（异步任务 taskId + 轮询）
   prompts.js      三个 Agent 的 system prompt（基于简历评估专家团 SKILL.md 契约）
 renderer/
   index.html      UI 结构
@@ -35,10 +36,11 @@ assets/icon.png   应用图标
 0. **动手前先 `git fetch` 检查远程**。用户会在多个 AI 工具（WorkBuddy / Claude Code / Codex）并行改本项目，远程可能已前进。发现分叉时：先读远程新提交理解意图，在其基础上继续，禁止基于旧提交强行覆盖。若远程已修了你要修的问题，以远程为准，丢弃本地重复方案。（2026-08-10 双端撞号 v1.0.6 的教训）
 1. **版本号唯一事实源 = `package.json` 的 `version` 字段**。改版本一律走 `node scripts/release.js patch|minor|major`，禁止手工改版本号或手工维护 latest.yml。
 2. **GitHub Release asset 文件名必须纯 ASCII**（无中文、无空格）。GitHub 会把中文/空格改写成别的名字，导致 latest.yml 与实际文件不匹配、自动更新 404。
-3. **API key 不进 git**。key 放 `.env`（已 ignore）+ `server/agents.js` 的 fallback。任何 commit 不得包含 `sk-` 开头的字符串（GitHub Push Protection 也会拦）。
-4. **UI 禁 emoji**，一律用内联 SVG 线条图标（stroke-width 1.5）。风格基调见下。
-5. **Release 不可变**。已发布的 tag/release 不覆盖重发；内容错了就 bump 新版本号重发。
-6. **`build.publish` 配置不可删**。package.json 的 `build.publish`（github: gjj-star/resume-map-agents）是自动更新的唯一来源——删了它 electron-builder 不生成 `resources/app-update.yml`，autoUpdater 静默失效。改 package.json 后必须确认该字段仍在，打包后可验证：`resources/app-update.yml` 存在。（2026-08-10 远程重写 package.json 弄丢 publish 致 v1.0.6-1.1.0 全部无法自动更新的教训）
+3. **API key 不进 git、不进安装包**。应用采用 BYOK：用户 key 经「专家介绍 → API 设置」保存在本机 `settings.json`（打包版在 userData，开发直跑在项目根，均已 gitignore）。`.env` 仅供开发模式读取，`package.json` 的 `build.files` 不得包含 `.env`。任何 commit 不得包含 `sk-` 开头的字符串（GitHub Push Protection 也会拦）。
+4. **本机服务鉴权不可删**。主进程每次启动生成随机 `APP_AUTH_TOKEN`，server 对 `/api` 强制校验（独立 node 直跑时放行），渲染进程经 IPC 取 token 后带 `Authorization: Bearer` 头调用。删掉它等于重新打开"浏览器任意网页白嫖本地 API"的口子。
+5. **UI 禁 emoji**，一律用内联 SVG 线条图标（stroke-width 1.5）。风格基调见下。
+6. **Release 不可变**。已发布的 tag/release 不覆盖重发；内容错了就 bump 新版本号重发。
+7. **`build.publish` 配置不可删**。package.json 的 `build.publish`（github: gjj-star/resume-map-agents）是自动更新的唯一来源——删了它 electron-builder 不生成 `resources/app-update.yml`，autoUpdater 静默失效。改 package.json 后必须确认该字段仍在，打包后可验证：`resources/app-update.yml` 存在。（2026-08-10 远程重写 package.json 弄丢 publish 致 v1.0.6-1.1.0 全部无法自动更新的教训）
 
 ## 版本规则（语义化版本 semver）
 
@@ -79,4 +81,6 @@ release.js 会自动完成：bump 版本 → 打包 NSIS → 生成 ASCII 安装
 
 - 后端单测：`cd server && node -e "require('./agents.js')"`（验证模块可加载）
 - API 冒烟：启动应用后 `curl http://127.0.0.1:3456/api/health` 应返回 `{"ok":true}`
+- API 设置冒烟：GET/PUT `/api/settings` 应正确落盘 settings.json；POST `/api/settings/validate` 用错误 key 应返回 HTTP 502 + `ok:false`
+- 鉴权冒烟：`APP_AUTH_TOKEN=xx node server/index.js` 启动后，无 token 请求 `/api/*` 应 401，带 token 应 200
 - 三 Agent 全链路：POST /api/evaluation/analyze 拿 taskId → 轮询 /status/:taskId 到 done 且 reportHtml 非空

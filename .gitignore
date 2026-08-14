@@ -11,3 +11,4 @@ _pkgtmp/
 _archive/
 *.bak
 .env
+settings.json

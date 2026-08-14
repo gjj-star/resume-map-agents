@@ -92,6 +92,29 @@ function apiBase() {
   return `http://127.0.0.1:${serverPort}`;
 }
 
+// ===== 本机服务鉴权：每次启动的随机会话 token，防止浏览器里任意网页调用本地 API =====
+let authToken = null;
+
+async function getToken() {
+  if (authToken) return authToken;
+  if (window.electronAPI && window.electronAPI.getAuthToken) {
+    try {
+      authToken = await window.electronAPI.getAuthToken();
+    } catch (_) {}
+  }
+  return authToken;
+}
+
+async function apiFetch(path, options = {}) {
+  const headers = { ...(options.headers || {}) };
+  const token = await getToken();
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  if (options.body && headers['Content-Type'] === undefined) {
+    headers['Content-Type'] = 'application/json';
+  }
+  return fetch(`${apiBase()}${path}`, { ...options, headers });
+}
+
 // ===== 页面切换 =====
 $('navBtn').addEventListener('click', () => {
   const evalPage = $('page-eval');
@@ -164,9 +187,8 @@ $('analyzeBtn').addEventListener('click', async () => {
   $('globalProgress').classList.add('show');
 
   try {
-    const resp = await fetch(`${apiBase()}/api/evaluation/analyze`, {
+    const resp = await apiFetch('/api/evaluation/analyze', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ resume, jd }),
     });
     if (!resp.ok) {
@@ -195,7 +217,7 @@ function startPolling() {
 async function pollStatus() {
   if (!currentTaskId) return;
   try {
-    const resp = await fetch(`${apiBase()}/api/evaluation/status/${currentTaskId}`);
+    const resp = await apiFetch(`/api/evaluation/status/${currentTaskId}`);
     if (!resp.ok) {
       if (resp.status === 404) {
         stopPolling();
@@ -338,7 +360,7 @@ $('exportBtn').addEventListener('click', () => {
   await getPort();
   // 健康检查
   try {
-    const resp = await fetch(`${apiBase()}/api/health`);
+    const resp = await apiFetch('/api/health');
     if (resp.ok) {
       $('hint').textContent = '服务就绪';
       setTimeout(() => ($('hint').textContent = ''), 2000);
@@ -346,6 +368,8 @@ $('exportBtn').addEventListener('click', () => {
   } catch (_) {
     $('hint').textContent = '服务启动中，如无法分析请稍后重试';
   }
+  // 加载 API 设置；未配置 Key 时展示首次引导
+  loadApiSettings();
 })();
 
 // ===== 自动更新状态 =====
@@ -381,3 +405,134 @@ function initAutoUpdate() {
 }
 
 initAutoUpdate();
+
+// ===== API 设置（BYOK：key 只保存在本机） =====
+function setApiStatus(msg, cls) {
+  const el = $('apiStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'api-status' + (cls ? ' ' + cls : '');
+}
+
+function setOnboardStatus(msg, cls) {
+  const el = $('onboardStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'onboard-status' + (cls ? ' ' + cls : '');
+}
+
+function bindKeyToggle(inputId, btnId) {
+  const input = $(inputId);
+  const btn = $(btnId);
+  if (!input || !btn) return;
+  btn.addEventListener('click', () => {
+    const revealing = input.type === 'password';
+    input.type = revealing ? 'text' : 'password';
+    btn.textContent = revealing ? '隐藏' : '显示';
+  });
+}
+bindKeyToggle('apiKeyInput', 'apiKeyToggle');
+bindKeyToggle('onboardKeyInput', 'onboardKeyToggle');
+
+function balanceText(balance) {
+  if (!balance || !Array.isArray(balance.balance_infos) || !balance.balance_infos.length) return '';
+  const b = balance.balance_infos[0];
+  return `余额 ${b.total_balance} ${b.currency}`;
+}
+
+async function loadApiSettings() {
+  try {
+    const resp = await apiFetch('/api/settings');
+    if (!resp.ok) return;
+    const cfg = await resp.json();
+    if ($('apiKeyInput')) $('apiKeyInput').value = cfg.apiKey || '';
+    if ($('baseUrlInput')) $('baseUrlInput').value = cfg.baseUrl || 'https://api.deepseek.com';
+    if ($('modelInput')) $('modelInput').value = cfg.model || 'deepseek-chat';
+    if (!cfg.apiKey) showOnboarding();
+  } catch (_) {
+    // 服务未就绪时静默，用户可在专家页手动配置
+  }
+}
+
+// 保存并验证：PUT 落盘 → POST 真实连通性验证 + 余额查询
+async function saveAndValidate(apiKey, baseUrl, model, onStatus) {
+  const status = onStatus || setApiStatus;
+  try {
+    const resp = await apiFetch('/api/settings', {
+      method: 'PUT',
+      body: JSON.stringify({ apiKey, baseUrl, model }),
+    });
+    if (!resp.ok) throw new Error('保存失败 (HTTP ' + resp.status + ')');
+    const v = await apiFetch('/api/settings/validate', { method: 'POST' });
+    const result = await v.json().catch(() => ({}));
+    if (v.ok && result.ok) {
+      const bal = balanceText(result.balance);
+      status(bal ? '验证通过 · ' + bal : '验证通过', 'ok');
+      return true;
+    }
+    status('验证失败：' + (result.error || '未知错误'), 'error');
+    return false;
+  } catch (e) {
+    status('请求失败：' + e.message, 'error');
+    return false;
+  }
+}
+
+const DEEPSEEK_KEYS_URL = 'https://platform.deepseek.com/api_keys';
+
+$('saveApiBtn').addEventListener('click', async () => {
+  const apiKey = $('apiKeyInput').value.trim();
+  if (!apiKey) {
+    setApiStatus('请先粘贴 API Key', 'error');
+    return;
+  }
+  setApiStatus('正在验证...', '');
+  const ok = await saveAndValidate(
+    apiKey,
+    $('baseUrlInput').value.trim(),
+    $('modelInput').value.trim()
+  );
+  if (ok) toast('API 设置已保存', 'success');
+});
+
+$('applyGuideBtn').addEventListener('click', async () => {
+  if (window.electronAPI && window.electronAPI.openExternal) {
+    await window.electronAPI.openExternal(DEEPSEEK_KEYS_URL);
+  } else {
+    setApiStatus('请在浏览器打开：' + DEEPSEEK_KEYS_URL, '');
+  }
+});
+
+// ===== 首次启动引导 =====
+function showOnboarding() {
+  const overlay = $('onboardOverlay');
+  if (overlay) overlay.style.display = 'flex';
+}
+
+function hideOnboarding() {
+  const overlay = $('onboardOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+$('openPlatformBtn').addEventListener('click', async () => {
+  if (window.electronAPI && window.electronAPI.openExternal) {
+    await window.electronAPI.openExternal(DEEPSEEK_KEYS_URL);
+  } else {
+    setOnboardStatus('请在浏览器打开：' + DEEPSEEK_KEYS_URL, '');
+  }
+});
+
+$('onboardSaveBtn').addEventListener('click', async () => {
+  const apiKey = $('onboardKeyInput').value.trim();
+  if (!apiKey) {
+    setOnboardStatus('请先粘贴 API Key', 'error');
+    return;
+  }
+  setOnboardStatus('正在验证...', '');
+  const ok = await saveAndValidate(apiKey, undefined, undefined, setOnboardStatus);
+  if (ok) {
+    hideOnboarding();
+    toast('API Key 已保存，可以开始分析了', 'success');
+    loadApiSettings();
+  }
+});

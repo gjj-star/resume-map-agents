@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { ABILITY_SCAN_SYSTEM, JD_MATCH_SYSTEM, REPORT_RENDER_SYSTEM } = require('./prompts');
+const { getApiConfig } = require('./config');
 
 // 极简 .env 加载器（不依赖 dotenv，兼容 asar 打包后路径）
 function loadEnv() {
@@ -20,10 +21,9 @@ function loadEnv() {
 }
 loadEnv();
 
-// API key 只从环境变量 / .env 读取，仓库内不含明文 key
-const API_KEY = process.env.DEEPSEEK_API_KEY || '';
-const BASE_URL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com';
-const MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
+// API 配置（key / baseUrl / model）在每次调用时通过 config.js 读取：
+// 界面设置(settings.json) > 环境变量(DEEPSEEK_*) > 默认值。
+// 仓库与安装包内均不含明文 key。
 
 // 内存任务存储
 const tasks = new Map();
@@ -40,9 +40,26 @@ setInterval(() => {
   }
 }, CLEANUP_INTERVAL).unref?.();
 
-function callDeepSeek(systemPrompt, userPrompt, maxTokens = 8000) {
+const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504]);
+const RETRY_MAX = 2;
+const RETRY_DELAYS = [1000, 2500];
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// 单次调用（不重试）。opts 可覆盖 { apiKey, baseUrl, model, maxTokens }
+function callDeepSeekOnce(systemPrompt, userPrompt, opts = {}) {
+  const cfg = getApiConfig();
+  const apiKey = opts.apiKey || cfg.apiKey;
+  const baseUrl = (opts.baseUrl || cfg.baseUrl).replace(/\/+$/, '');
+  const model = opts.model || cfg.model;
+  const maxTokens = opts.maxTokens || 8000;
+
+  if (!apiKey) {
+    return Promise.reject(new Error('未配置 API Key：请到「专家介绍 → API 设置」粘贴你的 Key'));
+  }
+
   const body = JSON.stringify({
-    model: MODEL,
+    model,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt },
@@ -53,14 +70,14 @@ function callDeepSeek(systemPrompt, userPrompt, maxTokens = 8000) {
   });
 
   return new Promise((resolve, reject) => {
-    const url = new URL('/v1/chat/completions', BASE_URL);
+    const url = new URL('/v1/chat/completions', baseUrl + '/');
     const options = {
       method: 'POST',
       hostname: url.hostname,
-      path: url.pathname,
+      path: url.pathname + url.search,
       port: url.port || 443,
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(body),
       },
@@ -76,7 +93,9 @@ function callDeepSeek(systemPrompt, userPrompt, maxTokens = 8000) {
       res.on('end', () => {
         const data = Buffer.concat(chunks).toString('utf8');
         if (res.statusCode !== 200) {
-          reject(new Error(`DeepSeek API ${res.statusCode}: ${data.slice(0, 500)}`));
+          const err = new Error(`API ${res.statusCode}: ${data.slice(0, 500)}`);
+          err.retryable = RETRYABLE_STATUS.has(res.statusCode);
+          reject(err);
           return;
         }
         try {
@@ -86,16 +105,74 @@ function callDeepSeek(systemPrompt, userPrompt, maxTokens = 8000) {
           content = content.replace(/�/g, '');
           resolve(content);
         } catch (e) {
-          reject(new Error(`解析 DeepSeek 响应失败: ${e.message}`));
+          reject(new Error(`解析 API 响应失败: ${e.message}`));
         }
       });
     });
 
-    req.on('error', reject);
+    req.on('error', (e) => {
+      e.retryable = true; // 网络层错误（超时/重置/DNS）值得重试
+      reject(e);
+    });
     req.on('timeout', () => {
-      req.destroy(new Error('DeepSeek API 请求超时'));
+      const e = new Error('API 请求超时');
+      e.retryable = true;
+      req.destroy(e);
     });
     req.write(body);
+    req.end();
+  });
+}
+
+// 带重试的调用：429/5xx/网络错误最多重试 RETRY_MAX 次，指数退避
+async function callDeepSeek(systemPrompt, userPrompt, opts = {}) {
+  let lastErr;
+  for (let attempt = 0; attempt <= RETRY_MAX; attempt++) {
+    try {
+      return await callDeepSeekOnce(systemPrompt, userPrompt, opts);
+    } catch (e) {
+      lastErr = e;
+      if (attempt >= RETRY_MAX || !e.retryable) throw e;
+      await sleep(RETRY_DELAYS[attempt]);
+    }
+  }
+  throw lastErr;
+}
+
+// 余额查询（仅 DeepSeek 官方有统一接口，其余服务商返回 null；尽力而为，失败不报错）
+async function checkBalance(apiKey, baseUrl) {
+  try {
+    const hostname = new URL(baseUrl).hostname;
+    if (hostname !== 'api.deepseek.com') return null;
+  } catch (_) {
+    return null;
+  }
+  return new Promise((resolve) => {
+    const url = new URL('/user/balance', baseUrl + '/');
+    const req = https.request(
+      {
+        method: 'GET',
+        hostname: url.hostname,
+        path: url.pathname,
+        port: url.port || 443,
+        headers: { Authorization: `Bearer ${apiKey}` },
+        timeout: 15000,
+      },
+      (res) => {
+        let d = '';
+        res.on('data', (c) => (d += c));
+        res.on('end', () => {
+          if (res.statusCode !== 200) return resolve(null);
+          try {
+            const j = JSON.parse(d);
+            resolve(j && j.balance_infos ? j : null);
+          } catch (_) {
+            resolve(null);
+          }
+        });
+      }
+    );
+    req.on('error', () => resolve(null));
     req.end();
   });
 }
@@ -151,7 +228,7 @@ function extractHtml(text) {
 }
 
 function createTask() {
-  const id = crypto.randomUUID().slice(0, 8);
+  const id = crypto.randomUUID();
   const task = {
     id,
     status: 'pending', // pending | running | done | error
@@ -199,7 +276,7 @@ function startAnalysis(resumeText, jdText) {
 async function runAnalysis(task, resumeText, jdText, hasJd) {
   // 第一步：并行执行能力透视和岗位匹配
   const abilityUser = `候选人简历全文：\n\n${resumeText}\n\n请按契约输出 JSON。`;
-  const abilityPromise = callDeepSeek(ABILITY_SCAN_SYSTEM, abilityUser, 8000)
+  const abilityPromise = callDeepSeek(ABILITY_SCAN_SYSTEM, abilityUser, { maxTokens: 8000 })
     .then((resp) => {
       const json = extractJson(resp);
       if (!json) throw new Error('能力透视 JSON 解析失败');
@@ -216,7 +293,7 @@ async function runAnalysis(task, resumeText, jdText, hasJd) {
   let matchPromise = Promise.resolve();
   if (hasJd) {
     const matchUser = `岗位 JD：\n\n${jdText}\n\n候选人简历：\n\n${resumeText}\n\n请按契约输出 JSON。`;
-    matchPromise = callDeepSeek(JD_MATCH_SYSTEM, matchUser, 8000)
+    matchPromise = callDeepSeek(JD_MATCH_SYSTEM, matchUser, { maxTokens: 8000 })
       .then((resp) => {
         const json = extractJson(resp);
         if (!json) throw new Error('岗位匹配 JSON 解析失败');
@@ -256,7 +333,7 @@ ${JSON.stringify(task.matchResult || { type: 'match_report', error: '岗位匹�
 
 请直接输出完整 HTML（从 <!DOCTYPE html> 开始），不要包裹 markdown 代码块。`;
 
-  const reportResp = await callDeepSeek(REPORT_RENDER_SYSTEM, reportUser, 16000);
+  const reportResp = await callDeepSeek(REPORT_RENDER_SYSTEM, reportUser, { maxTokens: 16000 });
   const html = extractHtml(reportResp);
   if (!html) {
     throw new Error('报告 HTML 解析失败：未检测到有效 HTML');
@@ -276,6 +353,7 @@ module.exports = {
   startAnalysis,
   getTaskStatus,
   callDeepSeek,
+  checkBalance,
   extractJson,
   extractHtml,
 };

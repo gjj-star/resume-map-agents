@@ -186,6 +186,56 @@
 
     <!-- ===== 专家介绍页 ===== -->
     <section id="page-experts" class="page">
+      <!-- API 设置 -->
+      <div class="card spotlight-card api-settings-card">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+            <circle cx="7.5" cy="15.5" r="5.5"/>
+            <path d="M21 2l-9.6 9.6"/>
+            <path d="M15.5 7.5l3 3L22 7l-3-3"/>
+          </svg>
+          API 设置
+          <span class="api-provider-hint">Key 仅保存在本机 · 支持 DeepSeek 官方与任意 OpenAI 兼容服务</span>
+        </div>
+        <div class="api-settings-grid">
+          <div class="api-field">
+            <div class="field-label">API Key</div>
+            <div class="api-key-row">
+              <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+              <button id="apiKeyToggle" class="btn btn-ghost" type="button">显示</button>
+            </div>
+            <div class="field-hint">调用 DeepSeek（或兼容服务）的密钥，费用从你自己的账户扣除</div>
+          </div>
+          <div class="api-field">
+            <div class="field-label">Base URL</div>
+            <input type="text" id="baseUrlInput" placeholder="https://api.deepseek.com" autocomplete="off" spellcheck="false" />
+            <div class="field-hint">OpenAI 兼容接口地址，SiliconFlow / OpenRouter / 中转站均可</div>
+          </div>
+          <div class="api-field">
+            <div class="field-label">模型</div>
+            <input type="text" id="modelInput" placeholder="deepseek-chat" autocomplete="off" spellcheck="false" />
+            <div class="field-hint">服务商提供的对话模型名</div>
+          </div>
+        </div>
+        <div class="api-settings-actions">
+          <button id="saveApiBtn" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            保存并验证
+          </button>
+          <button id="applyGuideBtn" class="btn btn-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            怎么申请 Key
+          </button>
+          <span id="apiStatus" class="api-status"></span>
+        </div>
+      </div>
+
       <!-- 工作流设计图（archify 渲染，自包含 HTML） -->
       <div class="workflow-section">
         <div class="workflow-head">
@@ -285,6 +335,31 @@
   </div>
 
   <div id="toast"></div>
+
+  <!-- 首次启动引导：未配置 API Key 时显示 -->
+  <div id="onboardOverlay" class="onboard-overlay" style="display:none;">
+    <div class="onboard-dialog card">
+      <div class="onboard-title">1 分钟，开始使用</div>
+      <p class="onboard-desc">
+        本应用调用 DeepSeek API 生成评估报告，需要你自己的 API Key。<br/>
+        Key 只保存在本机，费用从你的 DeepSeek 账户扣除，每次分析成本约几分钱。
+      </p>
+      <ol class="onboard-steps">
+        <li>打开 DeepSeek 开放平台并登录</li>
+        <li>创建 API Key（新账户建议先充值少量余额）</li>
+        <li>把 <span class="mono">sk-</span> 开头的 Key 粘贴到下方</li>
+      </ol>
+      <div class="api-key-row">
+        <input type="password" id="onboardKeyInput" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+        <button id="onboardKeyToggle" class="btn btn-ghost" type="button">显示</button>
+      </div>
+      <div class="onboard-actions">
+        <button id="openPlatformBtn" class="btn btn-primary">打开申请页面</button>
+        <button id="onboardSaveBtn" class="btn btn-accent">保存并开始使用</button>
+      </div>
+      <div id="onboardStatus" class="onboard-status"></div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

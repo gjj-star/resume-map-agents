@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const net = require('net');
 const https = require('https');
@@ -9,6 +9,8 @@ const { spawn } = require('child_process');
 let mainWindow = null;
 let serverInstance = null;
 let serverPort = 3456;
+// 每次启动随机生成的本机服务鉴权 token，渲染进程经 IPC 获取
+let authToken = null;
 
 // ===== 自动更新（自建通道）=====
 // 为什么不用 electron-updater：它的 GitHub provider 下载走 github.com 主域，
@@ -235,6 +237,11 @@ function createWindow() {
 
 app.whenReady().then(async () => {
   try {
+    // 随机会话 token：只允许本应用渲染进程调用本地 API，浏览器里的任意网页无法白嫖
+    authToken = crypto.randomBytes(24).toString('hex');
+    process.env.APP_AUTH_TOKEN = authToken;
+    // 用户 API 设置（settings.json）落盘位置：打包版 = userData，开发直跑 = 项目根
+    process.env.RESUME_USER_DATA = app.getPath('userData');
     serverPort = await findFreePort(3456);
     startServer(serverPort);
     // 给服务一点启动时间
@@ -256,3 +263,24 @@ app.on('window-all-closed', () => {
 
 // IPC: 获取服务端口
 ipcMain.handle('get-server-port', () => serverPort);
+
+// IPC: 获取本机服务鉴权 token
+ipcMain.handle('get-auth-token', () => authToken);
+
+// IPC: 打开外部链接（仅允许 https，用于引导申请 API Key / 查看文档）
+ipcMain.handle('open-external', async (_event, url) => {
+  if (typeof url !== 'string') return false;
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch (_) {
+    return false;
+  }
+  if (parsed.protocol !== 'https:') return false;
+  try {
+    await shell.openExternal(url);
+    return true;
+  } catch (_) {
+    return false;
+  }
+});
