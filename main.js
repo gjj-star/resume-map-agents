@@ -7,18 +7,22 @@ const crypto = require('crypto');
 const { spawn } = require('child_process');
 
 let mainWindow = null;
-let serverInstance = null;
 let serverPort = 3456;
 // 每次启动随机生成的本机服务鉴权 token，渲染进程经 IPC 获取
 let authToken = null;
 
 // ===== 自动更新（自建通道）=====
-// 为什么不用 electron-updater：它的 GitHub provider 下载走 github.com 主域，
+// 为什么不用 electron-updater 库：它的 GitHub provider 下载走 github.com 主域，
 // 本机网络主域稳定超时（api.github.com 与 objects.githubusercontent.com 正常）。
 // 自实现：查询 latest release + 下载 asset 全部走 api.github.com（asset API 会 302 到可用 CDN）。
 const UPDATE_OWNER = 'gjj-star';
 const UPDATE_REPO = 'resume-map-agents';
 let downloadedInstaller = null;
+
+// TLS 策略：默认严格校验（更新通道真实性由系统 CA 体系保证，sha512 负责下载完整性）。
+// 仅本机开发/测试网络被中间代理拦截 TLS 时（见 AGENTS.md 环境坑 3），
+// 可临时设 RESUME_UPDATER_INSECURE_TLS=1 关闭校验——此开关默认关闭，绝不随应用默认打开。
+const UPDATER_INSECURE_TLS = process.env.RESUME_UPDATER_INSECURE_TLS === '1';
 
 function httpsGet(u, accept = 'application/vnd.github+json', redirects = 0) {
   return new Promise((resolve, reject) => {
@@ -26,9 +30,7 @@ function httpsGet(u, accept = 'application/vnd.github+json', redirects = 0) {
     const req = https.request({
       hostname: url.hostname,
       path: url.pathname + url.search,
-      // 本机 api.github.com 被中间代理拦截 TLS（见 AGENTS.md 环境坑），
-      // 与 release.js 一致关闭证书校验，否则更新检查直接 UNABLE_TO_VERIFY_LEAF_SIGNATURE
-      rejectUnauthorized: false,
+      rejectUnauthorized: !UPDATER_INSECURE_TLS,
       headers: { 'User-Agent': 'resume-expert-team-updater', Accept: accept },
       timeout: 30000,
     }, (res) => {
@@ -192,16 +194,27 @@ function findFreePort(start = 3456) {
   });
 }
 
-// 启动 Express 服务（直接在主进程中 require，避免 spawn + asar 路径问题）
+// 启动 Express 服务（直接在主进程中 require，避免 spawn + asar 路径问题）。
+// 返回 Promise：等 server 真正进入 listening 状态才放行，取代"sleep 600ms"式的时间猜测。
 function startServer(port) {
-  try {
-    process.env.PORT = String(port);
-    const serverModule = require(path.join(__dirname, 'server', 'index.js'));
-    serverInstance = serverModule;
-    console.log(`[server] Express 服务已启动: http://127.0.0.1:${port}`);
-  } catch (e) {
-    console.error('[server] 启动失败:', e.message);
-  }
+  return new Promise((resolve) => {
+    try {
+      process.env.PORT = String(port);
+      const { server } = require(path.join(__dirname, 'server', 'index.js'));
+      if (server.listening) return resolve();
+      server.once('listening', () => {
+        console.log(`[server] Express 服务已启动: http://127.0.0.1:${port}`);
+        resolve();
+      });
+      server.once('error', (e) => {
+        console.error('[server] 启动失败:', e.message);
+        resolve();
+      });
+    } catch (e) {
+      console.error('[server] 启动失败:', e.message);
+      resolve();
+    }
+  });
 }
 
 function createWindow() {
@@ -243,9 +256,7 @@ app.whenReady().then(async () => {
     // 用户 API 设置（settings.json）落盘位置：打包版 = userData，开发直跑 = 项目根
     process.env.RESUME_USER_DATA = app.getPath('userData');
     serverPort = await findFreePort(3456);
-    startServer(serverPort);
-    // 给服务一点启动时间
-    await new Promise((r) => setTimeout(r, 600));
+    await startServer(serverPort);
   } catch (e) {
     console.error('启动服务失败:', e);
   }

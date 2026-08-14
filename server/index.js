@@ -101,4 +101,4 @@ if (!process.env.ELECTRON_RUN && !process.versions.electron) {
   process.on('SIGINT', () => server.close(() => process.exit(0)));
 }
 
-module.exports = app;
+module.exports = { app, server };

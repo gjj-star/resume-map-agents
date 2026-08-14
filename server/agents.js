@@ -282,7 +282,6 @@ async function runAnalysis(task, resumeText, jdText, hasJd) {
       if (!json) throw new Error('能力透视 JSON 解析失败');
       task.abilityResult = json;
       task.agents['ability-scan'].status = 'done';
-      task.progress = 35;
     })
     .catch((e) => {
       task.abilityResult = { type: 'ability_report', error: e.message };
@@ -299,7 +298,6 @@ async function runAnalysis(task, resumeText, jdText, hasJd) {
         if (!json) throw new Error('岗位匹配 JSON 解析失败');
         task.matchResult = json;
         task.agents['jd-match'].status = 'done';
-        task.progress = 35;
       })
       .catch((e) => {
         task.matchResult = { type: 'match_report', error: e.message };
@@ -309,7 +307,8 @@ async function runAnalysis(task, resumeText, jdText, hasJd) {
   }
 
   await Promise.all([abilityPromise, matchPromise]);
-  task.progress = 50;
+  // 全局进度单写入者：并行阶段结束后统一置 35（此前两个 agent 各写各的会互相覆盖）
+  task.progress = 35;
   task.step = 'report-render';
   task.agents['report-render'].status = 'running';
 

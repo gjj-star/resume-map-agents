@@ -65,7 +65,7 @@ release.js 会自动完成：bump 版本 → 打包 NSIS → 生成 ASCII 安装
 
 1. **`ELECTRON_RUN_AS_NODE=1` 在 WorkBuddy bash 环境全局存在**：跑 electron.exe 前必须先 `unset ELECTRON_RUN_AS_NODE`，否则 `require('electron')` 返回路径字符串导致 `app` undefined。
 2. **safe-delete 钩子**会拦截批量删除/移动（尤其 dist 目录）：打包输出用 `--config.directories.output=build_out`（新目录），不要尝试删旧 dist。
-3. **本机 api.github.com TLS 被中间代理拦截**：Node https 请求必须 `rejectUnauthorized: false`，否则 `UNABLE_TO_VERIFY_LEAF_SIGNATURE`。
+3. **本机 api.github.com TLS 被中间代理拦截**：Node https 请求会 `UNABLE_TO_VERIFY_LEAF_SIGNATURE`。release.js（仅本机运行）保持 `rejectUnauthorized: false`；**应用内自动更新默认严格校验 TLS**（面向真实用户，fail closed 才是对的），本机测试更新链路时可临时设 `RESUME_UPDATER_INSECURE_TLS=1`，禁止把这个开关默认打开。
 4. **GitHub 网络时通时断**：API 调用需重试；GitHub PAT 可从 `printf 'protocol=https\nhost=github.com\n\n' | git credential fill` 提取（release.js 已内置）。
 5. **winCodeSign 缓存**：已在 `C:/Users/EDY/AppData/Local/electron-builder/Cache/winCodeSign/winCodeSign-2.6.0/` 手动解压好（去掉 darwin），勿删，删了要重新处理符号链接问题。
 6. **npm install 在本机可能失败**（safe-delete 拦 node_modules 删除）：需要装包时用 `npm install <pkg> --registry=https://registry.npmmirror.com`，失败就手动下载 tgz 解压到 `node_modules/<pkg>/` 并把依赖放进 `node_modules/<pkg>/node_modules/`。
