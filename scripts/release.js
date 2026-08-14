@@ -23,7 +23,8 @@ const OWNER = 'gjj-star';
 const REPO = 'resume-map-agents';
 
 function run(cmd, opts = {}) {
-  console.log(`> ${cmd}`);
+  // 打码内联凭证，避免 token 出现在日志/终端回显里
+  console.log('> ' + cmd.replace(/(https:\/\/)[^@\s]+@/g, '$1***@'));
   return execSync(cmd, { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
 }
 
@@ -185,12 +186,27 @@ async function retry(fn, times = 5, delayMs = 3000) {
   const tag = 'v' + newVer;
   console.log(`发布 GitHub Release ${tag}...`);
 
+  // 远程 tag 预检：git tag 与 Release 是两套体系，其他工具可能已推过同名 tag
+  const remoteTag = run(`git ls-remote --tags origin "refs/tags/${tag}"`).trim();
+  if (remoteTag) {
+    console.error(`❌ 远程已存在 tag ${tag}（可能来自其他工具）。请 bump 新版本号后重发。`);
+    process.exit(1);
+  }
+
   // 同 tag 已存在 → 拒绝覆盖（铁律5：Release 不可变，内容错了应 bump 新版本号重发）
   try {
     const oldRelease = await ghApi('GET', `/repos/${OWNER}/${REPO}/releases/tags/${tag}`);
     console.error(`❌ tag ${tag} 已存在（release #${oldRelease.id}）。Release 不可变——请 bump 新版本号后重发。`);
     process.exit(1);
   } catch (_) { /* 没有旧 release，正常 */ }
+
+  // 顺序铁律：必须先推 main + tag，再创建 Release。
+  // 否则 Release API 会在「当时的远程旧 HEAD」上自动创建 tag，导致 tag 永远锚定在上一版代码上。
+  const cred = gitCredentialFill();
+  const user = (cred.match(/^username=(.+)$/m) || [])[1] || OWNER;
+  run(`git tag ${tag}`);
+  run(`git push "https://${user}:${encodeURIComponent(TOKEN)}@github.com/${OWNER}/${REPO}.git" main`);
+  run(`git push "https://${user}:${encodeURIComponent(TOKEN)}@github.com/${OWNER}/${REPO}.git" ${tag}`);
 
   const release = await retry(() => ghApi('POST', `/repos/${OWNER}/${REPO}/releases`, {
     body: JSON.stringify({ tag_name: tag, name: `简历评估专家团 v${newVer}`, body: '自动更新发布', draft: false, prerelease: false }),
@@ -200,14 +216,6 @@ async function retry(fn, times = 5, delayMs = 3000) {
   // 上传失败可安全重试（未完成的 asset 不会留下记录），GitHub 网络时通时断
   await retry(() => ghUpload(release.upload_url, asciiName, setupDst, 'application/octet-stream'), 3, 5000);
   await retry(() => ghUpload(release.upload_url, 'latest.yml', path.join(BUILD_DIR, 'latest.yml'), 'text/yaml'), 3, 5000);
-
-  // 7. git push + tag（inline 凭证避免 GCM 弹窗）
-  console.log('推送 git...');
-  const cred = gitCredentialFill();
-  const user = (cred.match(/^username=(.+)$/m) || [])[1] || OWNER;
-  run(`git push "https://${user}:${encodeURIComponent(TOKEN)}@github.com/${OWNER}/${REPO}.git" main`);
-  run(`git tag ${tag}`);
-  run(`git push "https://${user}:${encodeURIComponent(TOKEN)}@github.com/${OWNER}/${REPO}.git" ${tag}`);
 
   console.log('\n========================================');
   console.log(`✅ 发布完成 v${newVer}`);
