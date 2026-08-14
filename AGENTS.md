@@ -69,6 +69,7 @@ release.js 会自动完成：bump 版本 → 打包 NSIS → 生成 ASCII 安装
 4. **GitHub 网络时通时断**：API 调用需重试；GitHub PAT 可从 `printf 'protocol=https\nhost=github.com\n\n' | git credential fill` 提取（release.js 已内置）。
 5. **winCodeSign 缓存**：已在 `C:/Users/EDY/AppData/Local/electron-builder/Cache/winCodeSign/winCodeSign-2.6.0/` 手动解压好（去掉 darwin），勿删，删了要重新处理符号链接问题。
 6. **npm install 在本机可能失败**（safe-delete 拦 node_modules 删除）：需要装包时用 `npm install <pkg> --registry=https://registry.npmmirror.com`，失败就手动下载 tgz 解压到 `node_modules/<pkg>/` 并把依赖放进 `node_modules/<pkg>/node_modules/`。
+7. **删除远程 tag 会连带删除挂在它上面的 Release**（GitHub 行为，2026-08-17 v1.2.0 重锚 tag 的教训）：任何"先删 tag 再推 tag"的操作，事后必须用 Release API 重建 Release 并重新上传 asset。正常发版只走 release.js（其顺序已改为先推 main+tag 再建 Release，tag 天然锚定在正确提交上）。
 
 ## 发版 SOP（已自动化，理解流程用）
 
