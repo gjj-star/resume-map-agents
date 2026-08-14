@@ -317,8 +317,13 @@ function renderReport(html) {
   const wrap = $('reportWrap');
   wrap.innerHTML = '';
   const iframe = document.createElement('iframe');
-  iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts');
+  // 只留 allow-scripts（雷达图内联脚本必需）。去掉 allow-same-origin：
+  // 报告内容是未受信输入（LLM 生成 + 简历原文），不能让它以同源身份触碰父窗口
+  // （父窗口有 API key 输入框与 electronAPI 鉴权 token）。
+  iframe.setAttribute('sandbox', 'allow-scripts');
   iframe.setAttribute('srcdoc', reportHtml);
+  // 注意：无 allow-same-origin 时 iframe 为不透明源，父窗口拿不到 contentDocument，
+  // hideIframeScrollbars 会静默 no-op（原生滚动条保留）——这是刻意的安全取舍。
   hideIframeScrollbars(iframe);
   wrap.appendChild(iframe);
 }

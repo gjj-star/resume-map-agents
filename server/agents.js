@@ -199,6 +199,17 @@ function extractJson(text) {
 }
 
 // 从 LLM 响应中提取 HTML
+// 把 meta 注入到 <head>；无 <head> 时挂到 <html> 下；连 <html> 都没有就前置
+function injectHeadMeta(html, metaTag) {
+  if (/<head[^>]*>/i.test(html)) {
+    return html.replace(/<head[^>]*>/i, (m) => m + metaTag);
+  }
+  if (/<html[^>]*>/i.test(html)) {
+    return html.replace(/<html[^>]*>/i, (m) => m + `<head>${metaTag}</head>`);
+  }
+  return metaTag + html;
+}
+
 function extractHtml(text) {
   if (!text) return '';
   // 去掉 markdown 包裹
@@ -216,14 +227,17 @@ function extractHtml(text) {
   t = t.trim();
   // 强制 UTF-8：没有 charset 声明的注入到 <head>，防止导出后按系统编码(GBK)解析乱码
   if (!/charset\s*=/i.test(t)) {
-    if (/<head[^>]*>/i.test(t)) {
-      t = t.replace(/<head[^>]*>/i, (m) => m + '<meta charset="UTF-8">');
-    } else if (/<html[^>]*>/i.test(t)) {
-      t = t.replace(/<html[^>]*>/i, (m) => m + '<head><meta charset="UTF-8"></head>');
-    } else {
-      t = '<meta charset="UTF-8">' + t;
-    }
+    t = injectHeadMeta(t, '<meta charset="UTF-8">');
   }
+  // 严格 CSP（XSS 纵深防御，预览 iframe 与导出文件同享此道闸）：
+  // - 只允许内联脚本/样式（雷达图 renderRadarChart 必需），禁止一切外部资源与外联，
+  //   即使 LLM 漏转义导致简历原文注入 <img onerror>/<script>，也无法外传数据；
+  // - CSP 多重声明取交集，因此无条件注入即可，无需判断 LLM 是否自带 CSP。
+  const CSP =
+    '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; ' +
+    "script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; " +
+    "form-action 'none'; base-uri 'none'\">";
+  t = injectHeadMeta(t, CSP);
   return t;
 }
 

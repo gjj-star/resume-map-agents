@@ -38,9 +38,10 @@ assets/icon.png   应用图标
 2. **GitHub Release asset 文件名必须纯 ASCII**（无中文、无空格）。GitHub 会把中文/空格改写成别的名字，导致 latest.yml 与实际文件不匹配、自动更新 404。
 3. **API key 不进 git、不进安装包**。应用采用 BYOK：用户 key 经「专家介绍 → API 设置」保存在本机 `settings.json`（打包版在 userData，开发直跑在项目根，均已 gitignore）。`.env` 仅供开发模式读取，`package.json` 的 `build.files` 不得包含 `.env`。任何 commit 不得包含 `sk-` 开头的字符串（GitHub Push Protection 也会拦）。
 4. **本机服务鉴权不可删**。主进程每次启动生成随机 `APP_AUTH_TOKEN`，server 对 `/api` 强制校验（独立 node 直跑时放行），渲染进程经 IPC 取 token 后带 `Authorization: Bearer` 头调用。删掉它等于重新打开"浏览器任意网页白嫖本地 API"的口子。
-5. **UI 禁 emoji**，一律用内联 SVG 线条图标（stroke-width 1.5）。风格基调见下。
-6. **Release 不可变**。已发布的 tag/release 不覆盖重发；内容错了就 bump 新版本号重发。
-7. **`build.publish` 配置不可删**。package.json 的 `build.publish`（github: gjj-star/resume-map-agents）是自动更新的唯一来源——删了它 electron-builder 不生成 `resources/app-update.yml`，autoUpdater 静默失效。改 package.json 后必须确认该字段仍在，打包后可验证：`resources/app-update.yml` 存在。（2026-08-10 远程重写 package.json 弄丢 publish 致 v1.0.6-1.1.0 全部无法自动更新的教训）
+5. **报告渲染的 XSS 防线不可拆**。预览 iframe 的 sandbox 只留 `allow-scripts`（禁止恢复 `allow-same-origin`，否则未受信报告可读取父窗口的 API key 与鉴权 token）；`server/agents.js` 的 `extractHtml` 注入的严格 CSP 不可删——预览与导出共用这道闸，删了等于让恶意简历获得外传数据的通道。代价是报告预览保留原生滚动条（父窗口拿不到跨源 contentDocument），这是刻意的安全取舍。
+6. **UI 禁 emoji**，一律用内联 SVG 线条图标（stroke-width 1.5）。风格基调见下。
+7. **Release 不可变**。已发布的 tag/release 不覆盖重发；内容错了就 bump 新版本号重发。
+8. **`build.publish` 配置不可删**。package.json 的 `build.publish`（github: gjj-star/resume-map-agents）是自动更新的唯一来源——删了它 electron-builder 不生成 `resources/app-update.yml`，autoUpdater 静默失效。改 package.json 后必须确认该字段仍在，打包后可验证：`resources/app-update.yml` 存在。（2026-08-10 远程重写 package.json 弄丢 publish 致 v1.0.6-1.1.0 全部无法自动更新的教训）
 
 ## 版本规则（语义化版本 semver）
 
